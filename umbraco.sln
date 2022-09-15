@@ -99,9 +99,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D4C3395A-BA9D-4032-9ED3-09F1FC032CBC}"
 	ProjectSection(SolutionItems) = preProject
 		build\csharp-docs\docfx.filter.yml = build\csharp-docs\docfx.filter.yml
-		build\csharp-docs\toc.yml = build\csharp-docs\toc.yml
 		build\csharp-docs\docfx.json = build\csharp-docs\docfx.json
 		build\csharp-docs\index.md = build\csharp-docs\index.md
+		build\csharp-docs\toc.yml = build\csharp-docs\toc.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templating", "Templating", "{5FBDD50D-7A86-4F4D-BEB9-7967FBA4ED2C}"
@@ -120,6 +120,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Styles", "Styles", "{6499F8
 	ProjectSection(SolutionItems) = preProject
 		build\csharp-docs\umbracotemplate\styles\main.css = build\csharp-docs\umbracotemplate\styles\main.css
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Langracetech.Web.Website", "Langracetech.Web.Website\Langracetech.Web.Website.csproj", "{7551FC5A-4E6B-422D-A3D0-07379133A608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -243,6 +245,12 @@ Global
 		{92EAA57A-CC99-4F5D-9D9C-B865293F6000}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92EAA57A-CC99-4F5D-9D9C-B865293F6000}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{92EAA57A-CC99-4F5D-9D9C-B865293F6000}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7551FC5A-4E6B-422D-A3D0-07379133A608}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{7551FC5A-4E6B-422D-A3D0-07379133A608}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
