@@ -1156,7 +1156,7 @@ internal class DatabaseDataCreator
             Login = "admin",
             Password = "default",
             Email = string.Empty,
-            UserLanguage = "en-US",
+            UserLanguage = "zh-TW", //"en-US",
             CreateDate = DateTime.Now,
             UpdateDate = DateTime.Now,
         });
