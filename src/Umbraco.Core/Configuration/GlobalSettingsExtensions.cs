@@ -9,6 +9,33 @@ public static class GlobalSettingsExtensions
     private static string? _mvcArea;
     private static string? _backOfficePath;
 
+    #region Langracetech Extensions Variables
+    private static string? _langracetechBackOfficePath;
+    #endregion
+
+    #region Langracetech Extensions
+
+    /// <summary>
+    ///     Returns the absolute path for the Langracetech's Umbraco back office
+    ///     Added By Sianting at 022.9.17
+    /// </summary>
+    /// <param name="globalSettings"></param>
+    /// <param name="hostingEnvironment"></param>
+    /// <returns></returns>
+    public static string GetLangracetechBackOfficePath(this GlobalSettings globalSettings, IHostingEnvironment hostingEnvironment)
+    {
+        if (_langracetechBackOfficePath != null)
+        {
+            return _langracetechBackOfficePath;
+        }
+
+        _langracetechBackOfficePath = hostingEnvironment.ToAbsolute(globalSettings.LangracetechPath);
+        return _langracetechBackOfficePath;
+    }
+
+    #endregion
+
+
     /// <summary>
     ///     Returns the absolute path for the Umbraco back office
     /// </summary>

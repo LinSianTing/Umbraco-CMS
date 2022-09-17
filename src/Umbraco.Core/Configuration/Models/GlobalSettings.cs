@@ -17,12 +17,21 @@ public class GlobalSettings
 
     internal const string StaticReservedUrls = "~/.well-known,"; // must end with a comma!
     internal const string StaticTimeOut = "00:20:00";
-    internal const string StaticDefaultUILanguage = "en-US";
+    #region Langracetech Expansion
+    internal const string StaticDefaultUILanguage = "zh-TW"; //"en-US";
+    #endregion
     internal const bool StaticHideTopLevelNodeFromPath = true;
     internal const bool StaticUseHttps = false;
     internal const int StaticVersionCheckPeriod = 7;
+
     internal const string StaticUmbracoPath = Constants.System.DefaultUmbracoPath;
-    internal const string StaticIconsPath = "umbraco/assets/icons";
+    //internal const string StaticIconsPath = "umbraco/assets/icons";
+
+    #region Langracetech Expansion : Added By Sianting at 2022.9.17
+    internal const string StaticLangracetechPath = Constants.System.DefaultLangracetechPath;
+    internal const string StaticIconsPath = "langracetech/assets/icons";
+    #endregion
+
     internal const string StaticUmbracoCssPath = "~/css";
     internal const string StaticUmbracoScriptsPath = "~/scripts";
     internal const string StaticUmbracoMediaPath = "~/media";
@@ -82,6 +91,16 @@ public class GlobalSettings
     /// </summary>
     [DefaultValue(StaticUmbracoPath)]
     public string UmbracoPath { get; set; } = StaticUmbracoPath;
+
+    #region Langracetech
+
+    /// <summary>
+    ///     Gets or sets a value for the Umbraco back-office path.
+    /// </summary>
+    [DefaultValue(StaticUmbracoPath)]
+    public string LangracetechPath { get; set; } = StaticLangracetechPath;
+
+    #endregion
 
     /// <summary>
     ///     Gets or sets a value for the Umbraco icons path.

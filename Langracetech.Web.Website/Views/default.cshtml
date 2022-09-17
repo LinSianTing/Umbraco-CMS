@@ -7,7 +7,8 @@
 @inject IHostingEnvironment hostingEnvironment
 @inject IOptions<GlobalSettings> globalSettings
 @{
-    var backOfficePath = globalSettings.Value.GetBackOfficePath(hostingEnvironment);
+    //var backOfficePath = globalSettings.Value.GetBackOfficePath(hostingEnvironment);
+    var backOfficePath = globalSettings.Value.GetLangracetechBackOfficePath(hostingEnvironment);
 }
 <!doctype html>
 <html class="no-js" lang="en">

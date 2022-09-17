@@ -63,6 +63,11 @@ public static partial class Constants
         public const string UmbracoDefaultDatabaseName = "Umbraco";
 
         public const string UmbracoConnectionName = "umbracoDbDSN";
+
         public const string DefaultUmbracoPath = "~/umbraco";
+
+        #region Langracetech Expansion : Added By Sianting at 2022.9.17
+        public const string DefaultLangracetechPath = "~/langracetech";
+        #endregion
     }
 }
