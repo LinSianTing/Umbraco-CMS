@@ -89,6 +89,6 @@ module.exports = {
         views: "langracetech/views/",
         css: "langracetech/assets/css/",
         assets: "langracetech/assets/",
-        tpl: "tpl/" //add by sianting at 20220926
+        tpl: "tpl/" //add by sianting at 20220926.
     }
 };

@@ -302,7 +302,7 @@ function dependencies() {
 
     stream.add(libTask);
 
-    //copy over libs which are not on npm (/tpl) , add by sianting at 20220926
+    //copy over libs which are not on npm (/tpl) , add by sianting at 20220926.
     var tplTask = gulp.src(config.sources.globs.tpl, { allowEmpty: true });
 
     _.forEach(config.roots, function (root) {
