@@ -1,0 +1,21 @@
+.umb-mediapicker3 {
+    .umb-property-editor--limit-width();
+
+    .umb-media-card-grid {
+        padding: 20px;
+        border: 1px solid @inputBorder;
+        box-sizing: border-box;
+
+        &.--singleMode {
+            max-width: 202px;
+        }
+    }
+}
+
+umb-media-picker3-property-editor[readonly] {
+    .umb-mediapicker3 {
+        .umb-media-card-grid {
+            border-color: @inputReadonlyBorderColor;
+        }
+    }
+}
