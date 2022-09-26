@@ -16,15 +16,16 @@ const config = require('./gulp/config');
 const { setDevelopmentMode, setTestMode } = require('./gulp/modes');
 const { dependencies } = require('./gulp/tasks/dependencies');
 const { js } = require('./gulp/tasks/js');
-const { less } = require('./gulp/tasks/less');
+//const { less } = require('./gulp/tasks/less');
 const { testE2e, testUnit, runUnitTestServer } = require('./gulp/tasks/test');
-const { views } = require('./gulp/tasks/views');
+//const { views } = require('./gulp/tasks/views');
 const { watchTask } = require('./gulp/tasks/watchTask');
 
 // set default current compile mode:
 config.compile.current = config.compile.build;
 
-const coreBuild = parallel(dependencies, js, less, views);
+//const coreBuild = parallel(dependencies, js, less, views);
+const coreBuild = parallel(dependencies);
 
 // ***********************************************************
 // These Exports are the new way of defining Tasks in Gulp 4.x

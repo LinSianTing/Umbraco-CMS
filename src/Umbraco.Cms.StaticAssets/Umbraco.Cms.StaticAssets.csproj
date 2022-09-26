@@ -27,26 +27,38 @@
   <PropertyGroup>
     <BellePath>$(ProjectDir)wwwroot/umbraco</BellePath>
     <LangracetechPath>$(ProjectDir)wwwroot/langracetech</LangracetechPath>
+    <LangracetechTemplatePath>$(ProjectDir)wwwroot/tpl</LangracetechTemplatePath>
   </PropertyGroup>
 
   <Target Name="CheckPreconditions" BeforeTargets="Build">
     <Message Text="-CheckPreconditions-" Importance="high" />
     <Message Text="BellePath:       $(BellePath)" Importance="high" />
     <Message Text="LangracetechPath:       $(LangracetechPath)" Importance="high" />
+    <Message Text="LangracetechTemplatePath:       $(LangracetechTemplatePath)" Importance="high" />
     
-    <!-- Build - Default - (umbraco) -->
+    <!-- Build - Default - ( 1. umbraco) -->
     <!-- Build Belle, if building is Visual Studio and the build folder does not exist yet -->
+    <Message Text="-- Step 1 - Project - Umbraco.Web.UI.Client" Importance="high" />
     <Message Text="Skip Belle because UmbracoBuild is '$(UmbracoBuild)' (this is not Visual Studio)." Importance="High" Condition="'$(UmbracoBuild)' != ''" />
     <Message Text="Skip Belle because $(BellePath) exists." Importance="High" Condition="Exists('$(BellePath)')" />
     <Message Text="Build Belle because UmbracoBuild is empty (this is Visual Studio), and $(BellePath) does not exist." Importance="High" Condition="!Exists('$(BellePath)') and '$(UmbracoBuild)' == ''" />
     <CallTarget Targets="BelleBuild" Condition="!Exists('$(BellePath)') and '$(UmbracoBuild)' == ''" />
 
-    <!-- Build - Langracetech - (langracetech) -->
+    <!-- Build - Langracetech - ( 2. langracetech) -->
     <!-- Build Belle, if building is Visual Studio and the build folder does not exist yet -->
-    <Message Text="Skip Belle because UmbracoBuild is '$(UmbracoBuild)' (this is not Visual Studio)." Importance="High" Condition="'$(UmbracoBuild)' != ''" />
-    <Message Text="Skip Belle because $(LangracetechPath) exists." Importance="High" Condition="Exists('$(LangracetechPath)')" />
-    <Message Text="Build Belle because UmbracoBuild is empty (this is Visual Studio), and $(LangracetechPath) does not exist." Importance="High" Condition="!Exists('$(LangracetechPath)') and '$(UmbracoBuild)' == ''" />
+    <Message Text="--- Step 2 - Project - Langracetech.Web.UI.Client" Importance="high" />
+    <Message Text="Skip Langracetech because UmbracoBuild is '$(UmbracoBuild)' (this is not Visual Studio)." Importance="High" Condition="'$(UmbracoBuild)' != ''" />
+    <Message Text="Skip Langracetech because $(LangracetechPath) exists." Importance="High" Condition="Exists('$(LangracetechPath)')" />
+    <Message Text="Build Langracetech because UmbracoBuild is empty (this is Visual Studio), and $(LangracetechPath) does not exist." Importance="High" Condition="!Exists('$(LangracetechPath)') and '$(UmbracoBuild)' == ''" />
     <CallTarget Targets="LangracetechBuild" Condition="!Exists('$(LangracetechPath)') and '$(UmbracoBuild)' == ''" />
+
+    <!-- Build - Langracetech - ( 3. Langracetech Template) -->
+    <!-- Build Belle, if building is Visual Studio and the build folder does not exist yet -->
+    <Message Text="---- Step 3 - Project - Langracetech.Web.Template.Client" Importance="high" />
+    <Message Text="Skip Langracetech-Template because UmbracoBuild is '$(UmbracoBuild)' (this is not Visual Studio)." Importance="High" Condition="'$(UmbracoBuild)' != ''" />
+    <Message Text="Skip Langracetech-Template because $(LangracetechTemplatePath) exists." Importance="High" Condition="Exists('$(LangracetechTemplatePath)')" />
+    <Message Text="Build Langracetech-Template because UmbracoBuild is empty (this is Visual Studio), and $(LangracetechTemplatePath) does not exist." Importance="High" Condition="!Exists('$(LangracetechTemplatePath)') and '$(UmbracoBuild)' == ''" />
+    <CallTarget Targets="LangracetechTemplateBuild" Condition="!Exists('$(LangracetechTemplatePath)') and '$(UmbracoBuild)' == ''" />
   </Target>
   
   <!-- Target - BelleBuild -->
@@ -61,9 +73,16 @@
     <Exec WorkingDirectory="$(ProjectDir)/../Langracetech.Web.UI.Client/" Command="npm run build:skip-tests" />
   </Target>
 
+  <!-- Target - LangracetechTemplateBuild -->
+  <Target Name="LangracetechTemplateBuild">
+    <Exec WorkingDirectory="$(ProjectDir)/../Langracetech.Web.Template.Client/" Command="npm ci --no-fund --no-audit --prefer-offline" />
+    <Exec WorkingDirectory="$(ProjectDir)/../Langracetech.Web.Template.Client/" Command="npm run build:skip-tests" />
+  </Target>
+
   <!-- Clean Belle when cleaning and rebuilding, but only in Visual Studio -->
   <Target Name="CleanPreconditions" AfterTargets="Clean" Condition="'$(UmbracoBuild)' == ''">
-    <!-- Clean - BelleBuild -->
+    
+    <!-- Clean - 1. BelleBuild -->
     <Message Text="-CleanPreconditions-" Importance="high" />
     <Message Text="Nothing to clean, as $(BellePath) does not exist." Importance="High" Condition="!Exists('$(BellePath)')" />
     <Message Text="Not cleaning (found src/preserve.belle)." Importance="High" Condition="Exists('$(BellePath)') and Exists('$(SolutionDir)preserve.belle')" />
@@ -73,7 +92,7 @@
     </ItemGroup>
     <RemoveDir Directories="@(BelleLib)" Condition="Exists('$(BellePath)') and !Exists('$(SolutionDir)preserve.belle')" />
     
-    <!-- Clean - LangracetechBuild -->
+    <!-- Clean - 2. LangracetechBuild -->
     <Message Text="-CleanPreconditions-" Importance="high" />
     <Message Text="Nothing to clean, as $(LangracetechPath) does not exist." Importance="High" Condition="!Exists('$(LangracetechPath)')" />
     <Message Text="Not cleaning (found src/preserve.belle)." Importance="High" Condition="Exists('$(LangracetechPath)') and Exists('$(SolutionDir)preserve.belle')" />
@@ -82,6 +101,16 @@
       <LangracetechLib Include="$(LangracetechPath)" />
     </ItemGroup>
     <RemoveDir Directories="@(LangracetechLib)" Condition="Exists('$(LangracetechPath)') and !Exists('$(SolutionDir)preserve.belle')" />
+
+    <!-- Clean - 3. Langracetech Template Build -->
+    <Message Text="-CleanPreconditions-" Importance="high" />
+    <Message Text="Nothing to clean, as $(LangracetechTemplatePath) does not exist." Importance="High" Condition="!Exists('$(LangracetechTemplatePath)')" />
+    <Message Text="Not cleaning (found src/preserve.belle)." Importance="High" Condition="Exists('$(LangracetechTemplatePath)') and Exists('$(SolutionDir)preserve.belle')" />
+    <Message Text="Remove $(LangracetechTemplatePath)." Importance="High" Condition="Exists('$(LangracetechTemplatePath)') and !Exists('$(SolutionDir)preserve.belle')" />
+    <ItemGroup>
+      <LangracetechTemplateLib Include="$(LangracetechTemplatePath)" />
+    </ItemGroup>
+    <RemoveDir Directories="@(LangracetechTemplateLib)" Condition="Exists('$(LangracetechTemplatePath)') and !Exists('$(SolutionDir)preserve.belle')" />
   </Target>
 
 

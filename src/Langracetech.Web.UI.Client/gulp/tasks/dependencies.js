@@ -303,13 +303,13 @@ function dependencies() {
     stream.add(libTask);
 
     //copy over libs which are not on npm (/tpl) , add by sianting at 20220926.
-    var tplTask = gulp.src(config.sources.globs.tpl, { allowEmpty: true });
+    //var tplTask = gulp.src(config.sources.globs.tpl, { allowEmpty: true });
 
-    _.forEach(config.roots, function (root) {
-      tplTask = tplTask.pipe(gulp.dest(root + config.targets.tpl))
-    });
+    //_.forEach(config.roots, function (root) {
+    //  tplTask = tplTask.pipe(gulp.dest(root + config.targets.tpl))
+    //});
 
-    stream.add(tplTask);
+    //stream.add(tplTask);
 
     //Copies all static assets into /root / assets folder
     //css, fonts and image files
