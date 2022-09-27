@@ -121,10 +121,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Styles", "Styles", "{6499F8
 		build\csharp-docs\umbracotemplate\styles\main.css = build\csharp-docs\umbracotemplate\styles\main.css
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Langracetech.Web.Website", "Langracetech.Web.Website\Langracetech.Web.Website.csproj", "{7551FC5A-4E6B-422D-A3D0-07379133A608}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Langracetech.Web.Website04", "Langracetech.Web.Website04\Langracetech.Web.Website04.csproj", "{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}"
-EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.UI.Client", "src\Langracetech.Web.UI.Client\", "{60516875-EEDA-4941-8DCF-9222D622C7EB}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
@@ -166,6 +162,10 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.Template.C
 		VWDPort = "64885"
 		SlnRelativePath = "src\Langracetech.Web.Template.Client\"
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Langracetech.Web.Website.Dev01", "src\Langracetech.Web.Website.Dev01\Langracetech.Web.Website.Dev01.csproj", "{7E0336AE-1C0B-47B0-8607-130C508E0220}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Langracetech.Web.Website.Dev02", "Langracetech.Web.Website.Dev02\Langracetech.Web.Website.Dev02.csproj", "{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -289,18 +289,6 @@ Global
 		{92EAA57A-CC99-4F5D-9D9C-B865293F6000}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92EAA57A-CC99-4F5D-9D9C-B865293F6000}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{92EAA57A-CC99-4F5D-9D9C-B865293F6000}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7551FC5A-4E6B-422D-A3D0-07379133A608}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7551FC5A-4E6B-422D-A3D0-07379133A608}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{7551FC5A-4E6B-422D-A3D0-07379133A608}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6F2C987-16E5-47CB-A809-D16AE4DB5FD0}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
 		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
@@ -313,6 +301,18 @@ Global
 		{CA31169B-2E55-433E-9369-68C697658E7A}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{CA31169B-2E55-433E-9369-68C697658E7A}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA31169B-2E55-433E-9369-68C697658E7A}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{7E0336AE-1C0B-47B0-8607-130C508E0220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0336AE-1C0B-47B0-8607-130C508E0220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E0336AE-1C0B-47B0-8607-130C508E0220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E0336AE-1C0B-47B0-8607-130C508E0220}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E0336AE-1C0B-47B0-8607-130C508E0220}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0336AE-1C0B-47B0-8607-130C508E0220}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4D9765-A37A-4CA8-BAB0-ADAE832E20D7}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
