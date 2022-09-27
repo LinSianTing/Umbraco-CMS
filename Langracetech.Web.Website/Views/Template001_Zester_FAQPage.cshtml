@@ -1,0 +1,146 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "Template001_Zester_MasterPage.cshtml";
+}
+
+<!-- page-title -->
+        <div class="ttm-page-title-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12"> 
+                        <div class="title-box">
+                            <div class="page-title-heading">
+                                <h1 class="title">FAQ's</h1>
+                            </div><!-- /.page-title-captions -->
+                            <div class="breadcrumb-wrapper">
+                                <span>
+                                    <a title="Homepage" href="index.html">Home</a>
+                                </span>
+                                <span class="ttm-bread-sep"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                                <span><span>Faq</span></span>
+                            </div>
+                        </div>
+                    </div><!-- /.col-md-12 -->  
+                </div><!-- /.row -->  
+            </div><!-- /.container -->
+        </div>
+        <!-- page-title END-->
+
+
+        <!--site-main start-->
+        <div class="site-main">
+
+            <!-- faq-section -->
+            <section class="ttm-row only-one-section ttm-bgcolor-grey clearfix">
+                <div class="container">
+                    <div class="row"><!-- row -->
+                        <div class="col-md-10 offset-md-1 col-lg-6 offset-lg-3">
+                            <!-- section title -->
+                            <div class="section-title text-center clearfix">
+                                <div class="title-header mb-65">
+                                    <h5>FAQ's</h5>
+                                    <h2 class="title">@Umbraco.GetDictionaryValue("Do you have any Questions")?</h2>
+                                </div>
+                                <div class="heading-seperator">
+                                    <span></span>
+                                </div>
+                            </div><!-- section title end -->
+                            <p class="text-center">Frequently asked by customer help us If detect any and analyze them. So we can create a response protocol that the team can perfectly master to achieve impeccable service.</p>
+                        </div>
+                    </div><!-- row end-->
+                    <div class="row mt-40"><!-- row -->
+                        <div class="col-lg-6">
+                            <!-- accordion -->
+                            <div class="accordion">
+
+                                
+                                   @{
+                                        //Get the Children document that is published
+                                        var listOfChildren = Model.Children().Where(x => x.IsVisible());
+
+                                        foreach (var item in listOfChildren)
+                                        {
+                                            string itemUrl = item.UrlSegment.ToString();
+
+                                            <div class="toggle"><!-- toggle -->
+                                                <div class="toggle-title"><!-- toggle-title -->
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">@item.Value("faqForQuestion")?</a>
+                                                </div>
+                                                <div class="toggle-content"><!-- toggle-content -->
+                                                    @item.Value("faqForAnswer")
+                                                </div>
+                                            </div><!-- toggle end -->
+                                        }
+                                   }
+                                
+                                
+                                
+                            </div><!-- accordion end-->
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row p-15 ttm-bgcolor-white box-shadow no-gutters align-items-center res-991-mt-30">
+                                <div class="col-sm-4">
+                                    <div class="text-center">
+                                        <img src="https://via.placeholder.com/150X150/444444.jpg" class="rounded-circle" alt="faq">
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="text-sm-left xs-center res-575-mt-10">
+                                        <h4 class="mb-0">Aimmee Devlin</h4>
+                                        <p class="mb-10">Manager</p>
+                                        <ul class="p-0">
+                                            <li><i class="fa fa-phone ttm-textcolor-skincolor mr-3"></i> (+01) 123 456 7890</li>
+                                            <li><i class="fa fa-envelope-o ttm-textcolor-skincolor mr-3"></i> <a href="mailto:info@example.com">info@example.com</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <form id="ttm-quote-form" class="row ttm-quote-form clearfix mt-40" method="post" action="#">
+                                <div class="col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <input name="name" type="text" class="form-control with-icon with-white-bg" placeholder="Full Name" required="required">
+                                        <span class="input-group-icon ttm-textcolor-skincolor">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <input name="phone" type="text" placeholder="Phone Number" required="required" class="form-control with-icon with-white-bg">
+                                        <span class="input-group-icon ttm-textcolor-skincolor">
+                                            <i class="fa fa-phone"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <input name="address" type="text" placeholder="Email Address" required="required" class="form-control with-icon with-white-bg">
+                                        <span class="input-group-icon ttm-textcolor-skincolor">
+                                            <i class="fa fa-envelope-o"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <textarea name="Massage" rows="5" placeholder="Your Massage..." required="required" class="form-control with-icon with-white-bg"></textarea>
+                                        <span class="input-group-icon ttm-textcolor-skincolor">
+                                            <i class="fa fa-pencil"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 offset-md-4 text-center">
+                                    <div class="form-group text-center">
+                                        <button type="submit" id="submit" class="ttm-btn ttm-btn-size-md ttm-btn-bgcolor-skincolor w-100" value="">
+                                            Sumbit
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- row end-->
+                </div>
+            </section>
+            <!-- faq-section -->
+
+        </div><!--site-main end-->

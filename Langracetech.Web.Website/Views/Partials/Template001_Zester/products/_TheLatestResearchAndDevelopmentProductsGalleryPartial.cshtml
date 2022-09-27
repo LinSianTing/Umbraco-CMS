@@ -1,0 +1,45 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+            <!-- menu-tab-section -->
+            <section class="ttm-row only-one-section clearfix">
+                <div class="container">
+                    <div class="row"><!-- row -->
+                @{
+                        if (Model.Value("TheLatestResearchAndDevelopmentProductsGallery") != null)
+                        {
+                            List<Umbraco.Cms.Core.Models.MediaWithCrops> list = Model.Value("TheLatestResearchAndDevelopmentProductsGallery") as System.Collections.Generic.List<Umbraco.Cms.Core.Models.MediaWithCrops>;
+
+                            foreach (var item in list)
+                            {
+                                <div class="col-md-4 col-sm-6">
+                                    <!-- featured-imagebox-event -->
+                                    <div class="featured-imagebox featured-imagebox-gallery style1 mb-30">
+                                        <div class="featured-thumbnail">
+                                            <!-- featured-thumbnail-->
+                                        <img class="img-fluid" src="@item.LocalCrops.Src" alt="image">
+                                        </div><!-- featured-thumbnail END-->
+                                        <div class="ttm-box-view-overlay">
+                                            <!-- ttm-box-view-overlay -->
+                                            <div class="ttm-media-link">
+                                                <!-- ttm-media-link-->
+                                            <a class="ttm_prettyphoto ttm_image" data-gal="prettyPhoto[gallery1]" title="Autue Art Gallery Opening" href="@item.LocalCrops.Src" data-rel="prettyPhoto">
+                                                    <i class="ti ti-search"></i>
+                                                </a>
+                                            </div>
+                                            <div class="featured-content">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>@item.Name</h5>
+                                                </div>
+                                            </div>
+                                        </div><!-- ttm-box-view-overlay end-->
+                                    </div><!-- featured-imagebox-event END -->
+                                </div>
+                            }
+                        }
+                    }
+                    </div><!-- row end-->
+                </div>
+            </section>
+            <!-- menu-tab-section -->
