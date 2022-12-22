@@ -1,4 +1,11 @@
-@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+<!-- Image - Start -->
+@using Umbraco.Cms.Core.Models;
+<!-- Images - End -->
+<!-- Tags - End -->
+@using Umbraco.Cms.Core.PublishedCache;
+@inject ITagQuery _tagQuery;
+<!-- Tags - End -->
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "GF_layout.cshtml";
@@ -16,7 +23,7 @@
                     <!-- /.page-title-captions -->
                     <div class="breadcrumb-wrapper">
                         <span>
-                            <a title="Homepage" href="../Zester/home-2.html">首頁</a>
+                            <a title="Homepage" href="/">首頁</a>
                         </span>
                         <span class="ttm-bread-sep">
                             <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -43,42 +50,108 @@
                     <div class="ttm-tabs ttm-tab-style-classic style3">
                         <!-- ttm-tabs -->
                         <!-- Ryan - Start -->
-                       @* @if (Model.Tags.Any())
-                        {
-                            <ul>
-                                @foreach (var tag in Model.Tags)
-                                {
-                                    <li>@tag</li>
-                                }
-                            </ul>
-                        }*@
+                        @{
+                            List<Umbraco.Cms.Core.Models.TagModel> allTags = _tagQuery.GetAllTags() as System.Collections.Generic.List<Umbraco.Cms.Core.Models.TagModel>;
+                            //var allNewsTags = _tagQuery.GetAllTags("news");
+                        }
                         <!-- Ryan - End -->
 
                         <ul class="tabs mb-0 w-100 justify-content-center">
                             <!-- flat-tabs -->
-                            <li class="tab active">
-                                <a href="#"><span>全部</span> </a>
+                            @{
+                                foreach (TagModel tag in allTags)
+                                {
+                                    <li class="tab">
+                                        <a href="#"><span>@tag.Text</span></a>
+                                    </li>
+                                }
+                            }
+                            @*<li class="tab active">
+                            <a href="#"><span>全部</span> </a>
                             </li>
                             <li class="tab">
-                                <a href="#"><span>法式品牌</span> </a>
+                            <a href="#"><span>法式品牌</span> </a>
                             </li>
                             <li class="tab">
-                                <a href="#"><span>中式品牌</span> </a>
+                            <a href="#"><span>中式品牌</span> </a>
                             </li>
                             <li class="tab">
-                                <a href="#"><span>OEM</span> </a>
+                            <a href="#"><span>OEM</span> </a>
                             </li>
                             <li class="tab">
-                                <a href="#"><span>ODM</span> </a>
+                            <a href="#"><span>ODM</span> </a>
                             </li>
                             <li class="tab">
-                                <a href="#"><span>最新研發商品</span> </a>
-                            </li>
+                            <a href="#"><span>最新研發商品</span> </a>
+                            </li>*@
                         </ul>
+                        @{
+                            var Products = Umbraco.Content(Guid.Parse("58c58cc4-65cd-4f86-bfcc-6f5f07612aed"))
+                            .Children()
+                            .Where(x => x.IsVisible())
+                            .OrderBy(x => x.CreateDate);
+                        }
+
+
                         <!-- tab end -->
                         <div class="content-tab w-100 ttm-bgcolor-white">
                             <!-- content-tab -->
                             <!-- content-inner -->
+                            <!-- Foreach Products -->
+                            <div class="content-inner active">
+                                <div class="row">
+                                    @foreach (var item in Products)
+                                    {
+                                        // Image
+                                        var Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
+                                        // Tags
+                                        string[] Products_Items_AllTags = item.Value("Tags") as string[];
+                                        <!-- row -->
+                                        <div class="col-md-4 col-sm-6">
+                                            <!-- featured-imagebox-event -->
+                                            <div class="featured-imagebox featured-imagebox-gallery style2">
+                                                <div class="featured-imagebox-gallery-inner">
+                                                    <div class="featured-thumbnail">
+                                                        <!-- featured-thumbnail-->
+                                                        <img class="img-fluid"
+                                                         src="@Products_Items_ProductImage.Url()"
+                                                         alt="Products_Items_ProductImage" />
+                                                    </div>
+                                                    <!-- featured-thumbnail END-->
+                                                    <div class="ttm-box-view-overlay">
+                                                        <!-- ttm-box-view-overlay -->
+                                                        <div class="ttm-media-link">
+                                                            <!-- ttm-media-link-->
+                                                            <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="@item.Value("Products_Items_ProductName")"
+                                                           href="@Products_Items_ProductImage.Url()"
+                                                           data-rel="Products_Items_ProductImage">
+                                                                <i class="ti ti-search"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- ttm-box-view-overlay end-->
+                                                </div>
+                                                <div class="featured-content box-shadow">
+                                                    <!-- featured-content-->
+                                                    <div class="featured-title">
+                                                        <!-- featured-title-->
+                                                        <h5>@item.Value("Products_Items_ProductName")</h5>
+                                                        @foreach (string tag in Products_Items_AllTags)
+                                                        {
+                                                            <h6>@tag, </h6>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- featured-imagebox-event END -->
+                                        </div>
+                                    }
+                                </div>
+                                <!-- row end -->
+                            </div>
+
                             <!-- 全部 -->
                             <div class="content-inner active">
                                 <div class="row">
