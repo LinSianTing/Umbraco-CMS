@@ -1,13 +1,12 @@
 @using Umbraco.Cms.Web.Common.PublishedModels;
-<!-- Ryan - Start -->
+<!-- Image - Start -->
 @using Umbraco.Cms.Core.Models;
-@*@using Umbraco.Cms.Core.Services;*@
-@*@inject IContentService Services;*@
-@*@using Newtonsoft.Json;*@
-<!-- Ryan - End -->
+<!-- Images - End -->
+<!-- Tags - End -->
+@using Umbraco.Cms.Core.PublishedCache;
+@inject ITagQuery _tagQuery;
+<!-- Tags - End -->
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
-
-@*@inject ITagQuery _tagQuery;*@
 
 @{
     Layout = "GF_layout.cshtml";
@@ -42,6 +41,22 @@
     <section class="ttm-row only-one-section clearfix">
         <div class="container">
             <div class="row">
+                <!-- Ryan - Start -->
+                @{
+                    List<Umbraco.Cms.Core.Models.TagModel> allTags = _tagQuery.GetAllTags() as System.Collections.Generic.List<Umbraco.Cms.Core.Models.TagModel>;
+                    //var allNewsTags = _tagQuery.GetAllTags("news");
+                }
+                <h6>@@allTags: @allTags</h6>
+                <h6>
+                    @@tag.Text:
+                </h6>
+                @{
+                    foreach (TagModel tag in allTags)
+                    {
+                        <h6>@tag.Text, </h6>
+                    }
+                }
+                <!-- Ryan - End -->
                 <!-- row -->
                 <!-- Query all new-arrivals items -->
                 @{
@@ -75,8 +90,7 @@
                 @{
                     List<string> All_Tages_dist = All_Tages.Distinct().ToList();
                 }
-                 <!-- Tags - End -->
-
+                <!-- Tags - End -->
                 @foreach (var item in New_Arrivals)
                 {
                     // Get Image Media Picker
