@@ -15,7 +15,7 @@ EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Umbraco.Web.UI.Client", "http://localhost:3961", "{3819A550-DCEC-4153-91B4-8BA9F7F0B9B4}"
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_3961"
 		Debug.AspNetCompiler.PhysicalPath = "src\Umbraco.Web.UI.Client\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_3961\"
@@ -136,7 +136,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Styles", "Styles", "{6499F8
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.UI.Client", "src\Langracetech.Web.UI.Client\", "{60516875-EEDA-4941-8DCF-9222D622C7EB}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51510"
 		Debug.AspNetCompiler.PhysicalPath = "src\Langracetech.Web.UI.Client\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51510\"
@@ -157,7 +157,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.UI.Client"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.Template.Client", "src\Langracetech.Web.Template.Client\", "{CA31169B-2E55-433E-9369-68C697658E7A}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_64885"
 		Debug.AspNetCompiler.PhysicalPath = "src\Langracetech.Web.Template.Client\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64885\"
@@ -176,7 +176,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.Template.C
 		SlnRelativePath = "src\Langracetech.Web.Template.Client\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Langracetech.Web.Website", "Langracetech.Web.Website\Langracetech.Web.Website.csproj", "{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Langracetech.Web.Website", "Langracetech.Web.Website\Langracetech.Web.Website.csproj", "{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
