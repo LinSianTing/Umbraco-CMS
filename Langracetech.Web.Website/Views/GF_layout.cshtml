@@ -1,0 +1,99 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "Template001_Zester.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="keywords" content="HTML5 Template" />
+    <meta name="description"
+          content="Zester - Restaurant and Cafe HTML Template" />
+    <meta name="author" content="https://www.themetechmount.com/" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>GF_layout</title>
+
+    <!-- favicon icon -->
+    <link rel="shortcut icon" href="/tpl/zst_GF/images/favicon.png" />
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/bootstrap.min.css" />
+
+    <!-- animate -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/animate.css" />
+
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/animate.min.css" />
+
+    <!-- owl-carousel -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/owl.carousel.css" />
+
+    <!-- fontawesome-CDN -->
+    <script src="https://kit.fontawesome.com/b677c2f0a5.js" crossorigin="anonymous"></script>
+
+    <!-- themify -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/themify-icons.css" />
+
+    <!-- flaticon -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/flaticon.css" />
+
+    <!-- REVOLUTION LAYERS STYLES -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/revolution/css/layers.css" />
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/revolution/css/settings.css" />
+
+    <!-- prettyphoto -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/prettyPhoto.css" />
+
+    <!-- shortcodes -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/shortcodes.css" />
+
+    <!-- main -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/main.css" />
+
+    <!-- responsive -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/responsive.css" />
+</head>
+
+<body>
+    <!--page start-->
+    <div class="page">
+        
+        <!--header start-->
+        @await Html.PartialAsync("Template001_Zester/GF/GF_menu/_MenuPartial")
+        <!--header end-->
+        
+        <!-- page-title -->
+        <!-- page-title END-->
+        <!--site-main start-->
+        @RenderBody()
+        <!--site-main end-->
+        
+        <!--footer start-->
+        @await Html.PartialAsync("Template001_Zester/GF/GF_footer/_FooterPartial")
+        <!--footer end-->
+        
+        <!--back-to-top start-->
+        <a id="totop" href="#top">
+            <i class="fa fa-angle-up"></i>
+        </a>
+        <!--back-to-top end-->
+    </div>
+    <!-- page end -->
+    
+    <!-- Javascript -->
+    <script src="/tpl/zst_GF/js/jquery.min.js"></script>
+    <script src="/tpl/zst_GF/js/tether.min.js"></script>
+    <script src="/tpl/zst_GF/js/bootstrap.min.js"></script>
+    <script src="/tpl/zst_GF/js/jquery.easing.js"></script>
+    <script src="/tpl/zst_GF/js/jquery-waypoints.js"></script>
+    <script src="/tpl/zst_GF/js/jquery-validate.js"></script>
+    <script src="/tpl/zst_GF/js/owl.carousel.js"></script>
+    <script src="/tpl/zst_GF/js/jquery.prettyPhoto.js"></script>
+    <script src="/tpl/zst_GF/js/numinate.min.js?ver=4.9.3"></script>
+    <script src="/tpl/zst_GF/js/main.js"></script>
+    <!-- Javascript end-->
+</body>
+</html>

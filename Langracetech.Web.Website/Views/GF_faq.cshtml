@@ -1,0 +1,229 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "GF_layout.cshtml";
+}
+
+<!-- page-title -->
+<div class="ttm-page-title-row">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-box">
+                    <div class="page-title-heading">
+                        <h1 class="title">常見問答</h1>
+                    </div>
+                    <!-- /.page-title-captions -->
+                    <div class="breadcrumb-wrapper">
+                        <span>
+                            <a title="Homepage" href="/">首頁</a>
+                        </span>
+                        <span class="ttm-bread-sep">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </span>
+                        <span><span>常見問答</span></span>
+                    </div>
+                </div>
+            </div>
+            <!-- /.col-md-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+<!-- page-title END-->
+<!--site-main start-->
+<div class="site-main">
+    <!-- faq-section -->
+    <section class="ttm-row only-one-section ttm-bgcolor-grey clearfix">
+        <div class="container">
+            <div class="row">
+                <!-- row -->
+                <div class="col-md-10 offset-md-1 col-lg-6 offset-lg-3">
+                    <!-- section title -->
+                    <div class="section-title text-center clearfix">
+                        <div class="title-header mb-65">
+                            <h4 style="color:#C5A572"><b>@Model.Value("subtitle")</b></h4>
+                            <h2 class="title">@Model.Value("title")</h2>
+                        </div>
+                        <div class="heading-seperator">
+                            <span></span>
+                        </div>
+                    </div>
+                    <!-- section title end -->
+                    <p class="text-center">
+                        @Model.Value("Description")
+                    </p>
+                </div>
+            </div>
+            <!-- row end-->
+            <div class="row mt-40">
+                <!-- row -->
+                <div class="col-lg-12">
+                    <!-- accordion -->
+                    <div class="accordion">
+
+                        @{
+                            var faqs = Umbraco.Content(Guid.Parse("acdb4823-80d9-4489-bce2-5d374ce1af4c"))
+                            .Children()
+                            .Where(x => x.IsVisible())
+                            .OrderBy(x => x.CreateDate);
+                        }
+
+                        @foreach (var item in faqs)
+                        {
+                            <!-- Q1 -->
+                            <div class="toggle">
+                                <!-- toggle-->
+                                <div class="toggle-title">
+                                    <!-- toggle-title  -->
+                                    <a data-toggle="collapse"
+                                   data-parent="#accordion"
+                                   href="#collapseThree">@item.Value("fAQQuestion")</a>
+                                    @*href="#collapseThree">@item.Value("fAQQuestion").replace("<p>", "").replace("</p>", "")</a>*@
+                                </div>
+                                <div class="toggle-content">
+                                    <!-- toggle-content -->
+                                    <h5>@item.Value("fAQAnswer")</h5>
+                                </div>
+                            </div>
+                            <!-- toggle end -->
+                        }
+
+                        <!-- Q1 -->
+                        <div class="toggle active">
+                            <!-- toggle-->
+                            <div class="toggle-title">
+                                <!-- toggle-title  -->
+                                <a data-toggle="collapse"
+                                   data-parent="#accordion"
+                                   href="#collapseThree">1. 為何選擇好饗初美味食品工廠？</a>
+                            </div>
+                            <div class="toggle-content">
+                                <!-- toggle-content -->
+                                <h5>
+                                    在傳統美食上做出新變化，堅持用天然、零添加的思維做好食品，顧好「本質」與「品質」。
+                                </h5>
+                            </div>
+                        </div>
+                        <!-- toggle end -->
+                    </div>
+                    <!-- accordion end-->
+                </div>
+                <!-- <div class="col-lg-6">
+                  <div
+                    class="row p-15 ttm-bgcolor-white box-shadow no-gutters align-items-center res-991-mt-30"
+                  >
+                    <div class="col-sm-4">
+                      <div class="text-center">
+                        <img
+                          src="https://via.placeholder.com/150X150/444444.jpg"
+                          class="rounded-circle"
+                          alt="faq"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-8">
+                      <div class="text-sm-left xs-center res-575-mt-10">
+                        <h4 class="mb-0">Aimmee Devlin</h4>
+                        <p class="mb-10">Manager</p>
+                        <ul class="p-0">
+                          <li>
+                            <i
+                              class="fa fa-phone ttm-textcolor-skincolor mr-3"
+                            ></i>
+                            (+01) 123 456 7890
+                          </li>
+                          <li>
+                            <i
+                              class="fa fa-envelope-o ttm-textcolor-skincolor mr-3"
+                            ></i>
+                            <a href="mailto:info@example.com">info@example.com</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <form
+                    id="ttm-quote-form"
+                    class="row ttm-quote-form clearfix mt-40"
+                    method="post"
+                    action="#"
+                  >
+                    <div class="col-sm-6 col-md-6">
+                      <div class="form-group">
+                        <input
+                          name="name"
+                          type="text"
+                          class="form-control with-icon with-white-bg"
+                          placeholder="Full Name"
+                          required="required"
+                        />
+                        <span class="input-group-icon ttm-textcolor-skincolor">
+                          <i class="fa fa-user"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6">
+                      <div class="form-group">
+                        <input
+                          name="phone"
+                          type="text"
+                          placeholder="Phone Number"
+                          required="required"
+                          class="form-control with-icon with-white-bg"
+                        />
+                        <span class="input-group-icon ttm-textcolor-skincolor">
+                          <i class="fa fa-phone"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                      <div class="form-group">
+                        <input
+                          name="address"
+                          type="text"
+                          placeholder="Email Address"
+                          required="required"
+                          class="form-control with-icon with-white-bg"
+                        />
+                        <span class="input-group-icon ttm-textcolor-skincolor">
+                          <i class="fa fa-envelope-o"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                      <div class="form-group">
+                        <textarea
+                          name="Massage"
+                          rows="5"
+                          placeholder="Your Massage..."
+                          required="required"
+                          class="form-control with-icon with-white-bg"
+                        ></textarea>
+                        <span class="input-group-icon ttm-textcolor-skincolor">
+                          <i class="fa fa-pencil"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-4 offset-md-4 text-center">
+                      <div class="form-group text-center">
+                        <button
+                          type="submit"
+                          id="submit"
+                          class="ttm-btn ttm-btn-size-md ttm-btn-bgcolor-skincolor w-100"
+                          value=""
+                        >
+                          Sumbit
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div> -->
+            </div>
+            <!-- row end-->
+        </div>
+    </section>
+    <!-- faq-section -->
+</div>
+<!--site-main end-->

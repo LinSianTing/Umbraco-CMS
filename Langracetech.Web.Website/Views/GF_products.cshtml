@@ -1,0 +1,1503 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "GF_layout.cshtml";
+}
+
+<!-- page-title -->
+<div class="ttm-page-title-row">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-box">
+                    <div class="page-title-heading">
+                        <h1 class="title"><!--Gallery-->委託研發與生產</h1>
+                    </div>
+                    <!-- /.page-title-captions -->
+                    <div class="breadcrumb-wrapper">
+                        <span>
+                            <a title="Homepage" href="../Zester/home-2.html">首頁</a>
+                        </span>
+                        <span class="ttm-bread-sep">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </span>
+                        <span><span><!--Gallery 1-->委託研發與生產</span></span>
+                    </div>
+                </div>
+            </div>
+            <!-- /.col-md-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</div>
+<!-- page-title END-->
+<!--site-main start-->
+<div class="site-main">
+    <!-- menu-tab-section -->
+    <section class="ttm-row only-one-section clearfix">
+        <div class="container">
+            <div class="row">
+                <!-- row -->
+                <div class="col-lg-12">
+                    <div class="ttm-tabs ttm-tab-style-classic style3">
+                        <!-- ttm-tabs -->
+                        <!-- Ryan - Start -->
+                       @* @if (Model.Tags.Any())
+                        {
+                            <ul>
+                                @foreach (var tag in Model.Tags)
+                                {
+                                    <li>@tag</li>
+                                }
+                            </ul>
+                        }*@
+                        <!-- Ryan - End -->
+
+                        <ul class="tabs mb-0 w-100 justify-content-center">
+                            <!-- flat-tabs -->
+                            <li class="tab active">
+                                <a href="#"><span>全部</span> </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#"><span>法式品牌</span> </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#"><span>中式品牌</span> </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#"><span>OEM</span> </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#"><span>ODM</span> </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#"><span>最新研發商品</span> </a>
+                            </li>
+                        </ul>
+                        <!-- tab end -->
+                        <div class="content-tab w-100 ttm-bgcolor-white">
+                            <!-- content-tab -->
+                            <!-- content-inner -->
+                            <!-- 全部 -->
+                            <div class="content-inner active">
+                                <div class="row">
+                                    <!-- row -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/07.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>Grilled Roast Meat</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/08.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>Mexican Cheese Roll</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/09.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>American Grilled Chiken</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/10.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-01</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/11.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-02</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/12.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-03</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/13.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-04</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/14.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-05</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/15.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-06</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                </div>
+                                <!-- row end -->
+                            </div>
+                            <!-- content-inner -->
+                            <!-- content-inner -->
+                            <!-- 法式品牌 -->
+                            <div class="content-inner">
+                                <div class="row">
+                                    <!-- row -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-01.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-01.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-01</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-02.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-02.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-02</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-03.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-03.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-03</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-04.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-04.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-04</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-05.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-05.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-05</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-06.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-06.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-06</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-07.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-07.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-07</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-08.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-08.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-08</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\frenchCuisine\FrenchCuisine-09.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\frenchCuisine\FrenchCuisine-09.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-09</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                </div>
+                                <!-- row end -->
+                            </div>
+                            <!-- content-inner -->
+                            <!-- content-inner -->
+                            <!-- 中式品牌 -->
+                            <div class="content-inner">
+                                <div class="row">
+                                    <!-- row -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-01.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-01.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-01</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-02.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-02.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-02</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-03.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-03.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-03</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-04.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-04.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-04</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-05.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-05.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-05</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-06.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-06.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-06</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-07.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-07.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-07</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-08.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-08.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-08</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="..\Zester\images\chineseFood\ChineseFood-09.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="..\Zester\images\chineseFood\ChineseFood-09.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>中式品牌-09</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                </div>
+                                <!-- row end -->
+                            </div>
+                            <!-- content-inner -->
+                            <!-- content-inner -->
+                            <!-- OEM -->
+                            <div class="content-inner">
+                                <div class="row">
+                                    <!-- row -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/07.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>Grilled Roast Meat</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/08.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>Mexican Cheese Roll</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/12.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-03</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/13.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-04</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/14.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-05</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/15.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-06</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                </div>
+                                <!-- row end -->
+                            </div>
+                            <!-- content-inner -->
+                            <!-- content-inner -->
+                            <!-- ODM -->
+                            <div class="content-inner">
+                                <div class="row">
+                                    <!-- row -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/07.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>Grilled Roast Meat</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/08.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>Mexican Cheese Roll</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/09.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>American Grilled Chiken</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/14.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-05</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <!-- featured-imagebox-event -->
+                                        <div class="featured-imagebox featured-imagebox-gallery style2">
+                                            <div class="featured-imagebox-gallery-inner">
+                                                <div class="featured-thumbnail">
+                                                    <!-- featured-thumbnail-->
+                                                    <img class="img-fluid"
+                                                         src="https://via.placeholder.com/1200X800/444444.jpg"
+                                                         alt="image" />
+                                                </div>
+                                                <!-- featured-thumbnail END-->
+                                                <div class="ttm-box-view-overlay">
+                                                    <!-- ttm-box-view-overlay -->
+                                                    <div class="ttm-media-link">
+                                                        <!-- ttm-media-link-->
+                                                        <a class="ttm_prettyphoto ttm_image"
+                                                           data-gal="prettyPhoto[gallery1]"
+                                                           title="Autue Art Gallery Opening"
+                                                           href="images/gallery/15.jpg"
+                                                           data-rel="prettyPhoto">
+                                                            <i class="ti ti-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- ttm-box-view-overlay end-->
+                                            </div>
+                                            <div class="featured-content box-shadow">
+                                                <!-- featured-content-->
+                                                <div class="featured-title">
+                                                    <!-- featured-title-->
+                                                    <h5>法式品牌-06</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- featured-imagebox-event END -->
+                                    </div>
+                                </div>
+                                <!-- row end -->
+                            </div>
+                            <!-- content-inner -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- row end-->
+        </div>
+    </section>
+    <!-- menu-tab-section -->
+</div>
+<!--site-main end-->
