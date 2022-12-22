@@ -233,7 +233,6 @@ $(window).scroll(function(){
     $(this).children('.content-tab').children().first().show();
     $(this).find('.tabs').children('li').on('click', function (e) {
       var tagNameActive = $(this).children().attr("data-tag");
-      var contentActive;
       $.each($(this).parents('.ttm-tabs').children('.content-tab').children(), function (index, value) {
         var tagofThisDiv = $(this).attr("data-tag");
         if (tagofThisDiv == tagNameActive) {
@@ -242,6 +241,7 @@ $(window).scroll(function(){
           $(this).removeClass('active').hide();
         }
       });
+      $(this).addClass('active').siblings().removeClass('active');
       e.preventDefault();
     });
   });
