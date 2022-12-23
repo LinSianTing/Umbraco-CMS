@@ -67,9 +67,6 @@
                     <div class="mt-20">
                         <!-- ttm_single_image-wrapper -->
                         <div class="ttm_single_image-wrapper text-center">
-                            @*<img class="img-fluid"
-                                 src="/tpl/zst_GF/images/aboutUs/aboutUs-banner.jpg"
-                                 alt="" />*@
                             @{
                                 var About_Banner = Model.Value<MediaWithCrops>("About_Banner");
                                 if (About_Banner != null)
@@ -176,23 +173,131 @@
                 <div class="col-md-12">
                     <!-- ttm-client -->
                     <div class="clients-slide owl-carousel owl-theme owl-loaded"
-                         data-item="5"
+                         data-item="4"
                          data-nav="false"
                          data-dots="false"
                          data-auto="true">
                         <div class="client-box ttm-box-view-boxed-logo">
                             <div class="client">
-                                <!-- client- -->
                                 <div class="ttm-client-logo-tooltip"
-                                     data-tooltip="產品-01">
-                                    <!-- client-01 -->
-                                    <img class="img-fluid"
-                                         src="https://img.meepshop.com/ELGDf7qxxq5PSQVCgc9y9e1C33JyrKOaIfEZ1nmqHNY/w:480/Z3M6Ly9pbWcubWVlcGNsb3VkLmNvbS9tZWVwc2hvcC8xNDc3ZTdjYy1hNWRiLTRjODYtYjVmMi03ZGViOGIyMDBkMjQvZmlsZXMvNzc0N2Y1MjUtZDQzOC00MWVlLTlkYzUtMTc2ZTk3ZjNmYmY1LmpwZw"
-                                         alt="image" />
+                                     data-tooltip="@Model.Value("About_ProductName_01")">
+                                                                        @{
+                                        var About_ProductImage_01 = Model.Value<MediaWithCrops>("About_ProductImage_01");
+                                        if (About_ProductImage_01 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_01.MediaUrl()" alt="About_ProductImage_01" />
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>
+
                         <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_02")">
+                                    @{
+                                        var About_ProductImage_02 = Model.Value<MediaWithCrops>("About_ProductImage_02");
+                                        if (About_ProductImage_02 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_02.MediaUrl()" alt="About_ProductImage_02" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_03")">
+                                    @{
+                                        var About_ProductImage_03 = Model.Value<MediaWithCrops>("About_ProductImage_03");
+                                        if (About_ProductImage_03 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_03.MediaUrl()" alt="About_ProductImage_03" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_04")">
+                                    @{
+                                        var About_ProductImage_04 = Model.Value<MediaWithCrops>("About_ProductImage_04");
+                                        if (About_ProductImage_04 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_04.MediaUrl()" alt="About_ProductImage_04" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_05")">
+                                    @{
+                                        var About_ProductImage_05 = Model.Value<MediaWithCrops>("About_ProductImage_05");
+                                        if (About_ProductImage_05 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_05.MediaUrl()" alt="About_ProductImage_05" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_06")">
+                                    @{
+                                        var About_ProductImage_06 = Model.Value<MediaWithCrops>("About_ProductImage_06");
+                                        if (About_ProductImage_06 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_06.MediaUrl()" alt="About_ProductImage_06" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_07")">
+                                    @{
+                                        var About_ProductImage_07 = Model.Value<MediaWithCrops>("About_ProductImage_07");
+                                        if (About_ProductImage_07 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_07.MediaUrl()" alt="About_ProductImage_07" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-box ttm-box-view-boxed-logo">
+                            <div class="client">
+                                <div class="ttm-client-logo-tooltip"
+                                     data-tooltip="@Model.Value("About_ProductName_08")">
+                                    @{
+                                        var About_ProductImage_08 = Model.Value<MediaWithCrops>("About_ProductImage_08");
+                                        if (About_ProductImage_08 != null)
+                                        {
+                                            <img class="img-fluid" src="@About_ProductImage_08.MediaUrl()" alt="About_ProductImage_08" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="client-box ttm-box-view-boxed-logo">
                             <div class="client">
                                 <div class="ttm-client-logo-tooltip"
                                      data-tooltip="產品-02">
@@ -203,6 +308,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="client-box ttm-box-view-boxed-logo">
                             <div class="client">
                                 <div class="ttm-client-logo-tooltip"
@@ -214,6 +320,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="client-box ttm-box-view-boxed-logo">
                             <div class="client">
                                 <div class="ttm-client-logo-tooltip"
@@ -225,6 +332,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="client-box ttm-box-view-boxed-logo">
                             <div class="client">
                                 <div class="ttm-client-logo-tooltip"
@@ -236,6 +344,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="client-box ttm-box-view-boxed-logo">
                             <div class="client">
                                 <div class="ttm-client-logo-tooltip"
@@ -246,7 +355,7 @@
                                          alt="image" />
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                     <!-- ttm-client end -->
                 </div>
@@ -271,10 +380,6 @@
                     </div>
                     <!-- section-title end -->
                 </div>
-                <!--<div class="col-lg-3 col-xl-2 col-md-3">
-                    <a class="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-border ttm-btn-color-darkgrey mb-40 float-lg-right"
-                       href="#">View More</a>
-                </div>-->
             </div>
             <!-- row -->
             <div class="row">
@@ -287,9 +392,6 @@
                     <div class="featured-imagebox featured-imagebox-team style1">
                         <!-- featured-thumbnail -->
                         <div class="featured-thumbnail">
-                            @*<img class="img-fluid"
-                            src="/tpl/zst_GF/images/aboutUs/team/chef-renee.jpg"
-                            alt="image" />*@
                             @{
                                 var Chef_01_Image = Model.Value<MediaWithCrops>("Chef_01_Image");
                                 if (Chef_01_Image != null)
@@ -297,7 +399,7 @@
                                     <img class="img-fluid" src="@Chef_01_Image.MediaUrl()" alt="Chef_01_Image" />
                                 }
                             }
-
+                            <!-- team-member-img -->
                             <div class="ttm-social-links-wrapper">
                                 <!-- team-member-social-link -->
                                 <ul class="social-icons circle list-inline">
@@ -306,21 +408,11 @@
                                             <i class="fa fa-facebook" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <!-- <li class="social-teitter">
-                                      <a href=""
-                                        ><i class="fa fa-twitter" aria-hidden="true"></i
-                                      ></a>
-                                    </li> -->
                                     <li class="social-instagram">
                                         <a href="https://www.instagram.com/renee_peiyaolu/" target="_blank">
                                             <i class="fa fa-instagram" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <!-- <li class="social-google">
-                                      <a href="#"
-                                        ><i class="fa fa-google-plus" aria-hidden="true"></i
-                                      ></a>
-                                    </li> -->
                                 </ul>
                             </div>
                         </div>
@@ -343,9 +435,14 @@
                     <div class="featured-imagebox featured-imagebox-team style1">
                         <!-- featured-thumbnail -->
                         <div class="featured-thumbnail">
-                            <img class="img-fluid"
-                                 src="/tpl/zst_GF/images/aboutUs/team/ray.jpg"
-                                 alt="image" /><!-- team-member-img -->
+                            @{
+                                var Chef_02_Image = Model.Value<MediaWithCrops>("Chef_02_Image");
+                                if (Chef_02_Image != null)
+                                {
+                                    <img class="img-fluid" src="@Chef_02_Image.MediaUrl()" alt="Chef_02_Image" />
+                                }
+                            }
+                            <!-- team-member-img -->
                             <div class="ttm-social-links-wrapper">
                                 <!-- team-member-social-link -->
                                 <ul class="social-icons circle list-inline">
@@ -356,21 +453,11 @@
                                             <i class="fab fa-line fa-lg" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <!-- <li class="social-teitter">
-                                      <a href=""
-                                        ><i class="fa fa-twitter" aria-hidden="true"></i
-                                      ></a>
-                                    </li> -->
                                     <li class="social-instagram">
                                         <a href="mailto:ryanx94@gmail.com">
                                             <i class="fa fa-envelope" aria-hidden="true"></i>
                                         </a>
                                     </li>
-                                    <!-- <li class="social-google">
-                                      <a href="#"
-                                        ><i class="fa fa-google-plus" aria-hidden="true"></i
-                                      ></a>
-                                    </li> -->
                                 </ul>
                             </div>
                         </div>
@@ -379,11 +466,11 @@
                             <!-- featured-content-->
                             <div class="featured-title">
                                 <!-- team-member-name -->
-                                <h5>Ray Chen</h5>
+                                <h5>@Model.Value("Chef_02_Name")</h5>
                             </div>
                             <div class="category">
                                 <!-- team-member-category -->
-                                <p class="mb-0"><b>阿豬師</b></p>
+                                <p class="mb-0"><b>@Model.Value("Chef_02_Title")</b></p>
                             </div>
                         </div>
                         <!-- featured-content end-->
@@ -398,9 +485,6 @@
     <section class="ttm-row last-section ttm-bgcolor-darkgrey bg-img18 clearfix">
         <div class="container">
             <div class="row">
-                @*<div class="col-md-6 col-sm-12">
-                    <img src="/tpl/zst_GF/images/aboutUs/certificate/certificate-renee.jpg" class="img-thumbnail img-fluid" style="height: ;" alt="...">
-                </div>*@
                 <div class="col-md-6 col-sm-12">
                     @{
                         var Certificate_Chef_01_Image = Model.Value<MediaWithCrops>("Certificate_Chef_01_Image");
@@ -411,9 +495,6 @@
                     }
                 </div>
 
-                @*<div class="col-md-6 col-sm-12">
-                    <img src="/tpl/zst_GF/images/aboutUs/certificate/certificate-ray.jpg" class="img-thumbnail" alt="...">
-                </div>*@
                 <div class="col-md-6 col-sm-12">
                     @{
                         var Certificate_Chef_02_Image = Model.Value<MediaWithCrops>("Certificate_Chef_02_Image");

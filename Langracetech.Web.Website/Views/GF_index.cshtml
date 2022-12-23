@@ -11,9 +11,13 @@
     <div id="rev_slider_5_2" class="rev_slider fullwidthabanner rev_slider_5_2_height" data-version="5.4.8.1">
         <ul>
             <li data-index="rs-3" data-transition="curtain-3" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off" data-easein="default" data-easeout="default" data-masterspeed="default" data-thumb="https://via.placeholder.com/1920X785/666666.jpg" data-rotate="0" data-saveperformance="off" data-title="Slide" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
-
-                <img src="https://via.placeholder.com/1920X785/666666.jpg" alt="" title="Home 2" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
-
+                @{
+                    var Home_HeroBanner_01_Image = Model.Value<MediaWithCrops>("Home_HeroBanner_01_Image");
+                    if (Home_HeroBanner_01_Image != null)
+                    {
+                        <img src="@Home_HeroBanner_01_Image.MediaUrl()" alt="@Home_HeroBanner_01_Image.MediaUrl()" title="Home 2" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
+                    }
+                }
                 <div class="tp-caption tp-shape tp-shapewrapper light-shape tp-resizeme" id="slide-3-layer-2"
                      data-x="['center','center','center','center']" data-hoffset="['-154','-154','-154','563']"
                      data-y="['middle','middle','middle','middle']" data-voffset="['-66','-66','-94','-126']"
@@ -46,7 +50,7 @@
                      data-paddingright="[0,0,0,0]"
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]">
-                    A Fine Dining Restaurant
+                    @Model.Value("Home_HeroBanner_01_Subtitle")
                 </div>
 
                 <div class="tp-caption tp-shape tp-shapewrapper light-shape tp-resizeme" id="slide-3-layer-4"
@@ -83,7 +87,7 @@
                      data-paddingright="[0,0,0,0]"
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]">
-                    Foods The
+                    @Model.Value("Home_HeroBanner_01_Title")
                 </div>
 
                 <div class="tp-caption tp-resizeme slide-main-text" id="slide-3-layer-6" data-x="['center','center','center','center']" data-hoffset="['1','1','1','1']" data-y="['middle','middle','middle','middle']" data-voffset="['95','95','49','-6']"
@@ -102,14 +106,19 @@
                      data-paddingright="[0,0,0,0]"
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]">
-                    Most Precious Things
                 </div>
             </li>
 
             <li data-index="rs-4" data-transition="curtain-3" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off" data-easein="default" data-easeout="default" data-masterspeed="default" data-thumb="https://via.placeholder.com/1920X785/666666.jpg" data-rotate="0" data-saveperformance="off" data-title="Slide" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
+                @{
+                    var Home_HeroBanner_02_Image = Model.Value<MediaWithCrops>("Home_HeroBanner_02_Image");
+                    if (Home_HeroBanner_02_Image != null)
+                    {
+                        //<img src="@Home_HeroBanner_02_Image.MediaUrl()" alt="@Home_HeroBanner_02_Image.MediaUrl()" title="Home 2" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
 
-                <img src="https://via.placeholder.com/1920X785/666666.jpg" alt="" title="mainsliderbg-007" width="1920" height="785" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
-
+                        <img src="@Home_HeroBanner_02_Image.MediaUrl()" alt="Home_HeroBanner_02_Image" title="mainsliderbg-007" width="1920" height="785" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
+                    }
+                }
                 <div class="tp-caption tp-shape tp-shapewrapper light-shape tp-resizeme" id="slide-4-layer-2" data-x="['center','center','center','center']" data-hoffset="['-102','-102','-98','563']" data-y="['middle','middle','middle','middle']" data-voffset="['-69','-69','-94','-126']"
                      data-width="['43','43','43','99']"
                      data-height="1"
@@ -141,7 +150,7 @@
                      data-paddingright="[0,0,0,0]"
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]">
-                    FRESH AND TASTY
+                    @Model.Value("Home_HeroBanner_02_Subtitle")
                 </div>
 
                 <div class="tp-caption tp-shape tp-shapewrapper light-shape tp-resizeme" id="slide-4-layer-4"
@@ -178,7 +187,7 @@
                      data-paddingright="[0,0,0,0]"
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]">
-                    Banner 文字
+                    @Model.Value("Home_HeroBanner_02_Title")
                 </div>
 
                 <div class="tp-caption tp-resizeme slide-main-text" id="slide-4-layer-6" data-x="['center','center','center','center']" data-hoffset="['1','1','1','1']" data-y="['middle','middle','middle','middle']" data-voffset="['90','90','49','-6']"
@@ -197,7 +206,104 @@
                      data-paddingright="[0,0,0,0]"
                      data-paddingbottom="[0,0,0,0]"
                      data-paddingleft="[0,0,0,0]">
-                    Healty Food Restaurant
+                </div>
+            </li>
+
+            <li data-index="rs-5" data-transition="curtain-3" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off" data-easein="default" data-easeout="default" data-masterspeed="default" data-thumb="https://via.placeholder.com/1920X785/666666.jpg" data-rotate="0" data-saveperformance="off" data-title="Slide" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description="">
+                @{
+                    var Home_HeroBanner_03_Image = Model.Value<MediaWithCrops>("Home_HeroBanner_03_Image");
+                    if (Home_HeroBanner_03_Image != null)
+                    {
+                        <img src="@Home_HeroBanner_03_Image.MediaUrl()" alt="Home_HeroBanner_03_Image" title="mainsliderbg-007" width="1920" height="785" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
+                    }
+                }
+                <div class="tp-caption tp-shape tp-shapewrapper light-shape tp-resizeme" id="slide-4-layer-2" data-x="['center','center','center','center']" data-hoffset="['-102','-102','-98','563']" data-y="['middle','middle','middle','middle']" data-voffset="['-69','-69','-94','-126']"
+                     data-width="['43','43','43','99']"
+                     data-height="1"
+                     data-whitespace="nowrap"
+                     data-visibility="['on','on','on','off']"
+                     data-type="shape"
+                     data-responsive_offset="on"
+                     data-frames='[{"delay":190,"speed":200,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power0.easeIn"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                     data-textAlign="['inherit','inherit','inherit','inherit']"
+                     data-paddingtop="[0,0,0,0]"
+                     data-paddingright="[0,0,0,0]"
+                     data-paddingbottom="[0,0,0,0]"
+                     data-paddingleft="[0,0,0,0]"> </div>
+
+                <div class="tp-caption tp-resizeme ttm-textcolor-skincolor" id="slide-4-layer-3"
+                     data-x="['center','center','center','center']" data-hoffset="['0','0','0','427']"
+                     data-y="['middle','middle','middle','middle']" data-voffset="['-69','-69','-94','26']"
+                     data-fontsize="['15','15','15','12']"
+                     data-fontweight="['500','500','500','400']"
+                     data-width="none"
+                     data-height="none"
+                     data-whitespace="nowrap"
+                     data-visibility="['on','on','on','off']"
+                     data-type="text"
+                     data-responsive_offset="on"
+                     data-frames='[{"delay":260,"speed":400,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power0.easeIn"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                     data-textAlign="['inherit','inherit','inherit','inherit']"
+                     data-paddingtop="[0,0,0,0]"
+                     data-paddingright="[0,0,0,0]"
+                     data-paddingbottom="[0,0,0,0]"
+                     data-paddingleft="[0,0,0,0]">
+                    @Model.Value("Home_HeroBanner_03_Subtitle")
+                </div>
+
+                <div class="tp-caption tp-shape tp-shapewrapper light-shape tp-resizeme" id="slide-4-layer-4"
+                     data-x="['center','center','center','center']" data-hoffset="['100','100','98','384']"
+                     data-y="['middle','middle','middle','middle']" data-voffset="['-69','-69','-94','-105']"
+                     data-width="['43','43','43','99']"
+                     data-height="1"
+                     data-whitespace="nowrap"
+                     data-visibility="['on','on','on','off']"
+                     data-type="shape"
+                     data-responsive_offset="on"
+                     data-frames='[{"delay":380,"speed":200,"frame":"0","from":"x:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power0.easeIn"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                     data-textAlign="['inherit','inherit','inherit','inherit']"
+                     data-paddingtop="[0,0,0,0]"
+                     data-paddingright="[0,0,0,0]"
+                     data-paddingbottom="[0,0,0,0]"
+                     data-paddingleft="[0,0,0,0]"> </div>
+
+                <div class="tp-caption tp-resizeme slide-main-text" id="slide-4-layer-5"
+                     data-x="['center','center','center','center']" data-hoffset="['0','0','0','-1']"
+                     data-y="['middle','middle','middle','middle']" data-voffset="['8','8','-22','-66']"
+                     data-fontsize="['70','70','70','50']"
+                     data-lineheight="['90','90','100','60']"
+                     data-fontweight="['400','400','400','400']"
+                     data-color="['rgb(240, 244, 247)','rgb(240, 244, 247)','rgb(240, 244, 247)','rgb(240, 244, 247)']"
+                     data-width="none"
+                     data-height="none"
+                     data-whitespace="nowrap"
+                     data-type="text"
+                     data-responsive_offset="on"
+                     data-frames='[{"delay":250,"speed":800,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power0.easeIn"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                     data-textAlign="['inherit','inherit','inherit','inherit']"
+                     data-paddingtop="[0,0,0,0]"
+                     data-paddingright="[0,0,0,0]"
+                     data-paddingbottom="[0,0,0,0]"
+                     data-paddingleft="[0,0,0,0]">
+                    @Model.Value("Home_HeroBanner_03_Title")
+                </div>
+
+                <div class="tp-caption tp-resizeme slide-main-text" id="slide-4-layer-6" data-x="['center','center','center','center']" data-hoffset="['1','1','1','1']" data-y="['middle','middle','middle','middle']" data-voffset="['90','90','49','-6']"
+                     data-fontsize="['68','68','70','50']"
+                     data-lineheight="['90','90','100','60']"
+                     data-fontweight="['400','400','400','400']"
+                     data-color="['rgb(240, 244, 247)','rgb(240, 244, 247)','rgb(240, 244, 247)','rgb(240, 244, 247)']"
+                     data-width="none"
+                     data-height="none"
+                     data-whitespace="nowrap"
+                     data-type="text"
+                     data-responsive_offset="on"
+                     data-frames='[{"delay":360,"speed":800,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power0.easeIn"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                     data-textAlign="['inherit','inherit','inherit','inherit']"
+                     data-paddingtop="[0,0,0,0]"
+                     data-paddingright="[0,0,0,0]"
+                     data-paddingbottom="[0,0,0,0]"
+                     data-paddingleft="[0,0,0,0]">
                 </div>
             </li>
         </ul>
@@ -217,35 +323,11 @@
                         <!-- section title -->
                         <div class="section-title clearfix">
                             <div class="title-header">
-                                <h5>WANNA EAT CO.,LTD</h5>
-                                <h2 class="title">好饗初美味食品工廠</h2>
+                                <h5>@Model.Value("Home_Intro_Subtitle")</h5>
+                                <h2 class="title">@Model.Value("Home_Intro_Title")</h2>
                             </div>
                         </div><!-- section title end -->
-                        <!--<h4>《不忘初心&ensp;方得始終》</h4>-->
-                        <h4>《奶酥醬＆法式糕點研發專家》</h4>
-                        <p class="lh-lg">
-                            <h5>
-                                好饗初研發與生產的奶酥醬種類，至今已高達上百種專屬獨特風味。
-
-                                <br /><br />
-                                原物料決定奶酥醬的風味與品質，好饗初秉持純天然、無添加的理念，創先市場，嚴選世界各國優質高成本的天然原物料，
-                                光挑選「奶油」，即耗費近半年，測試數十種天然奶油。
-
-                                <br /><br />
-                                經過不斷測試，透過繁瑣嚴謹的研發與生產製程，好饗初控管各種不同食材交融的時機與狀態，逐漸平衡味道與口感，有效屏除一般市面上他牌奶酥醬的油膩感，精準掌握奶酥醬入口滑順與清爽口感。
-
-                                <br /><br />
-                                堅定選用純天然食材的理念，持續精進與研發食品相關技術，不斷翻新傳統奶酥醬的美味與口感。
-                                每一口天然清爽的奶酥醬，一定感受得到好饗初的用心。
-
-                                <br /><br />
-                                除了奶酥醬，好饗初也專研各種法式蛋糕、點心。
-                                期望真誠對待每一位顧客，讓消費者品嚐美食，同時吃得安心、吃得健康，秉持「初心」理念經營，負擔社會責任。
-
-                                <br /><br />
-                                不忘初心，善得始終。
-                            </h5>
-                        </p>
+                        @Model.Value("Home_Intro_Description")
                         <!-- row-->
                         <div class="row">
                             <div class="col-md-5 col-lg-5 col-sm-6">
@@ -301,11 +383,23 @@
                     <div class="mt-60 res-991-mt-90">
                         <!-- ttm_single_image-wrapper -->
                         <div class="ttm_single_image-wrapper position-relative">
-                            <img class="img-fluid" src="tpl/zst_GF/images/Logo/logo-renee.jpg" alt="" style="max-width: 36vh;">
+                            @{
+                                var Home_Intro_Logo_02 = Model.Value<MediaWithCrops>("Home_Intro_Logo_02");
+                                if (Home_Intro_Logo_02 != null)
+                                {
+                                    <img class="img-fluid" src="@Home_Intro_Logo_02.MediaUrl()" alt="Home_Intro_Logo_02" style="max-width: 36vh;">
+                                }
+                            }
                         </div><!-- ttm_single_image-wrapper end -->
                         <!-- ttm_single_image-wrapper -->
                         <div class="ttm_single_image-wrapper overlay-style1">
-                            <img class="img-fluid" src="tpl/zst_GF/images/Logo/logo-golden-food.png" alt="" style="max-width: 14vh;">
+                            @{
+                                var Home_Intro_Logo_01 = Model.Value<MediaWithCrops>("Home_Intro_Logo_01");
+                                if (Home_Intro_Logo_01 != null)
+                                {
+                                    <img class="img-fluid" src="@Home_Intro_Logo_01.MediaUrl()" alt="Home_Intro_Logo_01" style="max-width: 14vh;">
+                                }
+                            }
                         </div><!-- ttm_single_image-wrapper end -->
                     </div>
                 </div>
@@ -323,8 +417,8 @@
                     <div class="section-title text-center clearfix">
                         <div class="title-header">
                             <!--<h5>好饗初食品工廠</h5>-->
-                            <h4 style="color: #C5A572"><b>好饗初美味食品工廠</b></h4>
-                            <h2 class="title">OEM、ODM 製造流程</h2>
+                            <h4 style="color: #C5A572"><b>@Model.Value("Home_SOP_Subtitle")</b></h4>
+                            <h2 class="title">@Model.Value("Home_SOP_Title")</h2>
                         </div>
                         <div class="heading-seperator">
                             <span></span>
@@ -839,42 +933,56 @@
                     <!-- section-title -->
                     <div class="section-title style2 clearfix">
                         <div class="">
-                            <p class="h4" style="color: #C5A572;"><b>每月研發與測試近 20 款產品</b></p>
-                            <h2 class="title">產品開發</h2>
+                            <p class="h4" style="color: #C5A572;"><b>@Model.Value("Home_Product_Subtitle")</b></p>
+                            <h2 class="title">@Model.Value("Home_Product_Title")</h2>
                         </div>
-                        <!--<div class="title-desc">每月研發與測試近 20 款產品</div>-->
                     </div><!-- section-title end -->
                 </div>
             </div>
             <!-- row -->
             <div class="row">
                 <div class="blog-slide owl-carousel" data-item="3" data-nav="false" data-dots="false" data-auto="true">
-                    <!-- featured-imagebox-blog -->
-                    <div class="featured-imagebox featured-imagebox-blog">
-                        <div class="featured-thumbnail">
-                            <!-- featured-thumbnail -->
-                            <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-01.jpg" alt="">
-                            <!--<div class="ttm-blog-text"><span>Events</span></div>-->
+
+                    @{
+                        var products = Umbraco.Content(Guid.Parse("58c58cc4-65cd-4f86-bfcc-6f5f07612aed"))
+                        .Children()
+                        .Take(10)
+                        .Where(x => x.IsVisible())
+                        .OrderByDescending(x => x.CreateDate);
+                    }
+
+                    @foreach(var item in products)
+                    {
+                        // Image
+                        var Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
+
+                        <div class="featured-imagebox featured-imagebox-blog">
+                            <div class="featured-thumbnail">
+                                <!-- featured-thumbnail -->
+                                <img class="img-fluid" src="@Products_Items_ProductImage.Url()" alt="Products_Items_ProductImage">
+                                <!--<div class="ttm-blog-text"><span>Events</span></div>-->
+                            </div>
+                            <div class="featured-content ttm-bgcolor-white box-shadow">
+                                <!-- featured-content -->
+                                <div class="post-meta">
+                                    <!-- post-date -->
+                                    <!--<span class="ttm-meta-line">June 16, 2019</span>-->
+                                </div>
+                                <div class="featured-title">
+                                    <!-- featured-title -->
+                                    <h5><a href="single-blog.html">@item.Value("Products_Items_ProductName")</a></h5>
+                                </div>
+                                <div class="featured-desc">
+                                    <!-- featured-desc -->
+                                    <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
+                                </div>
+                                <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
+                            </div>
                         </div>
-                        <div class="featured-content ttm-bgcolor-white box-shadow">
-                            <!-- featured-content -->
-                            <div class="post-meta">
-                                <!-- post-date -->
-                                <!--<span class="ttm-meta-line">June 16, 2019</span>-->
-                            </div>
-                            <div class="featured-title">
-                                <!-- featured-title -->
-                                <h5><a href="single-blog.html">程式自動選取產品-01</a></h5>
-                            </div>
-                            <div class="featured-desc">
-                                <!-- featured-desc -->
-                                <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
-                            </div>
-                            <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
-                        </div>
-                    </div><!-- featured-imagebox-dishes end -->
+                        <!-- featured-imagebox-dishes end -->
+                    }
                     <!-- featured-imagebox-blog -->
-                    <div class="featured-imagebox featured-imagebox-blog">
+                    @*<div class="featured-imagebox featured-imagebox-blog">
                         <div class="featured-thumbnail">
                             <!-- featured-thumbnail -->
                             <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-02.jpg" alt="">
@@ -896,79 +1004,7 @@
                             </div>
                             <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
                         </div>
-                    </div><!-- featured-imagebox-dishes end -->
-                    <!-- featured-imagebox-blog -->
-                    <div class="featured-imagebox featured-imagebox-blog">
-                        <div class="featured-thumbnail">
-                            <!-- featured-thumbnail -->
-                            <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-03.jpg" alt="">
-                            <!--<div class="ttm-blog-text"><span>Food lover</span></div>-->
-                        </div>
-                        <div class="featured-content ttm-bgcolor-white box-shadow">
-                            <!-- featured-content -->
-                            <div class="post-meta">
-                                <!-- post-date -->
-                                <!--<span class="ttm-meta-line">dec 10, 2019</span>-->
-                            </div>
-                            <div class="featured-title">
-                                <!-- featured-title -->
-                                <h5><a href="single-blog.html">程式自動選取產品-03</a></h5>
-                            </div>
-                            <div class="featured-desc">
-                                <!-- featured-desc -->
-                                <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
-                            </div>
-                            <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
-                        </div>
-                    </div><!-- featured-imagebox-dishes end -->
-                    <!-- featured-imagebox-blog -->
-                    <div class="featured-imagebox featured-imagebox-blog">
-                        <div class="featured-thumbnail">
-                            <!-- featured-thumbnail -->
-                            <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-04.jpg" alt="">
-                            <!--<div class="ttm-blog-text"><span>Culinary Traveller</span></div>-->
-                        </div>
-                        <div class="featured-content ttm-bgcolor-white box-shadow">
-                            <!-- featured-content -->
-                            <div class="post-meta">
-                                <!-- post-date -->
-                                <!--<span class="ttm-meta-line">may 30, 2019</span>-->
-                            </div>
-                            <div class="featured-title">
-                                <!-- featured-title -->
-                                <h5><a href="single-blog.html">程式自動選取產品-04</a></h5>
-                            </div>
-                            <div class="featured-desc">
-                                <!-- featured-desc -->
-                                <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
-                            </div>
-                            <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
-                        </div>
-                    </div><!-- featured-imagebox-dishes end -->
-                    <!-- featured-imagebox-blog -->
-                    <div class="featured-imagebox featured-imagebox-blog">
-                        <div class="featured-thumbnail">
-                            <!-- featured-thumbnail -->
-                            <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-05.jpg" alt="">
-                            <!--<div class="ttm-blog-text"><span>Miscellaneous</span></div>-->
-                        </div>
-                        <div class="featured-content ttm-bgcolor-white box-shadow">
-                            <!-- featured-content -->
-                            <div class="post-meta">
-                                <!-- post-date -->
-                                <!--<span class="ttm-meta-line">June 12, 2019</span>-->
-                            </div>
-                            <div class="featured-title">
-                                <!-- featured-title -->
-                                <h5><a href="single-blog.html">程式自動選取產品-05</a></h5>
-                            </div>
-                            <div class="featured-desc">
-                                <!-- featured-desc -->
-                                <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
-                            </div>
-                            <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
-                        </div>
-                    </div><!-- featured-imagebox-dishes end -->
+                    </div>*@
                 </div>
             </div>
         </div>
@@ -985,8 +1021,8 @@
                     <div class="section-title text-center clearfix">
                         <div class="title-header">
                             <!--<h5>成為品牌與企業長期合作夥伴</h5>-->
-                            <p class="h4" style="color:#C5A572;">成為品牌與企業的長期合作夥伴</p>
-                            <h2 class="title">企業客戶評論</h2>
+                            <p class="h4" style="color:#C5A572;">@Model.Value("Home_Comment_Subtitle")</p>
+                            <h2 class="title">@Model.Value("Home_Comment_Title")</h2>
                         </div>
                         <div class="heading-seperator">
                             <span></span>
