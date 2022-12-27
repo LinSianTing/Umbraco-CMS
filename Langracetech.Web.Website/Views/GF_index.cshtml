@@ -1,4 +1,4 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.PublishedModels;
 @using Umbraco.Cms.Core.Models;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
@@ -951,15 +951,15 @@
                         .OrderByDescending(x => x.CreateDate);
                     }
 
-                    @foreach(var item in products)
+                    @foreach (var item in products)
                     {
                         // Image
-                        var Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
+                        IPublishedContent Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
 
                         <div class="featured-imagebox featured-imagebox-blog">
                             <div class="featured-thumbnail">
                                 <!-- featured-thumbnail -->
-                                <img class="img-fluid" src="@Products_Items_ProductImage.Url()" alt="Products_Items_ProductImage">
+                                <img class="img-fluid" src="@(Products_Items_ProductImage != null? Products_Items_ProductImage.Url(): String.Empty)" alt="Products_Items_ProductImage">
                                 <!--<div class="ttm-blog-text"><span>Events</span></div>-->
                             </div>
                             <div class="featured-content ttm-bgcolor-white box-shadow">
@@ -970,7 +970,7 @@
                                 </div>
                                 <div class="featured-title">
                                     <!-- featured-title -->
-                                    <h5><a href="single-blog.html">@item.Value("Products_Items_ProductName")</a></h5>
+                                    <h5><a href="@item">@item.Value("Products_Items_ProductName")</a></h5>
                                 </div>
                                 <div class="featured-desc">
                                     <!-- featured-desc -->
@@ -983,27 +983,27 @@
                     }
                     <!-- featured-imagebox-blog -->
                     @*<div class="featured-imagebox featured-imagebox-blog">
-                        <div class="featured-thumbnail">
-                            <!-- featured-thumbnail -->
-                            <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-02.jpg" alt="">
-                            <!--<div class="ttm-blog-text"><span>Food Lover</span></div>-->
-                        </div>
-                        <div class="featured-content ttm-bgcolor-white box-shadow">
-                            <!-- featured-content -->
-                            <div class="post-meta">
-                                <!-- post-date -->
-                                <!--<span class="ttm-meta-line">dec 15, 2019</span>-->
-                            </div>
-                            <div class="featured-title">
-                                <!-- featured-title -->
-                                <h5><a href="single-blog.html">程式自動選取產品-02</a></h5>
-                            </div>
-                            <div class="featured-desc">
-                                <!-- featured-desc -->
-                                <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
-                            </div>
-                            <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
-                        </div>
+                    <div class="featured-thumbnail">
+                    <!-- featured-thumbnail -->
+                    <img class="img-fluid" src="tpl\zst_GF\images\frenchCuisine\FrenchCuisine-02.jpg" alt="">
+                    <!--<div class="ttm-blog-text"><span>Food Lover</span></div>-->
+                    </div>
+                    <div class="featured-content ttm-bgcolor-white box-shadow">
+                    <!-- featured-content -->
+                    <div class="post-meta">
+                    <!-- post-date -->
+                    <!--<span class="ttm-meta-line">dec 15, 2019</span>-->
+                    </div>
+                    <div class="featured-title">
+                    <!-- featured-title -->
+                    <h5><a href="single-blog.html">程式自動選取產品-02</a></h5>
+                    </div>
+                    <div class="featured-desc">
+                    <!-- featured-desc -->
+                    <!--<p>An excessive amount of soy sauce can overpower the taste of Japanese cuisine. It can be co...</p>-->
+                    </div>
+                    <!--<a class="ttm-btn btn-inline ttm-btn-color-skincolor" href="#">Read More</a>-->
+                    </div>
                     </div>*@
                 </div>
             </div>
