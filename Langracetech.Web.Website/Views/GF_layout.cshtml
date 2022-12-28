@@ -1,7 +1,8 @@
 @using Umbraco.Cms.Web.Common.PublishedModels;
+@*@using Umbraco.Cms.Core.Models;*@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-	Layout = "Template001_Zester.cshtml";
+    Layout = "Template001_Zester.cshtml";
 }
 
 <!DOCTYPE html>
@@ -9,11 +10,11 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="keywords" content="@(Model != null ? (Model.Value("Seo_MetaKeywords") != null ? Html.Raw(String.Join(",", (string[])Model.Value("Seo_MetaKeywords"))) : "Golden Food") : "Golden Food")" />
-    <meta name="description" content="@(Model != null ? (Model.Value("Seo_MetaDescription") != null ? (!string.IsNullOrEmpty(Convert.ToString(Model.Value("Seo_MetaDescription"))) ? Html.Raw(Model.Value("Seo_MetaDescription")):"Golden Food") : "Golden Food") : "Golden Food")" />
+    <meta name="keywords" content="@(Model != null ? (Model.Value("SEO_MetaKeywords") != null ? Html.Raw(String.Join(",", (string[])Model.Value("SEO_MetaKeywords"))) : "Golden Food") : "Golden Food")" />
+    <meta name="description" content="@(Model != null ? (Model.Value("SEO_MetaDescription") != null ? (!string.IsNullOrEmpty(Convert.ToString(Model.Value("SEO_MetaDescription"))) ? Html.Raw(Model.Value("SEO_MetaDescription")):"Golden Food") : "Golden Food") : "Golden Food")" />
     <meta name="author" content="https://www.langracetech.com/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>@(Model != null ? (Model.Value("Seo_MetaTitle") != null ? (!string.IsNullOrEmpty(Convert.ToString(Model.Value("Seo_MetaTitle"))) ? Html.Raw(Model.Value("Seo_MetaTitle")) : "Golden Food") : "Golden Food") : "Golden Food")</title>
+    <title>@(Model != null ? (Model.Value("SEO_MetaTitle") != null ? (!string.IsNullOrEmpty(Convert.ToString(Model.Value("SEO_MetaTitle"))) ? Html.Raw(Model.Value("SEO_MetaTitle")) : "Golden Food") : "Golden Food") : "Golden Food")</title>
 
     <!-- favicon icon -->
     <link rel="shortcut icon" href="/tpl/zst_GF/images/favicon.png" />
@@ -56,23 +57,23 @@
 </head>
 
 <body>
+    <!-- FB - Messenger 洽談外掛程式 Code - Start -->
+    @Model.Value("FB_Messenger_Chat_Plugin_Code")
+    <!-- FB - Messenger 洽談外掛程式 Code - End -->
     <!--page start-->
     <div class="page">
-        
+
         <!--header start-->
         @await Html.PartialAsync("Template001_Zester/GF/GF_menu/_MenuPartial")
         <!--header end-->
-        
         <!-- page-title -->
         <!-- page-title END-->
         <!--site-main start-->
         @RenderBody()
         <!--site-main end-->
-        
         <!--footer start-->
         @await Html.PartialAsync("Template001_Zester/GF/GF_footer/_FooterPartial")
         <!--footer end-->
-        
         <!--back-to-top start-->
         <a id="totop" href="#top">
             <i class="fa fa-angle-up"></i>
@@ -80,7 +81,6 @@
         <!--back-to-top end-->
     </div>
     <!-- page end -->
-    
     <!-- Javascript -->
     <script src="/tpl/zst_GF/js/jquery.min.js"></script>
     <script src="/tpl/zst_GF/js/tether.min.js"></script>
@@ -92,7 +92,7 @@
     <script src="/tpl/zst_GF/js/jquery.prettyPhoto.js"></script>
     <script src="/tpl/zst_GF/js/numinate.min.js?ver=4.9.3"></script>
     <script src="/tpl/zst_GF/js/main.js"></script>
-    
+
     <!-- Revolution Slider -->
     <script src="/tpl/zst_GF/revolution/js/jquery.themepunch.tools.min.js"></script>
     <script src="/tpl/zst_GF/revolution/js/jquery.themepunch.revolution.min.js"></script>

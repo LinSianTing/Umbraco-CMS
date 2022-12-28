@@ -4,6 +4,8 @@
 <!-- Images - End -->
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 
+@*@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Social_Media_Links>*@
+
 @{
     Layout = "GF_layout.cshtml";
 }
@@ -54,13 +56,13 @@
                         <div class="featured-imagebox featured-imagebox-gallery style1 mb-30">
                             <div class="featured-thumbnail">
                                 <!-- featured-thumbnail-->
-                                <img class="img-fluid" src="@NewArrivals_Items_ProductImage.Url()" alt="NewArrivals_Items_ProductImage">
+                                <img class="img-fluid" src="@(NewArrivals_Items_ProductImage != null? NewArrivals_Items_ProductImage.Url(): String.Empty)" alt="NewArrivals_Items_ProductImage">
                             </div>
                             <div class="ttm-box-view-overlay">
                                 <!-- ttm-box-view-overlay -->
                                 <div class="ttm-media-link">
                                     <!-- ttm-media-link-->
-                                    <a class="ttm_prettyphoto ttm_image" data-gal="prettyPhoto[gallery1]" title="@item.Value("NewArrivals_Items_ProductName")" href="@NewArrivals_Items_ProductImage.Url()" data-rel="NewArrivals_Items_ProductImage">
+                                    <a class="ttm_prettyphoto ttm_image" data-gal="prettyPhoto[gallery1]" title="@item.Value("NewArrivals_Items_ProductName")" href="@(NewArrivals_Items_ProductImage != null? NewArrivals_Items_ProductImage.Url(): String.Empty)" data-rel="NewArrivals_Items_ProductImage">
                                         <i class="ti ti-search"></i>
                                     </a>
                                 </div>

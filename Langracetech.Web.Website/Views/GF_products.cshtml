@@ -64,13 +64,13 @@
                                 {
                                     foreach (TagModel tag in allTags)
                                     {
-                                                 <!-- Step 1 : 呈現Tag -->
-                                                <li class="tab">
-                                                    <a href="#" data-tag="@tag.Text"><span>@tag.Text</span></a>
-                                                </li>
+                                        <!-- Step 1 : 呈現Tag -->
+                                        <li class="tab">
+                                            <a href="#" data-tag="@tag.Text"><span>@tag.Text</span></a>
+                                        </li>
 
-                                                <!-- Step 1: 在滾Tag 的同時，透過 Dictionary 做 By Tag 分籃整理 -->
-                                        tagDictionaryAboutProduct.Add(string.IsNullOrEmpty(tag.Text)?"null-"+tagDictionaryAboutProduct.Count:tag.Text, new List<IPublishedContent>());
+                                        <!-- Step 1: 在滾Tag 的同時，透過 Dictionary 做 By Tag 分籃整理 -->
+                                        tagDictionaryAboutProduct.Add(string.IsNullOrEmpty(tag.Text) ? "null-" + tagDictionaryAboutProduct.Count : tag.Text, new List<IPublishedContent>());
                                     }
                                 }
                             }
@@ -88,7 +88,7 @@
                                     @foreach (var item in Products)
                                     {
                                         // Image
-                                        var Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
+                                        IPublishedContent Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
                                         // Tags
                                         string[] allTagAboutThisProductsItem = item.Value("Tags") as string[];
 
@@ -99,7 +99,7 @@
                                                 <div class="featured-imagebox-gallery-inner">
                                                     <div class="featured-thumbnail">
                                                         <!-- featured-thumbnail-->
-                                                        <img class="img-fluid" src="@Products_Items_ProductImage.Url()" alt="Products_Items_ProductImage" />
+                                                        <img class="img-fluid" src="@(Products_Items_ProductImage != null? Products_Items_ProductImage.Url(): String.Empty)" alt="Products_Items_ProductImage">
                                                     </div>
                                                     <!-- featured-thumbnail END-->
                                                     <div class="ttm-box-view-overlay">
@@ -109,7 +109,7 @@
                                                             <a class="ttm_prettyphoto ttm_image"
                                                            data-gal="prettyPhoto[gallery1]"
                                                            title="@item.Value("Products_Items_ProductName")"
-                                                           href="@Products_Items_ProductImage.Url()"
+                                                           href="@(Products_Items_ProductImage != null? Products_Items_ProductImage.Url(): String.Empty)"
                                                            data-rel="Products_Items_ProductImage">
                                                                 <i class="ti ti-search"></i>
                                                             </a>
@@ -129,9 +129,9 @@
                                         </div>
 
                                         <!-- Step 3 : 在滾All Product 的同時，做分籃整理 -->
-                                        if(allTagAboutThisProductsItem!=null)
+                                        if (allTagAboutThisProductsItem != null)
                                         {
-                                            foreach(string tagString in allTagAboutThisProductsItem)
+                                            foreach (string tagString in allTagAboutThisProductsItem)
                                             {
                                                 tagDictionaryAboutProduct[tagString].Add(item);
                                             }
@@ -147,66 +147,66 @@
                                 {
                                     foreach (TagModel tag in allTags)
                                     {
-                                         if(!String.IsNullOrEmpty(tag.Text))
-                                         {
-                                                        <!-- content-inner -->
-                                                        <!-- 各 Tag Div -->
-                                                        <div class="content-inner" data-tag="@tag.Text" style="display:none;">
-                                                            <div class="row">
-                                                                <!-- row -->
-                                                                <!-- Step 3 : 每個 Product 重新滾一次，找有沒有媒合的Tag, 判斷後呈現 -->
-                                                                @foreach (IPublishedContent item in tagDictionaryAboutProduct[tag.Text])
-                                                        {
-                                                             // Image
-                                                            var Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
-                                                            // Tags
-                                                            string[] allTagAboutThisProductsItem = item.Value("Tags") as string[];
+                                        if (!String.IsNullOrEmpty(tag.Text))
+                                        {
+                                            <!-- content-inner -->
+                                            <!-- 各 Tag Div -->
+                                            <div class="content-inner" data-tag="@tag.Text" style="display:none;">
+                                                <div class="row">
+                                                    <!-- row -->
+                                                    <!-- Step 3 : 每個 Product 重新滾一次，找有沒有媒合的Tag, 判斷後呈現 -->
+                                                    @foreach (IPublishedContent item in tagDictionaryAboutProduct[tag.Text])
+                                                    {
+                                                        // Image
+                                                        IPublishedContent Products_Items_ProductImage = item.Value<IPublishedContent>("Products_Items_ProductImage");
+                                                        // Tags
+                                                        string[] allTagAboutThisProductsItem = item.Value("Tags") as string[];
 
-                                                                    <!-- row -->
-                                                                    <div class="col-md-4 col-sm-6">
-                                                                        <!-- featured-imagebox-event -->
-                                                                        <div class="featured-imagebox featured-imagebox-gallery style2">
-                                                                            <div class="featured-imagebox-gallery-inner">
-                                                                                <div class="featured-thumbnail">
-                                                                                    <!-- featured-thumbnail-->
-                                                                                    <img class="img-fluid" src="@Products_Items_ProductImage.Url()" alt="Products_Items_ProductImage" />
-                                                                                </div>
-                                                                                <!-- featured-thumbnail END-->
-                                                                                <div class="ttm-box-view-overlay">
-                                                                                    <!-- ttm-box-view-overlay -->
-                                                                                    <div class="ttm-media-link">
-                                                                                        <!-- ttm-media-link-->
-                                                                                        <a class="ttm_prettyphoto ttm_image"
-                                                                                       data-gal="prettyPhoto[gallery1]"
-                                                                                       title="@item.Value("Products_Items_ProductName")"
-                                                                                       href="@Products_Items_ProductImage.Url()"
-                                                                                       data-rel="Products_Items_ProductImage">
-                                                                                            <i class="ti ti-search"></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <!-- ttm-box-view-overlay end-->
-                                                                            </div>
-                                                                            <div class="featured-content box-shadow">
-                                                                                <!-- featured-content-->
-                                                                                <div class="featured-title">
-                                                                                    <!-- featured-title-->
-                                                                                    <h5>@item.Value("Products_Items_ProductName")</h5>
-                                                                                    @if (allTagAboutThisProductsItem!=null)
-                                                                                {
-                                                                                        <p>@String.Join(" ",allTagAboutThisProductsItem)</p>
-                                                                                }
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <!-- featured-imagebox-event END -->
+                                                        <!-- row -->
+                                                        <div class="col-md-4 col-sm-6">
+                                                            <!-- featured-imagebox-event -->
+                                                            <div class="featured-imagebox featured-imagebox-gallery style2">
+                                                                <div class="featured-imagebox-gallery-inner">
+                                                                    <div class="featured-thumbnail">
+                                                                        <!-- featured-thumbnail -->
+                                                                        <img class="img-fluid" src="@(Products_Items_ProductImage != null? Products_Items_ProductImage.Url(): String.Empty)" alt="Products_Items_ProductImage" />
                                                                     </div>
-                                                        }
-                                                             </div>
-                                                            <!-- row end -->
+                                                                    <!-- featured-thumbnail END-->
+                                                                    <div class="ttm-box-view-overlay">
+                                                                        <!-- ttm-box-view-overlay -->
+                                                                        <div class="ttm-media-link">
+                                                                            <!-- ttm-media-link -->
+                                                                            <a class="ttm_prettyphoto ttm_image"
+                                                               data-gal="prettyPhoto[gallery1]"
+                                                               title="@item.Value("Products_Items_ProductName")"
+                                                               href="@(Products_Items_ProductImage != null? Products_Items_ProductImage.Url(): String.Empty)"
+                                                               data-rel="Products_Items_ProductImage">
+                                                                                <i class="ti ti-search"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- ttm-box-view-overlay end-->
+                                                                </div>
+                                                                <div class="featured-content box-shadow">
+                                                                    <!-- featured-content-->
+                                                                    <div class="featured-title">
+                                                                        <!-- featured-title-->
+                                                                        <h5>@item.Value("Products_Items_ProductName")</h5>
+                                                                        @if (allTagAboutThisProductsItem != null)
+                                                                        {
+                                                                            <p>@String.Join(" ",allTagAboutThisProductsItem)</p>
+                                                                        }
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        <!-- content-inner -->
-                                         }
+                                                            <!-- featured-imagebox-event END -->
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <!-- row end -->
+                                            </div>
+                                            <!-- content-inner -->
+                                        }
                                     }
                                 }
                             }
