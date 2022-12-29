@@ -8,6 +8,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- SEO - Start -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="keywords" content="@(Model != null ? (Model.Value("SEO_MetaKeywords") != null ? Html.Raw(String.Join(",", (string[])Model.Value("SEO_MetaKeywords"))) : "Golden Food") : "Golden Food")" />
@@ -15,7 +16,18 @@
     <meta name="author" content="https://www.langracetech.com/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>@(Model != null ? (Model.Value("SEO_MetaTitle") != null ? (!string.IsNullOrEmpty(Convert.ToString(Model.Value("SEO_MetaTitle"))) ? Html.Raw(Model.Value("SEO_MetaTitle")) : "Golden Food") : "Golden Food") : "Golden Food")</title>
-
+    <!-- SEO - End -->
+    <!-- Google Tag Manager - Start -->
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', '@(Model.Value("GTM_ID", fallback: Fallback.ToAncestors))');</script>
+    <!-- Google Tag Manager - End -->
     <!-- favicon icon -->
     <link rel="shortcut icon" href="/tpl/zst_GF/images/favicon.png" />
 
@@ -57,8 +69,44 @@
 </head>
 
 <body>
+    <!-- Google Tag Manager (noscript) - Start -->
+    <h5>@@Model.Value("GTM_ID") - GTM-TMBCMSL: @Model.Value("GTM_ID", fallback: Fallback.ToAncestors)</h5>
+    @{
+        string stringOfGTM_ID = "https://www.googletagmanager.com/ns.html?id=" + Model.Value("GTM_ID", fallback: Fallback.ToAncestors);
+    }
+    <noscript>
+        <iframe src="@stringOfGTM_ID"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) - End -->
     <!-- FB - Messenger 洽談外掛程式 Code - Start -->
-    @Model.Value("FB_Messenger_Chat_Plugin_Code")
+    <div id="fb-root"></div>
+    <!-- Your 洽談外掛程式 code -->
+    <div id="fb-customer-chat" class="fb-customerchat"></div>
+
+    <script>
+        var chatbox = document.getElementById('fb-customer-chat');
+        chatbox.setAttribute("page_id", "104750155568248");
+        chatbox.setAttribute("attribution", "biz_inbox");
+    </script>
+
+    <!-- Your SDK code -->
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                xfbml: true,
+                version: 'v15.0'
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/zh_TW/sdk/xfbml.customerchat.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
     <!-- FB - Messenger 洽談外掛程式 Code - End -->
     <!--page start-->
     <div class="page">
@@ -69,6 +117,7 @@
         <!-- page-title -->
         <!-- page-title END-->
         <!--site-main start-->
+        <h5>@@Model.Value("GTM_ID"): @Model.Value("GTM_ID")</h5>
         @RenderBody()
         <!--site-main end-->
         <!--footer start-->

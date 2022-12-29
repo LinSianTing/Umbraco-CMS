@@ -46,7 +46,7 @@
                                         <i class="fab fa-facebook-f" aria-hidden="true"></i>
                                     </a>
                                 </li>
-                                <h5>@@Model.Value("Social_Media_Links_FB"): @Model.Value("Social_Media_Links_FB")</h5>
+                                <h5>@@Model.Value("Social_Media_Links_FB"): @Model.Value("Social_Media_Links_FB", fallback: Fallback.ToAncestors)</h5>
                                 
                                 <!-- Line -->
                                 <li class="social-twitter">
@@ -168,7 +168,8 @@
             <div class="row copyright">
                 <div class="col-md-12">
                     <div class="">
-                        <span>@Model.Value("Footer_Copyright")</span>
+                        <span>@@Model.Value("Footer_Copyright", fallback: Fallback.ToAncestors): @Model.Value("Footer_Copyright", fallback: Fallback.ToAncestors)</span>
+                        <span>@@Model.Value("Footer_Copyright"): @Model.Value("Footer_Copyright")</span>
                     </div>
                 </div>
                 <div class="col-md-12">
