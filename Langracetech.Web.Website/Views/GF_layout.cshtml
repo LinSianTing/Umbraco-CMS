@@ -2,6 +2,7 @@
 @*@using Umbraco.Cms.Core.Models;*@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
+    var basicSettings = Umbraco.ContentSingleAtXPath("//settings_Basic") ?? Model;
     Layout = "Template001_Zester.cshtml";
 }
 
@@ -57,8 +58,21 @@
 </head>
 
 <body>
+     <!-- Eric 驗證 Global Code - Start -->
+     <div>
+        <span>FB : @basicSettings.Value("Social_Media_Links_FB")</span>
+        <span>Line : @basicSettings.Value("Social_Media_Links_Line")</span>
+        <span>IG : @basicSettings.Value("Social_Media_Links_IG")</span>
+        <span>Youtube : @basicSettings.Value("Social_Media_Links_YouTube")</span>
+        <span>FB Chat : @basicSettings.Value("FB_Messenger_Chat_Plugin_Code")</span>
+        <span>Footer Copyright : @basicSettings.Value("Footer_Copyright")</span>
+        <span>Footer Title : @basicSettings.Value("Footer_Title")</span>
+        <span>Footer Logo : @basicSettings.Value("Footer_Logo")</span>
+     </div>
+    <!-- Eric 驗證 Global Code - End -->
+
     <!-- FB - Messenger 洽談外掛程式 Code - Start -->
-    @Model.Value("FB_Messenger_Chat_Plugin_Code")
+
     <!-- FB - Messenger 洽談外掛程式 Code - End -->
     <!--page start-->
     <div class="page">
