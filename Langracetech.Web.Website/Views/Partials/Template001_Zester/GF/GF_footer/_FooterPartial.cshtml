@@ -1,8 +1,12 @@
-﻿@*@using Umbraco.Cms.Web.Common.PublishedModels;*@
+@*@using Umbraco.Cms.Web.Common.PublishedModels;*@
 <!-- Image - Start -->
 @using Umbraco.Cms.Core.Models
 <!-- Image - End -->
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    IPublishedContent settingsBasic = Umbraco.ContentSingleAtXPath("//settingsBasic") ?? Model;
+}
 
 <!--footer start-->
 <footer class="footer widget-footer ttm-bgcolor-darkgrey ttm-bg ttm-bgimage-yes bg-img1 clearfix">
@@ -19,7 +23,7 @@
                         <div class="footer-logo">
                             <a href="/" title="首頁" rel="home">
                                 @{
-                                    MediaWithCrops Footer_Logo = Model.Value<MediaWithCrops>("Footer_Logo");
+                                    MediaWithCrops Footer_Logo = settingsBasic.Value<MediaWithCrops>("Footer_Logo");
                                     if (Footer_Logo != null)
                                     {
                                         <img id="footer-logo-img"
@@ -31,8 +35,7 @@
                             </a>
                         </div>
                         <p class="mb-0">
-                            <h5>@Model.Value("Footer_Title")</h5>
-                            <h5>@@Model.Value("GTM_ID"): @Model.Value("GTM_ID")</h5>
+                            <h5>@settingsBasic.Value("Footer_Title")</h5>
                         </p>
                         <br />
                         <div class="social-icons circle social-hover">
@@ -41,18 +44,17 @@
                                 <li class="social-facebook">
                                     <a class="tooltip-top"
                                        target="_blank"
-                                       href="@Model.Value("Social_Media_Links_FB")"
+                                       href="@settingsBasic.Value("Social_Media_Links_FB")"
                                        data-tooltip="Facebook">
                                         <i class="fab fa-facebook-f" aria-hidden="true"></i>
                                     </a>
                                 </li>
-                                <h5>@@Model.Value("Social_Media_Links_FB"): @Model.Value("Social_Media_Links_FB", fallback: Fallback.ToAncestors)</h5>
                                 
                                 <!-- Line -->
                                 <li class="social-twitter">
                                     <a class="tooltip-top"
                                        target="_blank"
-                                       href="@Model.Value("Social_Media_Links_Line")"
+                                       href="@settingsBasic.Value("Social_Media_Links_Line")"
                                        data-tooltip="Line">
                                         <i class="fab fa-line fa-lg" aria-hidden="true"></i>
                                     </a>
@@ -61,7 +63,7 @@
                                 <li class="social-instagram">
                                     <a class="tooltip-top"
                                        target="_blank"
-                                       href="@Model.Value("Social_Media_Links_IG")"
+                                       href="@settingsBasic.Value("Social_Media_Links_IG")"
                                        data-tooltip="Instagram">
                                         <i class="fab fa-instagram" aria-hidden="true"></i>
                                     </a>
@@ -168,8 +170,7 @@
             <div class="row copyright">
                 <div class="col-md-12">
                     <div class="">
-                        <span>@@Model.Value("Footer_Copyright", fallback: Fallback.ToAncestors): @Model.Value("Footer_Copyright", fallback: Fallback.ToAncestors)</span>
-                        <span>@@Model.Value("Footer_Copyright"): @Model.Value("Footer_Copyright")</span>
+                        <span>@settingsBasic.Value("Footer_Copyright")</span>
                     </div>
                 </div>
                 <div class="col-md-12">

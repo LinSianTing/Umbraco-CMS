@@ -1,4 +1,11 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+<!-- Image - Start -->
+@using Umbraco.Cms.Core.Models
+<!-- Image - End -->
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    IPublishedContent settingsBasic = Umbraco.ContentSingleAtXPath("//settingsBasic") ?? Model;
+}
 
 <header id="masthead" class="header ttm-header-style-01">
     <!-- ttm-header-wrap -->
@@ -11,7 +18,13 @@
                         <!-- site-branding -->
                         <div class="site-branding">
                             <a class="home-link" href="/" title="首頁" rel="home">
-                                <img id="logo-img" class="img-center" src="/tpl/zst_GF/images/Logo/logo-golden-food.png" alt="logo-img">
+                                @{
+                                    MediaWithCrops Header_Logo = settingsBasic.Value<MediaWithCrops>("Header_Logo");
+                                    if (Header_Logo != null)
+                                    {
+                                        <img id="logo-img" class="img-center" src="@Header_Logo.MediaUrl()" alt="Header_Logo">
+                                    }
+                                }
                             </a>
                         </div><!-- site-branding end -->
                         <!--site-navigation -->
@@ -19,10 +32,10 @@
                             <!-- header-icons -->
                             <div class="">
                                 @*<span class="ttm-header-icon ttm-header-cart-link">
-                                    <a href="#">
-                                        <i class="ti ti-shopping-cart"></i>
-                                        <span class="number-cart">0</span>
-                                    </a>
+                                <a href="#">
+                                <i class="ti ti-shopping-cart"></i>
+                                <span class="number-cart">0</span>
+                                </a>
                                 </span>*@
                                 <div class="ttm-header-icon ttm-header-search-link">
                                     @*<a href="#"><i class="fa fa-search"></i></a>*@
@@ -42,7 +55,7 @@
                                 </div>
                             </div>
                             @*<div class="header-btn">
-                                <a class="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-border ttm-btn-color-skincolor" href="#">ORDER ONLINE</a>
+                            <a class="ttm-btn ttm-btn-size-md ttm-btn-shape-square ttm-btn-style-border ttm-btn-color-skincolor" href="#">ORDER ONLINE</a>
                             </div>*@
                             <div class="ttm-menu-toggle">
                                 <input type="checkbox" id="menu-toggle-form" />

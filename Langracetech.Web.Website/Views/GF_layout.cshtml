@@ -1,8 +1,11 @@
 @using Umbraco.Cms.Web.Common.PublishedModels;
-@*@using Umbraco.Cms.Core.Models;*@
+@using Umbraco.Cms.Core.Models;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "Template001_Zester.cshtml";
+    // "//nodeAliasName"
+    IPublishedContent settingsBasic = Umbraco.ContentSingleAtXPath("//settingsBasic") ?? Model;
+    IPublishedContent settingsTracking = Umbraco.ContentSingleAtXPath("//settingsTracking") ?? Model;
 }
 
 <!DOCTYPE html>
@@ -26,10 +29,18 @@
             }); var f = d.getElementsByTagName(s)[0],
                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', '@(Model.Value("GTM_ID", fallback: Fallback.ToAncestors))');</script>
+        })(window, document, 'script', 'dataLayer', '@(settingsTracking.Value("GTM_ID"))');</script>
     <!-- Google Tag Manager - End -->
     <!-- favicon icon -->
     <link rel="shortcut icon" href="/tpl/zst_GF/images/favicon.png" />
+
+    @{
+        MediaWithCrops Favicon_Logo = settingsBasic.Value<MediaWithCrops>("Favicon_Logo");
+        if (Favicon_Logo != null)
+        {
+            <link rel="shortcut icon" href="@Favicon_Logo.MediaUrl()" />
+        }
+    }
 
     <!-- bootstrap -->
     <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/bootstrap.min.css" />
@@ -70,9 +81,8 @@
 
 <body>
     <!-- Google Tag Manager (noscript) - Start -->
-    <h5>@@Model.Value("GTM_ID") - GTM-TMBCMSL: @Model.Value("GTM_ID", fallback: Fallback.ToAncestors)</h5>
     @{
-        string stringOfGTM_ID = "https://www.googletagmanager.com/ns.html?id=" + Model.Value("GTM_ID", fallback: Fallback.ToAncestors);
+        string stringOfGTM_ID = "https://www.googletagmanager.com/ns.html?id=" + settingsTracking.Value("GTM_ID");
     }
     <noscript>
         <iframe src="@stringOfGTM_ID"
@@ -117,7 +127,6 @@
         <!-- page-title -->
         <!-- page-title END-->
         <!--site-main start-->
-        <h5>@@Model.Value("GTM_ID"): @Model.Value("GTM_ID")</h5>
         @RenderBody()
         <!--site-main end-->
         <!--footer start-->
