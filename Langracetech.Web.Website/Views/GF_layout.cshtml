@@ -81,7 +81,6 @@
 </head>
 
 <body>
-<<<<<<< HEAD
     <!-- Google Tag Manager (noscript) - Start -->
     @{
         string stringOfGTM_ID = "https://www.googletagmanager.com/ns.html?id=" + settingsTracking.Value("GTM_ID");
@@ -92,50 +91,7 @@
     </noscript>
     <!-- End Google Tag Manager (noscript) - End -->
     <!-- FB - Messenger 洽談外掛程式 Code - Start -->
-    <div id="fb-root"></div>
-    <!-- Your 洽談外掛程式 code -->
-    <div id="fb-customer-chat" class="fb-customerchat"></div>
-
-    <script>
-        var chatbox = document.getElementById('fb-customer-chat');
-        chatbox.setAttribute("page_id", "104750155568248");
-        chatbox.setAttribute("attribution", "biz_inbox");
-    </script>
-
-    <!-- Your SDK code -->
-    <script>
-        window.fbAsyncInit = function () {
-            FB.init({
-                xfbml: true,
-                version: 'v15.0'
-            });
-        };
-
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = 'https://connect.facebook.net/zh_TW/sdk/xfbml.customerchat.js';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    </script>
-=======
-     <!-- Eric 驗證 Global Code - Start -->
-     <div>
-        <span>FB : @basicSettings.Value("Social_Media_Links_FB")</span>
-        <span>Line : @basicSettings.Value("Social_Media_Links_Line")</span>
-        <span>IG : @basicSettings.Value("Social_Media_Links_IG")</span>
-        <span>Youtube : @basicSettings.Value("Social_Media_Links_YouTube")</span>
-        <span>FB Chat : @basicSettings.Value("FB_Messenger_Chat_Plugin_Code")</span>
-        <span>Footer Copyright : @basicSettings.Value("Footer_Copyright")</span>
-        <span>Footer Title : @basicSettings.Value("Footer_Title")</span>
-        <span>Footer Logo : @basicSettings.Value("Footer_Logo")</span>
-     </div>
-    <!-- Eric 驗證 Global Code - End -->
-
-    <!-- FB - Messenger 洽談外掛程式 Code - Start -->
-
->>>>>>> p-golden-food
+    @Model.Value("FB_Messenger_Chat_Plugin_Code")
     <!-- FB - Messenger 洽談外掛程式 Code - End -->
     <!--page start-->
     <div class="page">
