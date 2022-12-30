@@ -154,10 +154,16 @@
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-2 widget-area">
                     <div class="widget text-center clearfix">
                         <div class="">
-                            <img src="tpl/zst_GF/images\contactUs\line-qrcode.png" style="height: 150px;">
+                            @{
+                                MediaWithCrops footerQRCode = settingsBasic.Value<MediaWithCrops>("footerQRCode");
+                                if (footerQRCode != null)
+                                {
+                                    <img src="@footerQRCode.MediaUrl()" alt="footerQRCode" style="height: 150px;">
+                                }
+                            }
                             <p class="pt-10 font-w-500 mb-5">
-                                LINE ID :
-                                <span class="ttm-textcolor-skincolor">@@wanna.eat</span>
+                                LINE ID：
+                                <span class="ttm-textcolor-skincolor">@settingsBasic.Value("footerLineID")</span>
                             </p>
                         </div>
                     </div>
