@@ -1039,11 +1039,17 @@
                             <!-- testimonial-content -->
                             <div class="testimonial-img d-inline-block">
                                 <!-- testimonial-img -->
-                                <img class="img-fluid box-shadow" src="https://via.placeholder.com/150X150/444444.jpg" alt="testimonial-img">
+                                @{
+                                    var Home_Comment_01_Image = Model.Value<MediaWithCrops>("Home_Comment_01_Image");
+                                    if (Home_Comment_01_Image != null)
+                                    {
+                                        <img class="img-fluid box-shadow" src="@Home_Comment_01_Image.MediaUrl()" alt="Home_Comment_01_Image">
+                                    }
+                                }
                             </div>
                             <div class="testimonial-avatar d-inline-block">
                                 <div class="testimonial-caption">
-                                    <h5>企業客戶評論-01</h5><!-- testimonial-caption -->
+                                    <h5>@Model.Value("Home_Comment_01_Title")</h5><!-- testimonial-caption -->
                                     <div class="ttm-ratting-star">
                                         <!-- ratting-star -->
                                         <i class="fa fa-star"></i>
@@ -1055,20 +1061,26 @@
                                 </div>
                             </div>
                             <!-- testimonial-text -->
-                            <blockquote class="testimonial-text">用料天然健康</blockquote>
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_01_Description")</blockquote>
+                        </div>
+                    </div>
 
-                        </div>
-                    </div>
                     <div class="testimonials style2 ttm-bgcolor-white">
                         <div class="testimonial-content">
                             <!-- testimonial-content -->
                             <div class="testimonial-img d-inline-block">
                                 <!-- testimonial-img -->
-                                <img class="img-fluid box-shadow" src="https://via.placeholder.com/150X150/444444.jpg" alt="testimonial-img">
+                                @{
+                                    var Home_Comment_02_Image = Model.Value<MediaWithCrops>("Home_Comment_02_Image");
+                                    if (Home_Comment_02_Image != null)
+                                    {
+                                        <img class="img-fluid box-shadow" src="@Home_Comment_02_Image.MediaUrl()" alt="Home_Comment_02_Image">
+                                    }
+                                }
                             </div>
                             <div class="testimonial-avatar d-inline-block">
                                 <div class="testimonial-caption">
-                                    <h5>企業客戶評論-02</h5><!-- testimonial-caption -->
+                                    <h5>@Model.Value("Home_Comment_02_Title")</h5><!-- testimonial-caption -->
                                     <div class="ttm-ratting-star">
                                         <!-- ratting-star -->
                                         <i class="fa fa-star"></i>
@@ -1080,19 +1092,26 @@
                                 </div>
                             </div>
                             <!-- testimonial-text -->
-                            <blockquote class="testimonial-text">搭配品牌發展，研發創新產品</blockquote>
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_02_Description")</blockquote>
                         </div>
                     </div>
+
                     <div class="testimonials style2 ttm-bgcolor-white">
                         <div class="testimonial-content">
                             <!-- testimonial-content -->
                             <div class="testimonial-img d-inline-block">
                                 <!-- testimonial-img -->
-                                <img class="img-fluid box-shadow" src="https://via.placeholder.com/150X150/444444.jpg" alt="testimonial-img">
+                                @{
+                                    var Home_Comment_03_Image = Model.Value<MediaWithCrops>("Home_Comment_03_Image");
+                                    if (Home_Comment_03_Image != null)
+                                    {
+                                                <img class="img-fluid box-shadow" src="@Home_Comment_03_Image.MediaUrl()" alt="Home_Comment_03_Image">
+                                    }
+                                }
                             </div>
                             <div class="testimonial-avatar d-inline-block">
                                 <div class="testimonial-caption">
-                                    <h5>企業客戶評論-03</h5><!-- testimonial-caption -->
+                                    <h5>@Model.Value("Home_Comment_03_Title")</h5><!-- testimonial-caption -->
                                     <div class="ttm-ratting-star">
                                         <!-- ratting-star -->
                                         <i class="fa fa-star"></i>
@@ -1104,19 +1123,26 @@
                                 </div>
                             </div>
                             <!-- testimonial-text -->
-                            <blockquote class="testimonial-text">食品工廠環境與衛生控管嚴格</blockquote>
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_03_Description")</blockquote>
                         </div>
                     </div>
+
                     <div class="testimonials style2 ttm-bgcolor-white">
                         <div class="testimonial-content">
                             <!-- testimonial-content -->
                             <div class="testimonial-img d-inline-block">
                                 <!-- testimonial-img -->
-                                <img class="img-fluid box-shadow" src="https://via.placeholder.com/150X150/444444.jpg" alt="testimonial-img">
+                                @{
+                                    var Home_Comment_04_Image = Model.Value<MediaWithCrops>("Home_Comment_04_Image");
+                                    if (Home_Comment_04_Image != null)
+                                    {
+                                                <img class="img-fluid box-shadow" src="@Home_Comment_04_Image.MediaUrl()" alt="Home_Comment_04_Image">
+                                    }
+                                }
                             </div>
                             <div class="testimonial-avatar d-inline-block">
                                 <div class="testimonial-caption">
-                                    <h5>企業客戶評論-04</h5><!-- testimonial-caption -->
+                                    <h5>@Model.Value("Home_Comment_04_Title")</h5><!-- testimonial-caption -->
                                     <div class="ttm-ratting-star">
                                         <!-- ratting-star -->
                                         <i class="fa fa-star"></i>
@@ -1128,19 +1154,26 @@
                                 </div>
                             </div>
                             <!-- testimonial-text -->
-                            <blockquote class="testimonial-text">打樣費可折抵訂單費，價格划算</blockquote>
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_04_Description")</blockquote>
                         </div>
                     </div>
+
                     <div class="testimonials style2 ttm-bgcolor-white">
                         <div class="testimonial-content">
                             <!-- testimonial-content -->
                             <div class="testimonial-img d-inline-block">
                                 <!-- testimonial-img -->
-                                <img class="img-fluid box-shadow" src="https://via.placeholder.com/150X150/444444.jpg" alt="testimonial-img">
+                                @{
+                                    var Home_Comment_05_Image = Model.Value<MediaWithCrops>("Home_Comment_05_Image");
+                                    if (Home_Comment_05_Image != null)
+                                    {
+                                        <img class="img-fluid box-shadow" src="@Home_Comment_05_Image.MediaUrl()" alt="Home_Comment_05_Image">
+                                    }
+                                }
                             </div>
                             <div class="testimonial-avatar d-inline-block">
                                 <div class="testimonial-caption">
-                                    <h5>企業客戶評論-05</h5><!-- testimonial-caption -->
+                                    <h5>@Model.Value("Home_Comment_05_Title")</h5><!-- testimonial-caption -->
                                     <div class="ttm-ratting-star">
                                         <!-- ratting-star -->
                                         <i class="fa fa-star"></i>
@@ -1152,9 +1185,103 @@
                                 </div>
                             </div>
                             <!-- testimonial-text -->
-                            <blockquote class="testimonial-text">剛建立新品牌和產品線，協助我們 1 年內業績成長 200%</blockquote>
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_05_Description")</blockquote>
                         </div>
                     </div>
+
+                    <div class="testimonials style2 ttm-bgcolor-white">
+                        <div class="testimonial-content">
+                            <!-- testimonial-content -->
+                            <div class="testimonial-img d-inline-block">
+                                <!-- testimonial-img -->
+                                @{
+                                    var Home_Comment_06_Image = Model.Value<MediaWithCrops>("Home_Comment_06_Image");
+                                    if (Home_Comment_06_Image != null)
+                                    {
+                                        <img class="img-fluid box-shadow" src="@Home_Comment_06_Image.MediaUrl()" alt="Home_Comment_06_Image">
+                                    }
+                                }
+                            </div>
+                            <div class="testimonial-avatar d-inline-block">
+                                <div class="testimonial-caption">
+                                    <h5>@Model.Value("Home_Comment_06_Title")</h5><!-- testimonial-caption -->
+                                    <div class="ttm-ratting-star">
+                                        <!-- ratting-star -->
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- testimonial-text -->
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_06_Description")</blockquote>
+                        </div>
+                    </div>
+
+                    <div class="testimonials style2 ttm-bgcolor-white">
+                        <div class="testimonial-content">
+                            <!-- testimonial-content -->
+                            <div class="testimonial-img d-inline-block">
+                                <!-- testimonial-img -->
+                                @{
+                                    var Home_Comment_07_Image = Model.Value<MediaWithCrops>("Home_Comment_07_Image");
+                                    if (Home_Comment_07_Image != null)
+                                    {
+                                        <img class="img-fluid box-shadow" src="@Home_Comment_07_Image.MediaUrl()" alt="Home_Comment_07_Image">
+                                    }
+                                }
+                            </div>
+                            <div class="testimonial-avatar d-inline-block">
+                                <div class="testimonial-caption">
+                                    <h5>@Model.Value("Home_Comment_07_Title")</h5><!-- testimonial-caption -->
+                                    <div class="ttm-ratting-star">
+                                        <!-- ratting-star -->
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- testimonial-text -->
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_07_Description")</blockquote>
+                        </div>
+                    </div>
+
+                    <div class="testimonials style2 ttm-bgcolor-white">
+                        <div class="testimonial-content">
+                            <!-- testimonial-content -->
+                            <div class="testimonial-img d-inline-block">
+                                <!-- testimonial-img -->
+                                @{
+                                    var Home_Comment_08_Image = Model.Value<MediaWithCrops>("Home_Comment_08_Image");
+                                    if (Home_Comment_08_Image != null)
+                                    {
+                                        <img class="img-fluid box-shadow" src="@Home_Comment_08_Image.MediaUrl()" alt="Home_Comment_08_Image">
+                                    }
+                                }
+                            </div>
+                            <div class="testimonial-avatar d-inline-block">
+                                <div class="testimonial-caption">
+                                    <h5>@Model.Value("Home_Comment_08_Title")</h5><!-- testimonial-caption -->
+                                    <div class="ttm-ratting-star">
+                                        <!-- ratting-star -->
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- testimonial-text -->
+                            <blockquote class="testimonial-text">@Model.Value("Home_Comment_08_Description")</blockquote>
+                        </div>
+                    </div>
+
                 </div>
             </div><!-- row end-->
         </div>
