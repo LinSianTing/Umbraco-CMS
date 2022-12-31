@@ -57,30 +57,29 @@
                 <div class="col-lg-12">
                     <div class="ttm-tabs ttm-tab-style-classic style3">
 
-                        <!-- tab Start  -->
+                        <!-- Tab - Start  -->
                         <ul class="tabs mb-0 w-100 justify-content-center">
                             @{
                                 if (allTags != null)
                                 {
                                     foreach (TagModel tag in allTags)
                                     {
-                                        <!-- Step 1 : 呈現Tag -->
+                                        <!-- Step 1：呈現 Tag -->
                                         <li class="tab">
                                             <a href="#" data-tag="@tag.Text"><span>@tag.Text</span></a>
                                         </li>
 
-                                        <!-- Step 1: 在滾Tag 的同時，透過 Dictionary 做 By Tag 分籃整理 -->
+                                        <!-- Step 1：滾 Tag 同時，透過 Dictionary 分籃整理 By Tag -->
                                         tagDictionaryAboutProduct.Add(string.IsNullOrEmpty(tag.Text) ? "null-" + tagDictionaryAboutProduct.Count : tag.Text, new List<IPublishedContent>());
                                     }
                                 }
                             }
                         </ul>
-
-                        <!-- tab end -->
+                        <!-- Tab - End -->
 
                         <div class="content-tab w-100 ttm-bgcolor-white">
                             <!-- content-tab -->
-                            <!-- Step 2 : 先滾出全部的商品，放在 第一個 content-inner 裡面-->
+                            <!-- Step 2：先滾出全部商品，放入第一個 content-inner -->
                             <!-- content-inner -->
                             <!-- Foreach Products -->
                             <div class="content-inner active" data-tag="all">
@@ -128,7 +127,7 @@
                                             <!-- featured-imagebox-event END -->
                                         </div>
 
-                                        <!-- Step 3 : 在滾All Product 的同時，做分籃整理 -->
+                                        <!-- Step 3：滾 All Product 同時，分籃整理 -->
                                         if (allTagAboutThisProductsItem != null)
                                         {
                                             foreach (string tagString in allTagAboutThisProductsItem)
@@ -141,7 +140,7 @@
                                 <!-- row end -->
                             </div>
 
-                            <!-- Step 2 : 依照每個Tag滾出 各自 content-inner , 並把屬於他Tag的 Product 放進去裡面 -->
+                            <!-- Step 2：依照每個 Tag 滾出各自 content-inner , 並把屬於他 Tag 的 Product 放進去裡面 -->
                             @{
                                 if (allTags != null)
                                 {
@@ -154,7 +153,7 @@
                                             <div class="content-inner" data-tag="@tag.Text" style="display:none;">
                                                 <div class="row">
                                                     <!-- row -->
-                                                    <!-- Step 3 : 每個 Product 重新滾一次，找有沒有媒合的Tag, 判斷後呈現 -->
+                                                    <!-- Step 3：每個 Product 重新滾一次，找有沒有媒合的 Tag, 判斷後呈現 -->
                                                     @foreach (IPublishedContent item in tagDictionaryAboutProduct[tag.Text])
                                                     {
                                                         // Image
