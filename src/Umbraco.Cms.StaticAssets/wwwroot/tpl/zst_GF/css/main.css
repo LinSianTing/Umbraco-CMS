@@ -1172,7 +1172,7 @@ ul li .icon-box.icon-style-border i{
 }
 #site-header-menu #site-navigation .menu ul { 
   padding: 0px; 
-  margin: 0px; 
+  margin: 0px;
 }
 .ttm-menu-toggle{ float: right; }
 .ttm-menu-toggle input[type=checkbox] { display: none; }
@@ -1188,7 +1188,7 @@ ul li .icon-box.icon-style-border i{
 #site-header-menu #site-navigation .menu ul li > a {
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 18px;
     line-height: 15px;
     position: relative;
 }

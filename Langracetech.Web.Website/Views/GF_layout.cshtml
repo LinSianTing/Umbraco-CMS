@@ -89,11 +89,16 @@
         <iframe src="@stringOfGTM_ID"
                 height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
+<<<<<<< HEAD
     <!-- End Google Tag Manager (noscript) - End -->
     <!-- FB - Messenger 洽談外掛程式 Code - Start -->
     @Model.Value("FB_Messenger_Chat_Plugin_Code")
     <!-- FB - Messenger 洽談外掛程式 Code - End -->
     <!--page start-->
+=======
+    <!-- Google Tag Manager (noscript) - End -->
+   <!--page start-->
+>>>>>>> p-golden-food
     <div class="page">
 
         <!--header start-->
@@ -112,6 +117,56 @@
             <i class="fa fa-angle-up"></i>
         </a>
         <!--back-to-top end-->
+        <!-- social icons - Start -->
+        <div class="icon-bar">
+            <a href="@settingsBasic.Value("instantMessagingLine")" class="social-icon-line" target="_blank">
+                <i class="fab fa-line fa-2x"></i>
+            </a>
+            <a href="@settingsBasic.Value("instantMessagingFacebook")" class="social-icon-facebook" target="_blank">
+                <i class="fab fa-facebook-messenger fa-2x"></i>
+            </a>
+        </div>
+
+        <style>
+            /* Fixed/sticky icon bar (vertically aligned 50% from the top of the screen) */
+            .icon-bar {
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                -webkit-transform: translateY(-50%);
+                -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+                z-index: 1000;
+            }
+                /* Style the icon bar links */
+                .icon-bar a {
+                    display: block;
+                    text-align: center;
+                    padding: 10px;
+                    transition: all 0.3s ease;
+                    color: white;
+                    font-size: 20px;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                    margin-bottom: 10px;
+                    text-shadow: 3px 3px 2px rgba(51, 51, 51, 0.7);
+                }
+                    /* Style the social media icons with color, if you want */
+                    .icon-bar a:hover {
+                        filter: brightness(0.85);
+                    }
+
+            .social-icon-line {
+                background: #03C302;
+                color: white;
+            }
+
+            .social-icon-facebook {
+                background: #0A7CFF;
+                color: white;
+            }
+        </style>
+        <!-- social icons - End -->
     </div>
     <!-- page end -->
     <!-- Javascript -->

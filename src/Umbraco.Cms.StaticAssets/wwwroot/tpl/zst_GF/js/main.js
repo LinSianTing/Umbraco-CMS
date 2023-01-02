@@ -206,23 +206,22 @@ $(window).scroll(function(){
     });
 
 
-  /*------------------------------------------------------------------------------*/
-  /* Tab
-  /*------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------*/
+/* Tab
+/*------------------------------------------------------------------------------*/ 
 
-  //$('.ttm-tabs').each(function() {
-  //    $(this).children('.content-tab').children().hide();
-  //    $(this).children('.content-tab').children().first().show();
-  //    $(this).find('.tabs').children('li').on('click', function(e) {  
-  //        var liActive = $(this).index(),
-  //            contentActive = $(this).siblings().removeClass('active').parents('.ttm-tabs').children('.content-tab').children().eq(liActive);
-  //        contentActive.addClass('active').fadeIn('slow');
-  //        contentActive.siblings().removeClass('active');
-  //        $(this).addClass('active').parents('.ttm-tabs').children('.content-tab').children().eq(liActive).siblings().hide();
-  //        e.preventDefault();
-  //    });
-  //});
-
+//$('.ttm-tabs').each(function() {
+//    $(this).children('.content-tab').children().hide();
+//    $(this).children('.content-tab').children().first().show();
+//    $(this).find('.tabs').children('li').on('click', function(e) {  
+//        var liActive = $(this).index(),
+//            contentActive = $(this).siblings().removeClass('active').parents('.ttm-tabs').children('.content-tab').children().eq(liActive);
+//        contentActive.addClass('active').fadeIn('slow');
+//        contentActive.siblings().removeClass('active');
+//        $(this).addClass('active').parents('.ttm-tabs').children('.content-tab').children().eq(liActive).siblings().hide();
+//        e.preventDefault();
+//    });
+//});
 
   /*------------------------------------------------------------------------------*/
   /* Tab - GF_products 產品呈現 選擇
@@ -237,10 +236,10 @@ $(window).scroll(function(){
       $.each($(this).parents('.ttm-tabs').children('.content-tab').children(), function (index, value) {
         var tagofThisDiv = $(this).attr("data-tag");
         if (tagofThisDiv == tagNameActive) {
-            $(this).addClass('active').fadeIn('slow');
-          } else {
-            $(this).removeClass('active').hide();
-          }
+          $(this).addClass('active').fadeIn('slow');
+        } else {
+          $(this).removeClass('active').hide();
+        }
       });
       $(this).addClass('active').siblings().removeClass('active');
       e.preventDefault();
