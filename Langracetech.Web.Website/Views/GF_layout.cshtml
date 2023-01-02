@@ -15,7 +15,6 @@
     <!-- SEO - Start -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="keywords" content="@(Model != null ? (Model.Value("SEO_MetaKeywords") != null ? Html.Raw(String.Join(",", (string[])Model.Value("SEO_MetaKeywords"))) : "Golden Food") : "Golden Food")" />
     <meta name="description" content="@(Model != null ? (Model.Value("SEO_MetaDescription") != null ? (!string.IsNullOrEmpty(Convert.ToString(Model.Value("SEO_MetaDescription"))) ? Html.Raw(Model.Value("SEO_MetaDescription")):"Golden Food") : "Golden Food") : "Golden Food")" />
     <meta name="author" content="https://www.langracetech.com/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -34,7 +33,6 @@
     <!-- Google Tag Manager - End -->
     <!-- favicon icon -->
     <link rel="shortcut icon" href="/tpl/zst_GF/images/favicon.png" />
-
     @{
         MediaWithCrops Favicon_Logo = settingsBasic.Value<MediaWithCrops>("Favicon_Logo");
         if (Favicon_Logo != null)
@@ -89,18 +87,9 @@
         <iframe src="@stringOfGTM_ID"
                 height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
-<<<<<<< HEAD
     <!-- End Google Tag Manager (noscript) - End -->
-    <!-- FB - Messenger 洽談外掛程式 Code - Start -->
-    @Model.Value("FB_Messenger_Chat_Plugin_Code")
-    <!-- FB - Messenger 洽談外掛程式 Code - End -->
-    <!--page start-->
-=======
-    <!-- Google Tag Manager (noscript) - End -->
-   <!--page start-->
->>>>>>> p-golden-food
+        <!--page start-->
     <div class="page">
-
         <!--header start-->
         @await Html.PartialAsync("Template001_Zester/GF/GF_menu/_MenuPartial")
         <!--header end-->
@@ -117,7 +106,7 @@
             <i class="fa fa-angle-up"></i>
         </a>
         <!--back-to-top end-->
-        <!-- social icons - Start -->
+        <!-- Social icons - Start -->
         <div class="icon-bar">
             <a href="@settingsBasic.Value("instantMessagingLine")" class="social-icon-line" target="_blank">
                 <i class="fab fa-line fa-2x"></i>
@@ -166,7 +155,7 @@
                 color: white;
             }
         </style>
-        <!-- social icons - End -->
+        <!-- Social icons - End -->
     </div>
     <!-- page end -->
     <!-- Javascript -->
