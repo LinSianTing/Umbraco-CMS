@@ -17,24 +17,27 @@
 
     <title>Page Not Found</title>
 
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/tpl/zst_GF/css/bootstrap.min.css" />
+
     <link rel="stylesheet" href="@WebPath.Combine(backOfficePath.TrimStart("~"), "/assets/css/nonodes.style.min.css")" />
     <style type="text/css">
         body {
-            color:initial;
+            color: initial;
         }
 
         section {
             background: none;
         }
 
-        section a, section a:focus, section a:visited {
-            color:initial;
-            border-color:currentColor;
-        }
+            section a, section a:focus, section a:visited {
+                color: initial;
+                border-color: currentColor;
+            }
     </style>
 </head>
-<body>
 
+<body>
     <section>
         <article>
             <div>
@@ -61,32 +64,31 @@
                     {
                         <p>@message</p>
                     }
+                    <br />
+                    <a href="/" class="btn btn-outline-primary" role="button" data-bs-toggle="button">¦^¨ì­º­¶</a>
 
                     <div class="cta"></div>
 
-@*                    <div class="row">
-                        <div class="col">
-                            <h2>This page can be replaced</h2>
-                            <p>
-                                Custom error handling might make your site look more on-brand and minimize the impact of errors on user experience - for example, a custom 404 with some helpful links (or a search function) could bring some value to the site.
-                            </p>
+                    @*<div class="row">
+                <div class="col">
+                <h2>This page can be replaced</h2>
+                <p>
+                Custom error handling might make your site look more on-brand and minimize the impact of errors on user experience - for example, a custom 404 with some helpful links (or a search function) could bring some value to the site.
+                </p>
 
-                            <a href="https://umbra.co/custom-error-pages" target="_blank" rel="noopener">Implementing custom error pages &rarr;</a>
-                        </div>
+                <a href="https://umbra.co/custom-error-pages" target="_blank" rel="noopener">Implementing custom error pages &rarr;</a>
+                </div>
 
-                        <div class="col">
-                            <h2>Be a part of the community</h2>
-                            <p>The Umbraco community is the best of its kind, be sure to visit, and if you have any questions, we're sure that you can get your answers from the community.</p>
+                <div class="col">
+                <h2>Be a part of the community</h2>
+                <p>The Umbraco community is the best of its kind, be sure to visit, and if you have any questions, we're sure that you can get your answers from the community.</p>
 
-                            <a href="https://our.umbraco.com/" target="_blank" rel="noopener">our.Umbraco &rarr;</a>
-                        </div>
-                    </div>*@
-
+                <a href="https://our.umbraco.com/" target="_blank" rel="noopener">our.Umbraco &rarr;</a>
+                </div>
+                </div>*@
                 }
             </div>
         </article>
-
     </section>
-
 </body>
 </html>
