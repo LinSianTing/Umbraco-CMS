@@ -2689,7 +2689,7 @@ To manage your website, simply open the Umbraco backoffice and start adding cont
   </area>
   <area alias="startupDashboard">
     <key alias="fallbackHeadline">Langracetech CMS System 蘭恩科技內容管理平台</key>
-    <key alias="fallbackDescription">感謝您選擇蘭恩科技，我們致力打造優質內容管理系統並讓網站管理變得迅速又有效益~!</key>
+    <key alias="fallbackDescription">感謝您選擇蘭恩科技，我們致力於提供客製技術解決方案，支援客戶，成為企業長期夥伴</key>
   </area>
   <area alias="formsDashboard">
     <key alias="formsHeadline">Umbraco Forms</key>
