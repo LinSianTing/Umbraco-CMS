@@ -579,13 +579,13 @@
     <key alias="renewSession">已更新，繼續工作。</key>
   </area>
   <area alias="login">
-    <key alias="greeting0">超級星期天快樂</key>
-    <key alias="greeting1">瘋狂星期一快樂</key>
-    <key alias="greeting2">熱鬧星期二快樂</key>
-    <key alias="greeting3">美妙星期三快樂</key>
-    <key alias="greeting4">悅耳星期四快樂</key>
-    <key alias="greeting5">時髦星期五快樂</key>
-    <key alias="greeting6">喵喵星期六快樂</key>
+    <key alias="greeting0">Welcome to LangraceTech CMS</key>
+    <key alias="greeting1">Welcome to LangraceTech CMS</key>
+    <key alias="greeting2">Welcome to LangraceTech CMS</key>
+    <key alias="greeting3">Welcome to LangraceTech CMS</key>
+    <key alias="greeting4">Welcome to LangraceTech CMS</key>
+    <key alias="greeting5">Welcome to LangraceTech CMS</key>
+    <key alias="greeting6">Welcome to LangraceTech CMS</key>
     <key alias="instruction">下方登入</key>
     <key alias="signInWith">登入使用</key>
     <key alias="timeout">連線時間過了</key>
@@ -597,7 +597,7 @@
     <key alias="setPasswordInstruction">請輸入新密碼</key>
     <key alias="setPasswordConfirmation">您的密碼已經更新</key>
     <key alias="resetCodeExpired">您點選的連結是無效或過期的</key>
-    <key alias="resetPasswordEmailCopySubject">Umbraco：重設密碼</key>
+    <key alias="resetPasswordEmailCopySubject">LangraceTech CMS：重設密碼</key>
     <key alias="resetPasswordEmailCopyFormat"><![CDATA[<p>您登入到後台的使用者名稱是：<strong>%0%</strong></p><p>點選<a href="%1%"><strong>這裡</strong></a>來重設您的密碼或將此連結複製/貼上到您的瀏覽器：</p><p><em>%1%</em></p>]]></key>
   </area>
   <area alias="main">
