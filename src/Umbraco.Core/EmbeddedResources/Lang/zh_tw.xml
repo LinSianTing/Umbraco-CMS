@@ -369,7 +369,7 @@
     <key alias="edit">編輯</key>
     <key alias="edited">已編輯</key>
     <key alias="elements">元素</key>
-    <key alias="email">郵箱</key>
+    <key alias="email">Email</key>
     <key alias="error">錯誤</key>
     <key alias="findDocument">查找文檔</key>
     <key alias="height">高</key>
@@ -404,7 +404,7 @@
     <key alias="pleasewait">請稍候…</key>
     <key alias="previous">上一步</key>
     <key alias="properties">屬性</key>
-    <key alias="reciept">接收資料郵箱</key>
+    <key alias="reciept">接收資料 Email</key>
     <key alias="recycleBin">回收站</key>
     <key alias="remaining">保持狀態中</key>
     <key alias="rename">重命名</key>
@@ -779,6 +779,7 @@
     <key alias="users">用戶</key>
     <key alias="help" version="7.0">說明</key>
     <key alias="forms">表單</key>
+    <key alias="contactlangracetech">聯絡 Langrace Tech</key>
   </area>
   <area alias="help">
     <key alias="theBestUmbracoVideoTutorials">最好的Umbraco影片教學</key>

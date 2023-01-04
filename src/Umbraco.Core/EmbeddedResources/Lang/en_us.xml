@@ -1516,6 +1516,7 @@ To manage your website, simply open the Umbraco backoffice and start adding cont
     <key alias="settings">Settings</key>
     <key alias="translation">Translation</key>
     <key alias="users">Users</key>
+    <key alias="contactlangracetech">Contact Langrace Tech</key>
   </area>
   <area alias="help">
     <key alias="tours">Tours</key>

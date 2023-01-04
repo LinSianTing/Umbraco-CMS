@@ -1,4 +1,5 @@
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Sections;
 using Umbraco.Extensions;
 
 namespace Langracetech.Web.Website
@@ -36,6 +37,8 @@ namespace Langracetech.Web.Website
                 .AddBackOffice()
                 .AddWebsite()
                 .AddComposers()
+                // Register the section
+                .AddSection<ContactLangraceTechSection>()
                 .Build();
         }
 
