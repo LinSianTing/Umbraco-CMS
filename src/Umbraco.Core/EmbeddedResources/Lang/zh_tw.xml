@@ -22,7 +22,7 @@
     <key alias="logout">退出</key>
     <key alias="move">移動</key>
     <key alias="notify">提醒</key>
-    <key alias="protect">公眾存取權限</key>
+    <key alias="protect">公開存取權限</key>
     <key alias="publish">發佈</key>
     <key alias="unpublish">取消發佈</key>
     <key alias="refreshNode">重新載入節點</key>
@@ -830,7 +830,7 @@
     <key alias="dictionaryItemSaved">字典項已保存</key>
     <key alias="editContentPublishedFailedByParent">因為上級頁面未發佈導致發佈失敗！</key>
     <key alias="editContentPublishedHeader">內容已發佈</key>
-    <key alias="editContentPublishedText">公眾可見</key>
+    <key alias="editContentPublishedText">公開可見</key>
     <key alias="editContentSavedHeader">內容已保存</key>
     <key alias="editContentSavedText">請發佈以使更改生效</key>
     <key alias="editContentSendToPublish">提交審核</key>
