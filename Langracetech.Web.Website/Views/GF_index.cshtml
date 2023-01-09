@@ -3,6 +3,7 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "GF_layout.cshtml";
+    IPublishedContent settingsBasic = Umbraco.ContentSingleAtXPath("//settingsBasic") ?? Model;
 }
 
 <!-- REVOLUTION SLIDER -->
@@ -330,8 +331,15 @@
                         <div class="row">
                             <div class="col-md-5 col-lg-5 col-sm-6">
                                 <div class="mt-35">
-                                    <img src="tpl/zst_GF/images/contactUs/line-qrcode.png" alt="" style="max-width: 10vh">
-                                    <p>LINE ID：<span style="color: #C5A572;">@@wanna.eat</span></p>
+                                    @{
+                                        MediaWithCrops Home_Intro_QRCode = Model.Value<MediaWithCrops>("Home_Intro_QRCode");
+                                        if (Home_Intro_QRCode != null)
+                                        {
+                                            <img src="@Home_Intro_QRCode.MediaUrl()" alt="Home_Intro_QRCode" style="max-width: 10vh;">
+                                        }
+                                    }
+
+                                    <p>LINE ID：<span style="color: #C5A572;">@settingsBasic.Value("footerLineID")</span></p>
                                 </div>
                             </div>
                             <div class="col-md-7 col-lg-7 col-sm-6">
@@ -340,11 +348,11 @@
                                         <!-- featured-content -->
                                         <div class="featured-desc">
                                             <!-- featured-desc -->
-                                            <p class="mb-0">Ask Me Anything</p>
+                                            <p class="mb-0">TEL 客服專線</p>
                                         </div>
                                         <div class="featured-title">
                                             <!-- featured-title -->
-                                            <h5 class="font-w-500">＋886 (03) 288 - 8759</h5>
+                                            <h5 class="font-w-500">@settingsBasic.Value("Footer_Tel")</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -360,11 +368,10 @@
                                             <i class="ti ti-email"></i>
                                         </div>
                                         <div class="ttm-fid-contents text-left">
-
                                             <h4 class="ttm-fid-inner">
                                                 <span>Email</span>
                                             </h4>
-                                            <h3 class="ttm-fid-title"><a href="mailto:very.wanna.eat@@gmail.com" target="_blank">very.wanna.eat@@gmail.com</a></h3>
+                                            <h3 class="ttm-fid-title"><a href="mailto:@settingsBasic.Value("Footer_Email")" target="_blank">@settingsBasic.Value("Footer_Email")</a></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -378,23 +385,35 @@
                         <!-- ttm_single_image-wrapper -->
                         <div class="ttm_single_image-wrapper position-relative">
                             @{
+                                var Home_Intro_Logo_01 = Model.Value<MediaWithCrops>("Home_Intro_Logo_01");
+                                if (Home_Intro_Logo_01 != null)
+                                {
+                                    <img class="img-fluid" src="@Home_Intro_Logo_01.MediaUrl()" alt="Home_Intro_Logo_01" style="max-width: 18vh;">
+                                }
+                            }
+                        </div><!-- ttm_single_image-wrapper end -->
+                        <br />
+                        <!-- ttm_single_image-wrapper -->
+                        <div class="ttm_single_image-wrapper position-relative">
+                            @{
                                 var Home_Intro_Logo_02 = Model.Value<MediaWithCrops>("Home_Intro_Logo_02");
                                 if (Home_Intro_Logo_02 != null)
                                 {
-                                    <img class="img-fluid" src="@Home_Intro_Logo_02.MediaUrl()" alt="Home_Intro_Logo_02" style="max-width: 36vh;">
+                                    <img class="img-fluid" src="@Home_Intro_Logo_02.MediaUrl()" alt="Home_Intro_Logo_02" style="max-width: 18vh;">
                                 }
                             }
                         </div><!-- ttm_single_image-wrapper end -->
                         <!-- ttm_single_image-wrapper -->
-                        <div class="ttm_single_image-wrapper overlay-style1">
-                            @{
-                                var Home_Intro_Logo_01 = Model.Value<MediaWithCrops>("Home_Intro_Logo_01");
-                                if (Home_Intro_Logo_01 != null)
-                                {
-                                    <img class="img-fluid" src="@Home_Intro_Logo_01.MediaUrl()" alt="Home_Intro_Logo_01" style="max-width: 14vh;">
-                                }
-                            }
-                        </div><!-- ttm_single_image-wrapper end -->
+                        @*<div class="ttm_single_image-wrapper overlay-style1">
+                        @{
+                        var Home_Intro_Logo_01 = Model.Value<MediaWithCrops>("Home_Intro_Logo_01");
+                        if (Home_Intro_Logo_01 != null)
+                        {
+                        <img class="img-fluid" src="@Home_Intro_Logo_01.MediaUrl()" alt="Home_Intro_Logo_01" style="max-width: 14vh;">
+                        }
+                        }
+                        </div>*@<!-- ttm_single_image-wrapper end -->
+
                     </div>
                 </div>
             </div><!-- row end -->
@@ -453,7 +472,7 @@
                                                             <h5><b>1. 評估客戶需求</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 提供專業代工，產品分為 3 大類：
                                                                 <br />•&ensp;廠內公版產品
                                                                 <br />•&ensp;客製化產品
@@ -481,7 +500,7 @@
                                                             <h5><b>2. 提供樣品</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 依需求提供打樣服務，分為 3 大類：
                                                                 <br />•&ensp;廠內公版產品
                                                                 <br />•&ensp;客戶指定配方打樣
@@ -509,7 +528,7 @@
                                                             <h5><b>3. 酌收打樣費用</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 告知客戶酌收打樣費細節
                                                             </p>
                                                         </div>
@@ -534,7 +553,7 @@
                                                             <h5><b>4. 口味確認</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 客戶試吃樣品後，確認口味與配方。
                                                             </p>
                                                         </div>
@@ -561,7 +580,7 @@
                                                             <h5><b>5. 包裝確認</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 客戶提供銷售通路，好饗初提供專業建議與最佳包裝方式。
                                                             </p>
                                                         </div>
@@ -586,7 +605,7 @@
                                                             <h5><b>6. 產品數量確認</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 確認初步產品預估訂購量與交貨方式
                                                             </p>
                                                         </div>
@@ -611,7 +630,7 @@
                                                             <h5><b>7. 提供正式報價</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 依配方與產品預估訂購量，提供客戶報價單並簽訂正式合約。
                                                             </p>
                                                         </div>
@@ -636,7 +655,7 @@
                                                             <h5><b>8. 進行量產</b></h5>
                                                         </div>
                                                         <div class="featured-desc">
-                                                            <p class="h5" style="line-height: 1.7;">
+                                                            <p class="h5" style="line-height: 1.7; color: #595959">
                                                                 雙方溝通備貨天數，並於產品備貨起始日前 7-15 個工作日，提供訂購單予客戶。
                                                             </p>
                                                         </div>
