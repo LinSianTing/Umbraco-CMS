@@ -2,198 +2,104 @@
 // See LICENSE for more details.
 
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core.IO;
+using Umbraco.Cms.Core.Models.Validation;
 using Umbraco.Cms.Core.Serialization;
-using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Core.PropertyEditors;
 
-internal class ColorPickerConfigurationEditor : ConfigurationEditor<ColorPickerConfiguration>
+internal sealed partial class ColorPickerConfigurationEditor : ConfigurationEditor<ColorPickerConfiguration>
 {
-    private readonly IJsonSerializer _jsonSerializer;
-
-    public ColorPickerConfigurationEditor(IIOHelper ioHelper, IJsonSerializer jsonSerializer,
-        IEditorConfigurationParser editorConfigurationParser)
-        : base(ioHelper, editorConfigurationParser)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ColorPickerConfigurationEditor"/> class.
+    /// </summary>
+    public ColorPickerConfigurationEditor(IIOHelper ioHelper, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
+        : base(ioHelper)
     {
-        _jsonSerializer = jsonSerializer;
         ConfigurationField items = Fields.First(x => x.Key == "items");
-
-        // customize the items field
-        items.View = "views/propertyeditors/colorpicker/colorpicker.prevalues.html";
-        items.Description = "Add, remove or sort colors";
-        items.Name = "Colors";
-        items.Validators.Add(new ColorListValidator());
+        items.Validators.Add(new ColorListValidator(configurationEditorJsonSerializer));
     }
 
-    public override Dictionary<string, object> ToConfigurationEditor(ColorPickerConfiguration? configuration)
+    internal sealed partial class ColorListValidator : IValueValidator
     {
-        List<ValueListConfiguration.ValueListItem>? configuredItems = configuration?.Items; // ordered
-        object editorItems;
+        private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
 
-        if (configuredItems == null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorListValidator"/> class.
+        /// </summary>
+        public ColorListValidator(IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
+            => _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
+
+        /// <inheritdoc/>
+        public IEnumerable<ValidationResult> Validate(object? value, string? valueType, object? dataTypeConfiguration, PropertyValidationContext validationContext)
         {
-            editorItems = new object();
-        }
-        else
-        {
-            var d = new Dictionary<string, object>();
-            editorItems = d;
-            var sortOrder = 0;
-            foreach (ValueListConfiguration.ValueListItem item in configuredItems)
-            {
-                d[item.Id.ToString()] = GetItemValue(item, configuration!.UseLabel, sortOrder++);
-            }
-        }
-
-        var useLabel = configuration?.UseLabel ?? false;
-
-        return new Dictionary<string, object> { { "items", editorItems }, { "useLabel", useLabel } };
-    }
-
-    // send: { "items": { "<id>": { "value": "<color>", "label": "<label>", "sortOrder": <sortOrder> } , ... }, "useLabel": <bool> }
-    // recv: { "items": ..., "useLabel": <bool> }
-    public override ColorPickerConfiguration FromConfigurationEditor(
-        IDictionary<string, object?>? editorValues,
-        ColorPickerConfiguration? configuration)
-    {
-        var output = new ColorPickerConfiguration();
-
-        if (editorValues is null || !editorValues.TryGetValue("items", out var jjj) || !(jjj is JArray jItems))
-        {
-            return output; // oops
-        }
-
-        // handle useLabel
-        if (editorValues.TryGetValue("useLabel", out var useLabelObj))
-        {
-            Attempt<bool> convertBool = useLabelObj.TryConvertTo<bool>();
-            if (convertBool.Success)
-            {
-                output.UseLabel = convertBool.Result;
-            }
-        }
-
-        // auto-assigning our ids, get next id from existing values
-        var nextId = 1;
-        if (configuration?.Items != null && configuration.Items.Count > 0)
-        {
-            nextId = configuration.Items.Max(x => x.Id) + 1;
-        }
-
-        // create ValueListItem instances - ordered (items get submitted in the sorted order)
-        foreach (JObject item in jItems.OfType<JObject>())
-        {
-            // in:  { "value": "<color>", "id": <id>, "label": "<label>" }
-            // out: ValueListItem, Id = <id>, Value = <color> | { "value": "<color>", "label": "<label>" }
-            //                                        (depending on useLabel)
-            var value = item.Property("value")?.Value.Value<string>();
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                continue;
-            }
-
-            var id = item.Property("id")?.Value.Value<int>() ?? 0;
-            if (id >= nextId)
-            {
-                nextId = id + 1;
-            }
-
-            var label = item.Property("label")?.Value.Value<string>();
-            value = _jsonSerializer.Serialize(new { value, label });
-
-            output.Items.Add(new ValueListConfiguration.ValueListItem { Id = id, Value = value });
-        }
-
-        // ensure ids
-        foreach (ValueListConfiguration.ValueListItem item in output.Items)
-        {
-            if (item.Id == 0)
-            {
-                item.Id = nextId++;
-            }
-        }
-
-        return output;
-    }
-
-    private object GetItemValue(ValueListConfiguration.ValueListItem item, bool useLabel, int sortOrder)
-    {
-        // in:  ValueListItem, Id = <id>, Value = <color> | { "value": "<color>", "label": "<label>" }
-        //                                        (depending on useLabel)
-        // out: { "value": "<color>", "label": "<label>", "sortOrder": <sortOrder> }
-        var v = new ItemValue { Color = item.Value, Label = item.Value, SortOrder = sortOrder };
-
-        if (item.Value?.DetectIsJson() ?? false)
-        {
-            try
-            {
-                ItemValue? o = _jsonSerializer.Deserialize<ItemValue>(item.Value);
-                o!.SortOrder = sortOrder;
-                return o;
-            }
-            catch
-            {
-                // parsing Json failed, don't do anything, get the value (sure?)
-                return new ItemValue { Color = item.Value, Label = item.Value, SortOrder = sortOrder };
-            }
-        }
-
-        return new ItemValue { Color = item.Value, Label = item.Value, SortOrder = sortOrder };
-    }
-
-    internal class ColorListValidator : IValueValidator
-    {
-        public IEnumerable<ValidationResult> Validate(object? value, string? valueType, object? dataTypeConfiguration)
-        {
-            if (!(value is JArray json))
+            var stringValue = value?.ToString();
+            if (stringValue.IsNullOrWhiteSpace())
             {
                 yield break;
             }
 
-            // validate each item which is a json object
-            for (var index = 0; index < json.Count; index++)
+            ColorPickerConfiguration.ColorPickerItem[]? items = null;
+            try
             {
-                JToken i = json[index];
-                if (!(i is JObject jItem) || jItem["value"] == null)
+                items = _configurationEditorJsonSerializer.Deserialize<ColorPickerConfiguration.ColorPickerItem[]>(stringValue);
+            }
+            catch
+            {
+                // swallow and report error below
+            }
+
+            if (items is null)
+            {
+                yield return new ValidationResult($"The configuration value {stringValue} is not a valid color picker configuration", ["items"]);
+                yield break;
+            }
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var duplicates = new List<string>();
+            foreach (ColorPickerConfiguration.ColorPickerItem item in items)
+            {
+                if (ColorPattern().IsMatch(item.Value) == false)
                 {
+                    yield return new ValidationResult($"The value {item.Value} is not a valid hex color", ["items"]);
                     continue;
                 }
 
-                // NOTE: we will be removing empty values when persisting so no need to validate
-                var asString = jItem["value"]?.ToString();
-                if (asString.IsNullOrWhiteSpace())
+                var normalized = Normalize(item.Value);
+                if (seen.Add(normalized) is false)
                 {
-                    continue;
-                }
-
-                if (Regex.IsMatch(asString!, "^([0-9a-f]{3}|[0-9a-f]{6})$", RegexOptions.IgnoreCase) == false)
-                {
-                    yield return new ValidationResult("The value " + asString + " is not a valid hex color", new[]
-                    {
-                        // we'll make the server field the index number of the value so it can be wired up to the view
-                        "item_" + index.ToInvariantString(),
-                    });
+                    duplicates.Add(normalized);
                 }
             }
+
+            if (duplicates.Count > 0)
+            {
+                yield return new ValidationResult(
+                    $"Duplicate color values are not allowed: {string.Join(", ", duplicates)}",
+                    ["items"]);
+            }
         }
-    }
 
-    // represents an item we are exchanging with the editor
-    [DataContract]
-    private class ItemValue
-    {
-        [DataMember(Name = "value")]
-        public string? Color { get; set; }
+        private static string Normalize(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
 
-        [DataMember(Name = "label")]
-        public string? Label { get; set; }
+            var normalizedValue = value.Trim().ToLowerInvariant();
 
-        [DataMember(Name = "sortOrder")]
-        public int SortOrder { get; set; }
+            if (normalizedValue.Length == 3)
+            {
+                normalizedValue = $"{normalizedValue[0]}{normalizedValue[0]}{normalizedValue[1]}{normalizedValue[1]}{normalizedValue[2]}{normalizedValue[2]}";
+            }
+
+            return normalizedValue;
+        }
+
+        [GeneratedRegex("^([0-9a-f]{3}|[0-9a-f]{6})$", RegexOptions.IgnoreCase, "en-GB")]
+        private static partial Regex ColorPattern();
     }
 }

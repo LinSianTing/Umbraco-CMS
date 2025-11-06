@@ -14,13 +14,23 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Infrastructure.Persistence.Repositories.Implement;
 
-internal class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUserLogin>, IExternalLoginWithKeyRepository
+internal sealed class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUserLogin>, IExternalLoginWithKeyRepository
 {
-    public ExternalLoginRepository(IScopeAccessor scopeAccessor, AppCaches cache,
-        ILogger<ExternalLoginRepository> logger)
-        : base(scopeAccessor, cache, logger)
+    public ExternalLoginRepository(
+        IScopeAccessor scopeAccessor,
+        AppCaches cache,
+        ILogger<ExternalLoginRepository> logger,
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
     {
     }
+
     /// <summary>
     ///     Query for user tokens
     /// </summary>
@@ -46,15 +56,33 @@ internal class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUser
     /// </summary>
     /// <param name="query"></param>
     /// <returns></returns>
-    public int Count(IQuery<IIdentityUserToken> query)
+    public int Count(IQuery<IIdentityUserToken>? query)
     {
         Sql<ISqlContext> sql = Sql().SelectCount().From<ExternalLoginDto>();
         return Database.ExecuteScalar<int>(sql);
     }
 
     /// <inheritdoc />
-    public void DeleteUserLogins(Guid userOrMemberKey) =>
-        Database.Delete<ExternalLoginDto>("WHERE userOrMemberKey=@userOrMemberKey", new { userOrMemberKey });
+    public void DeleteUserLogins(Guid userOrMemberKey)
+    {
+        Sql<ISqlContext> sql = SqlContext.Sql()
+            .Delete<ExternalLoginDto>()
+            .Where<ExternalLoginDto>(x => x.UserOrMemberKey == userOrMemberKey);
+        Database.Execute(sql);
+    }
+
+    /// <inheritdoc />
+    public void DeleteUserLoginsForRemovedProviders(IEnumerable<string> currentLoginProviders)
+    {
+        Sql<ISqlContext> sql = Sql()
+            .Select<ExternalLoginDto>(x => x.Id)
+            .From<ExternalLoginDto>()
+            .Where<ExternalLoginDto>(x => !x.LoginProvider.StartsWith(Constants.Security.MemberExternalAuthenticationTypePrefix)) // Only remove external logins relating to backoffice users, not members.
+            .WhereNotIn<ExternalLoginDto>(x => x.LoginProvider, currentLoginProviders);
+
+        var toDelete = Database.Query<ExternalLoginDto>(sql).Select(x => x.Id).ToList();
+        DeleteExternalLogins(toDelete);
+    }
 
     /// <inheritdoc />
     public void DeleteUserLoginsForRemovedProviders(IEnumerable<string> currentLoginProviders)
@@ -205,7 +233,7 @@ internal class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUser
         Sql<ISqlContext> sql = GetBaseQuery(false);
         sql.Where(GetBaseWhereClause(), new { id });
 
-        ExternalLoginDto? dto = Database.Fetch<ExternalLoginDto>(SqlSyntax.SelectTop(sql, 1)).FirstOrDefault();
+        ExternalLoginDto? dto = Database.FirstOrDefault<ExternalLoginDto>(sql);
         if (dto == null)
         {
             return null;
@@ -263,7 +291,7 @@ internal class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUser
         }
     }
 
-    private IEnumerable<IIdentityUserLogin> ConvertFromDtos(IEnumerable<ExternalLoginDto> dtos)
+    private static IEnumerable<IIdentityUserLogin> ConvertFromDtos(IEnumerable<ExternalLoginDto> dtos)
     {
         foreach (IIdentityUserLogin entity in dtos.Select(ExternalLoginFactory.BuildEntity))
         {
@@ -290,11 +318,13 @@ internal class ExternalLoginRepository : EntityRepositoryBase<int, IIdentityUser
         return sql;
     }
 
-    protected override string GetBaseWhereClause() => $"{Constants.DatabaseSchema.Tables.ExternalLogin}.id = @id";
+    private string QuotedTableName => QuoteTableName(ExternalLoginDto.TableName);
+
+    protected override string GetBaseWhereClause() => $"{QuotedTableName}.id = @id";
 
     protected override IEnumerable<string> GetDeleteClauses()
     {
-        var list = new List<string> { "DELETE FROM umbracoExternalLogin WHERE id = @id" };
+        var list = new List<string> { $"DELETE FROM {QuotedTableName} WHERE id = @id" };
         return list;
     }
 

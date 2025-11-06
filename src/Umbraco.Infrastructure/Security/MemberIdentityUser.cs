@@ -39,10 +39,10 @@ public class MemberIdentityUser : UmbracoIdentityUser
     }
 
     // No change tracking because the persisted value is only set with the IsLockedOut flag
-    public DateTime? LastLockoutDateUtc { get; set; }
+    public DateTime? LastLockoutDate { get; set; }
 
     // No change tracking because the persisted value is readonly
-    public DateTime CreatedDateUtc { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     // No change tracking because the persisted value is readonly
     public Guid Key { get; set; }
@@ -55,8 +55,7 @@ public class MemberIdentityUser : UmbracoIdentityUser
     /// <summary>
     ///     Used to construct a new instance without an identity
     /// </summary>
-    public static MemberIdentityUser CreateNew(string username, string email, string memberTypeAlias, bool isApproved,
-        string? name = null)
+    public static MemberIdentityUser CreateNew(string username, string email, string memberTypeAlias, bool isApproved, string? name = null, Guid? key = null)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -70,6 +69,7 @@ public class MemberIdentityUser : UmbracoIdentityUser
         user.MemberTypeAlias = memberTypeAlias;
         user.IsApproved = isApproved;
         user.Id = null!;
+        user.Key = key ?? user.Key;
         user.HasIdentity = false;
         user.Name = name;
         user.EnableChangeTracking();

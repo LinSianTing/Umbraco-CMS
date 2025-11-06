@@ -31,8 +31,13 @@ public class DeliveryApiContentIndexHelperTests : UmbracoIntegrationTestWithCont
 
         ContentType.AllowedContentTypes =
         [
+<<<<<<< HEAD
             new ContentTypeSort(ContentType.Id, 0),
             new ContentTypeSort(contentType.Id, 1),
+=======
+            new ContentTypeSort(ContentType.Key, 0, "umbTextpage"),
+            new ContentTypeSort(contentType.Key, 1, "umbTextpage2"),
+>>>>>>> v10/contrib_Merge20251106_Try
         ];
         ContentTypeService.Save(ContentType);
 
@@ -91,7 +96,11 @@ public class DeliveryApiContentIndexHelperTests : UmbracoIntegrationTestWithCont
         Assert.AreEqual(expectedNumberOfContentItems - 1, contentEnumerated);
     }
 
+<<<<<<< HEAD
     private DeliveryApiContentIndexHelper CreateDeliveryApiContentIndexHelper(string[]? disallowedContentTypeAliases = null)
+=======
+    private DeliveryApiContentIndexHelper CreateDeliveryApiContentIndexHelper(HashSet<string>? disallowedContentTypeAliases = null)
+>>>>>>> v10/contrib_Merge20251106_Try
     {
         return new DeliveryApiContentIndexHelper(
             ContentService,
@@ -99,7 +108,11 @@ public class DeliveryApiContentIndexHelperTests : UmbracoIntegrationTestWithCont
             GetDeliveryApiSettings(disallowedContentTypeAliases ?? []));
     }
 
+<<<<<<< HEAD
     private IOptionsMonitor<DeliveryApiSettings> GetDeliveryApiSettings(string[] disallowedContentTypeAliases)
+=======
+    private IOptionsMonitor<DeliveryApiSettings> GetDeliveryApiSettings(HashSet<string> disallowedContentTypeAliases)
+>>>>>>> v10/contrib_Merge20251106_Try
     {
         var deliveryApiSettings = new DeliveryApiSettings
         {

@@ -1,6 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
+<<<<<<< HEAD
   "version": "13.13.0-rc",
+=======
+  "version": "17.1.0-rc",
+>>>>>>> v10/contrib_Merge20251106_Try
   "assemblyVersion": {
     "precision": "build"
   },
@@ -9,16 +13,15 @@
     "semVer": 2.0
   },
   "publicReleaseRefSpec": [
-    "^refs/heads/main$", "^refs/heads/release/"
+    "^refs/heads/release/",
+    "^refs/tags/release-"
   ],
   "release": {
     "branchName": "release/{version}",
     "tagName": "release-{version}"
   },
   "cloudBuild": {
-    "setAllVariables": true,
-    "buildNumber": {
-      "enabled": true
-    }
+    "setVersionVariables": true,
+    "setAllVariables": true
   }
 }

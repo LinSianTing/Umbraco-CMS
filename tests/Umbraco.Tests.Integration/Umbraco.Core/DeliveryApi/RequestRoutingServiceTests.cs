@@ -34,6 +34,7 @@ public class RequestRoutingServiceTests : UmbracoIntegrationTest
                 new Domain(1, "localhost/en", 1000, "en-us", false, 0),
                 new Domain(2, "localhost/jp", 1000, "ja-jp", false, 1),
             ]);
+<<<<<<< HEAD
         var publishedSnapshotMock = new Mock<IPublishedSnapshot>();
         publishedSnapshotMock.SetupGet(p => p.ElementsCache).Returns(elementCache);
         publishedSnapshotMock.SetupGet(p => p.SnapshotCache).Returns(snapshotCache);
@@ -43,6 +44,9 @@ public class RequestRoutingServiceTests : UmbracoIntegrationTest
         var publishedSnapshotAccessor = new Mock<IPublishedSnapshotAccessor>();
         publishedSnapshotAccessor.Setup(p => p.TryGetPublishedSnapshot(out publishedSnapshot)).Returns(true);
         builder.Services.AddSingleton(provider => publishedSnapshotAccessor.Object);
+=======
+        builder.Services.AddSingleton(provider => domainCacheMock.Object);
+>>>>>>> v10/contrib_Merge20251106_Try
     }
 
     [TestCase(null, "")]

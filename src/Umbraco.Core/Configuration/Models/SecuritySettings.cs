@@ -30,6 +30,15 @@ public class SecuritySettings
     internal const int StaticUserDefaultLockoutTimeInMinutes = 30 * 24 * 60;
     internal const long StaticUserDefaultFailedLoginDurationInMilliseconds = 1000;
     internal const long StaticUserMinimumFailedLoginDurationInMilliseconds = 250;
+<<<<<<< HEAD
+=======
+    internal const string StaticAuthorizeCallbackPathName = "/umbraco/oauth_complete";
+    internal const string StaticAuthorizeCallbackLogoutPathName = "/umbraco/logout";
+    internal const string StaticAuthorizeCallbackErrorPathName = "/umbraco/error";
+
+    internal const string StaticPasswordResetEmailExpiry = "01:00:00";
+    internal const string StaticUserInviteEmailExpiry = "3.00:00:00";
+>>>>>>> v10/contrib_Merge20251106_Try
 
     /// <summary>
     ///     Gets or sets a value indicating whether to keep the user logged in.
@@ -79,18 +88,6 @@ public class SecuritySettings
     public string AllowedUserNameCharacters { get; set; } = StaticAllowedUserNameCharacters;
 
     /// <summary>
-    ///     Gets or sets a value for the user password settings.
-    /// </summary>
-    [Obsolete("This no longer works. You can now inject this by using IOptions<UserPasswordConfigurationSettings> instead, scheduled for removal in v13")]
-    public UserPasswordConfigurationSettings? UserPassword { get; set; } = new();
-
-    /// <summary>
-    ///     Gets or sets a value for the member password settings.
-    /// </summary>
-    [Obsolete("This no longer works. You can now inject this by using IOptions<MemberPasswordConfigurationSettings> instead, scheduled for removal in v13")]
-    public MemberPasswordConfigurationSettings? MemberPassword { get; set; } = new();
-
-    /// <summary>
     ///     Gets or sets a value indicating whether to bypass the two factor requirement in Umbraco when using external login
     ///     for members. Thereby rely on the External login and potential 2FA at that provider.
     /// </summary>
@@ -117,13 +114,6 @@ public class SecuritySettings
     public int UserDefaultLockoutTimeInMinutes { get; set; } = StaticUserDefaultLockoutTimeInMinutes;
 
     /// <summary>
-    /// Gets or sets a value indicating whether to allow editing invariant properties from a non-default language variation.
-    /// </summary>
-    [Obsolete("Use ContentSettings.AllowEditFromInvariant instead")]
-    [DefaultValue(StaticAllowEditInvariantFromNonDefault)]
-    public bool AllowEditInvariantFromNonDefault { get; set; } = StaticAllowEditInvariantFromNonDefault;
-
-    /// <summary>
     ///     Gets or sets a value indicating whether to allow concurrent logins.
     /// </summary>
     [DefaultValue(StaticAllowConcurrentLogins)]
@@ -139,7 +129,11 @@ public class SecuritySettings
     /// The user login endpoint ensures that failed login attempts take at least as long as the average successful login.
     /// However, if no successful logins have occurred, this value is used as the default duration.
     /// </remarks>
+<<<<<<< HEAD
     [Range(0, int.MaxValue)] // TODO (V17): Change property type to short and update maximum range to short.MaxValue
+=======
+    [Range(0, long.MaxValue)]
+>>>>>>> v10/contrib_Merge20251106_Try
     [DefaultValue(StaticUserDefaultFailedLoginDurationInMilliseconds)]
     public long UserDefaultFailedLoginDurationInMilliseconds { get; set; } = StaticUserDefaultFailedLoginDurationInMilliseconds;
 
@@ -149,7 +143,48 @@ public class SecuritySettings
     /// <value>
     /// The minimum duration (in milliseconds) of failed login attempts.
     /// </value>
+<<<<<<< HEAD
     [Range(0, int.MaxValue)] // TODO (V17): Change property type to short and update maximum range to short.MaxValue
     [DefaultValue(StaticUserMinimumFailedLoginDurationInMilliseconds)]
     public long UserMinimumFailedLoginDurationInMilliseconds { get; set; } = StaticUserMinimumFailedLoginDurationInMilliseconds;
+=======
+    [Range(0, long.MaxValue)]
+    [DefaultValue(StaticUserMinimumFailedLoginDurationInMilliseconds)]
+    public long UserMinimumFailedLoginDurationInMilliseconds { get; set; } = StaticUserMinimumFailedLoginDurationInMilliseconds;
+
+    /// <summary>
+    ///     Gets or sets a value of the back-office host URI. Use this when running the back-office client and the Management API on different hosts. Leave empty when running both on the same host.
+    /// </summary>
+    public Uri? BackOfficeHost { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the path to use for authorization callback. Will be appended to the BackOfficeHost.
+    /// </summary>
+    [DefaultValue(StaticAuthorizeCallbackPathName)]
+    public string AuthorizeCallbackPathName { get; set; } = StaticAuthorizeCallbackPathName;
+
+    /// <summary>
+    ///     Gets or sets the path to use for authorization callback logout. Will be appended to the BackOfficeHost.
+    /// </summary>
+    [DefaultValue(StaticAuthorizeCallbackLogoutPathName)]
+    public string AuthorizeCallbackLogoutPathName { get; set; } = StaticAuthorizeCallbackLogoutPathName;
+
+    /// <summary>
+    ///     Gets or sets the path to use for authorization callback error. Will be appended to the BackOfficeHost.
+    /// </summary>
+    [DefaultValue(StaticAuthorizeCallbackErrorPathName)]
+    public string AuthorizeCallbackErrorPathName { get; set; } = StaticAuthorizeCallbackErrorPathName;
+
+    /// <summary>
+    ///     Gets or sets the expiry time for password reset emails.
+    /// </summary>
+    [DefaultValue(StaticPasswordResetEmailExpiry)]
+    public TimeSpan PasswordResetEmailExpiry { get; set; } = TimeSpan.Parse(StaticPasswordResetEmailExpiry);
+
+    /// <summary>
+    ///     Gets or sets the expiry time for user invite emails.
+    /// </summary>
+    [DefaultValue(StaticUserInviteEmailExpiry)]
+    public TimeSpan UserInviteEmailExpiry { get; set; } = TimeSpan.Parse(StaticUserInviteEmailExpiry);
+>>>>>>> v10/contrib_Merge20251106_Try
 }

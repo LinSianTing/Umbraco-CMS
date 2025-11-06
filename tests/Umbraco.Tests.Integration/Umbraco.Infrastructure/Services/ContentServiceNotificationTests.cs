@@ -3,8 +3,8 @@
 
 using System.Linq;
 using NUnit.Framework;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration.Models;
-using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Notifications;
@@ -14,7 +14,6 @@ using Umbraco.Cms.Tests.Common.Attributes;
 using Umbraco.Cms.Tests.Common.Builders;
 using Umbraco.Cms.Tests.Common.Testing;
 using Umbraco.Cms.Tests.Integration.Testing;
-using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services;
 
@@ -24,7 +23,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Services;
     PublishedRepositoryEvents = true,
     WithApplication = true,
     Logger = UmbracoTestOptions.Logger.Console)]
-public class ContentServiceNotificationTests : UmbracoIntegrationTest
+internal sealed class ContentServiceNotificationTests : UmbracoIntegrationTest
 {
     [SetUp]
     public void SetupTest()
@@ -42,7 +41,7 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
     private ContentService ContentService => (ContentService)GetRequiredService<IContentService>();
 
-    private ILocalizationService LocalizationService => GetRequiredService<ILocalizationService>();
+    private ILanguageService LanguageService => GetRequiredService<ILanguageService>();
 
     private IFileService FileService => GetRequiredService<IFileService>();
 
@@ -68,9 +67,9 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
     }
 
     [Test]
-    public void Saving_Culture()
+    public async Task Saving_Culture()
     {
-        LocalizationService.Save(new Language("fr-FR", "French (France)"));
+        await LanguageService.CreateAsync(new Language("fr-FR", "French (France)"), Constants.Security.SuperUserKey);
 
         _contentType.Variations = ContentVariation.Culture;
         foreach (var propertyType in _contentType.PropertyTypes)
@@ -182,6 +181,7 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
     public void Publishing_Invariant()
     {
         IContent document = new Content("content", -1, _contentType);
+        ContentService.Save(document);
 
         var treeChangeWasCalled = false;
 
@@ -199,7 +199,7 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
         try
         {
-            ContentService.SaveAndPublish(document);
+            ContentService.Publish(document, ["*"]);
             Assert.IsTrue(treeChangeWasCalled);
         }
         finally
@@ -212,7 +212,8 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
     public void Unpublishing_Invariant()
     {
         IContent document = new Content("content", -1, _contentType);
-        ContentService.SaveAndPublish(document);
+        ContentService.Save(document);
+        ContentService.Publish(document, ["*"]);
 
         var treeChangeWasCalled = false;
 
@@ -240,9 +241,9 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
     }
 
     [Test]
-    public void Publishing_Culture()
+    public async Task Publishing_Culture()
     {
-        LocalizationService.Save(new Language("fr-FR", "French (France)"));
+        await LanguageService.CreateAsync(new Language("fr-FR", "French (France)"), Constants.Security.SuperUserKey);
 
         _contentType.Variations = ContentVariation.Culture;
         foreach (var propertyType in _contentType.PropertyTypes)
@@ -305,7 +306,7 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
         try
         {
-            ContentService.SaveAndPublish(document, "fr-FR");
+            ContentService.Publish(document, new[] { "fr-FR" });
             Assert.IsTrue(publishingWasCalled);
             Assert.IsTrue(publishedWasCalled);
             Assert.IsTrue(treeChangeWasCalled);
@@ -331,6 +332,8 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
         var savingWasCalled = false;
         var savedWasCalled = false;
+        var publishingWasCalled = false;
+        var publishedWasCalled = false;
 
         ContentNotificationHandler.SavingContent = notification =>
         {
@@ -353,21 +356,50 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
             var propValue = saved.Properties["title"].Values.First(x => x.Culture == null && x.Segment == null);
 
             Assert.AreEqual("title", propValue.EditedValue);
-            Assert.AreEqual("title", propValue.PublishedValue);
+            Assert.AreEqual(null, propValue.PublishedValue);
 
             savedWasCalled = true;
         };
 
+        ContentNotificationHandler.PublishingContent = notification =>
+        {
+            var publishing = notification.PublishedEntities.First();
+
+            Assert.AreEqual("title", publishing.GetValue<string>("title"));
+
+            publishingWasCalled = true;
+        };
+
+        ContentNotificationHandler.PublishedContent = notification =>
+        {
+            var published = notification.PublishedEntities.First();
+
+            Assert.AreSame("title", document.GetValue<string>("title"));
+
+            // We're only dealing with invariant here.
+            var propValue = published.Properties["title"].Values.First(x => x.Culture == null && x.Segment == null);
+
+            Assert.AreEqual("title", propValue.EditedValue);
+            Assert.AreEqual("title", propValue.PublishedValue);
+
+            publishedWasCalled = true;
+        };
+
         try
         {
-            ContentService.SaveAndPublish(document);
+            ContentService.Save(document);
+            ContentService.Publish(document, document.AvailableCultures.ToArray());
             Assert.IsTrue(savingWasCalled);
             Assert.IsTrue(savedWasCalled);
+            Assert.IsTrue(publishingWasCalled);
+            Assert.IsTrue(publishedWasCalled);
         }
         finally
         {
             ContentNotificationHandler.SavingContent = null;
             ContentNotificationHandler.SavedContent = null;
+            ContentNotificationHandler.PublishingContent = null;
+            ContentNotificationHandler.PublishedContent = null;
         }
     }
 
@@ -380,7 +412,8 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
         IContent document = new Content("content", -1, _contentType);
 
-        var result = ContentService.SaveAndPublish(document);
+        ContentService.Save(document);
+        var result = ContentService.Publish(document, document.AvailableCultures.ToArray());
         Assert.IsFalse(result.Success);
         Assert.AreEqual("title", result.InvalidProperties.First().Alias);
 
@@ -403,7 +436,8 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
         try
         {
-            result = ContentService.SaveAndPublish(document);
+            ContentService.Save(document);
+            result = ContentService.Publish(document, document.AvailableCultures.ToArray());
             Assert.IsTrue(result
                 .Success); // will succeed now because we were able to specify the required value in the Saving event
             Assert.IsTrue(savingWasCalled);
@@ -416,9 +450,9 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
 
     [Test]
     [LongRunning]
-    public void Unpublishing_Culture()
+    public async Task Unpublishing_Culture()
     {
-        LocalizationService.Save(new Language("fr-FR", "French (France)"));
+        await LanguageService.CreateAsync(new Language("fr-FR", "French (France)"), Constants.Security.SuperUserKey);
 
         _contentType.Variations = ContentVariation.Culture;
         foreach (var propertyType in _contentType.PropertyTypes)
@@ -431,7 +465,8 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
         IContent document = new Content("content", -1, _contentType);
         document.SetCultureName("hello", "en-US");
         document.SetCultureName("bonjour", "fr-FR");
-        ContentService.SaveAndPublish(document);
+        ContentService.Save(document);
+        ContentService.Publish(document, document.AvailableCultures.ToArray());
 
         Assert.IsTrue(document.IsCulturePublished("fr-FR"));
         Assert.IsTrue(document.IsCulturePublished("en-US"));
@@ -509,7 +544,7 @@ public class ContentServiceNotificationTests : UmbracoIntegrationTest
         Assert.IsTrue(document.IsCulturePublished("en-US"));
     }
 
-    public class ContentNotificationHandler :
+    internal sealed class ContentNotificationHandler :
         INotificationHandler<ContentSavingNotification>,
         INotificationHandler<ContentSavedNotification>,
         INotificationHandler<ContentPublishingNotification>,

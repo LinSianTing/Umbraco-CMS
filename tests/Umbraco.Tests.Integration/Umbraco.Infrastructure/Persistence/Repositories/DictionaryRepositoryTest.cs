@@ -4,6 +4,10 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+<<<<<<< HEAD
+=======
+using Umbraco.Cms.Core;
+>>>>>>> v10/contrib_Merge20251106_Try
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence.Repositories;
@@ -17,10 +21,10 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repos
 
 [TestFixture]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
-public class DictionaryRepositoryTest : UmbracoIntegrationTest
+internal sealed class DictionaryRepositoryTest : UmbracoIntegrationTest
 {
     [SetUp]
-    public void SetUp() => CreateTestData();
+    public async Task SetUp() => await CreateTestData();
 
     private IDictionaryRepository CreateRepository() => GetRequiredService<IDictionaryRepository>();
 
@@ -31,13 +35,20 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
             GetRequiredService<IScopeAccessor>(),
             cache,
             GetRequiredService<ILogger<DictionaryRepository>>(),
+<<<<<<< HEAD
             GetRequiredService<ILoggerFactory>());
+=======
+            GetRequiredService<ILoggerFactory>(),
+            GetRequiredService<ILanguageRepository>(),
+            GetRequiredService<IRepositoryCacheVersionService>(),
+            GetRequiredService<ICacheSyncService>());
+>>>>>>> v10/contrib_Merge20251106_Try
 
     [Test]
-    public void Can_Perform_Get_By_Key_On_DictionaryRepository()
+    public async Task Can_Perform_Get_By_Key_On_DictionaryRepository()
     {
         // Arrange
-        var localizationService = GetRequiredService<ILocalizationService>();
+        var languageService = GetRequiredService<ILanguageService>();
         var provider = ScopeProvider;
         using (provider.CreateScope())
         {
@@ -46,7 +57,7 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
             {
                 Translations = new List<IDictionaryTranslation>
                 {
-                    new DictionaryTranslation(localizationService.GetLanguageByIsoCode("en-US"), "Hello world")
+                    new DictionaryTranslation(await languageService.GetAsync("en-US"), "Hello world")
                 }
             };
 
@@ -65,10 +76,10 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public void Can_Perform_Get_By_UniqueId_On_DictionaryRepository()
+    public async Task Can_Perform_Get_By_UniqueId_On_DictionaryRepository()
     {
         // Arrange
-        var localizationService = GetRequiredService<ILocalizationService>();
+        var languageService = GetRequiredService<ILanguageService>();
         var provider = ScopeProvider;
         using (provider.CreateScope())
         {
@@ -77,7 +88,7 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
             {
                 Translations = new List<IDictionaryTranslation>
                 {
-                    new DictionaryTranslation(localizationService.GetLanguageByIsoCode("en-US"), "Hello world")
+                    new DictionaryTranslation(await languageService.GetAsync("en-US"), "Hello world")
                 }
             };
 
@@ -96,10 +107,10 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public void Can_Perform_Get_On_DictionaryRepository()
+    public async Task Can_Perform_Get_On_DictionaryRepository()
     {
         // Arrange
-        var localizationService = GetRequiredService<ILocalizationService>();
+        var languageService = GetRequiredService<ILanguageService>();
         var provider = ScopeProvider;
         using (provider.CreateScope())
         {
@@ -108,7 +119,7 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
             {
                 Translations = new List<IDictionaryTranslation>
                 {
-                    new DictionaryTranslation(localizationService.GetLanguageByIsoCode("en-US"), "Hello world")
+                    new DictionaryTranslation(await languageService.GetAsync("en-US"), "Hello world")
                 }
             };
 
@@ -321,17 +332,17 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public void Can_Perform_Update_WithNewTranslation_On_DictionaryRepository()
+    public async Task Can_Perform_Update_WithNewTranslation_On_DictionaryRepository()
     {
         // Arrange
-        var localizationService = GetRequiredService<ILocalizationService>();
+        var languageService = GetRequiredService<ILanguageService>();
         var provider = ScopeProvider;
         using (provider.CreateScope())
         {
             var repository = CreateRepository();
 
             var languageNo = new Language("nb-NO", "Norwegian Bokmål (Norway)");
-            localizationService.Save(languageNo);
+            await languageService.CreateAsync(languageNo, Constants.Security.SuperUserKey);
 
             // Act
             var item = repository.Get(1);
@@ -346,7 +357,7 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
             // Assert
             Assert.That(dictionaryItem, Is.Not.Null);
             Assert.That(dictionaryItem.Translations.Count(), Is.EqualTo(3));
-            Assert.That(dictionaryItem.Translations.Single(t => t.LanguageId == languageNo.Id).Value, Is.EqualTo("Les mer"));
+            Assert.That(dictionaryItem.Translations.Single(t => t.LanguageIsoCode == languageNo.IsoCode).Value, Is.EqualTo("Les mer"));
         }
     }
 
@@ -409,6 +420,7 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
 
     [Test]
     public void Can_Perform_Cached_Request_For_Existing_Value_By_Key_On_DictionaryRepository_With_Cache()
+<<<<<<< HEAD
     {
         var cache = AppCaches.Create(Mock.Of<IRequestCache>());
         var repository = CreateRepositoryWithCache(cache);
@@ -536,27 +548,161 @@ public class DictionaryRepositoryTest : UmbracoIntegrationTest
     }
 
     public void CreateTestData()
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
     {
-        var localizationService = GetRequiredService<ILocalizationService>();
-        var language = localizationService.GetLanguageByIsoCode("en-US");
+        var cache = AppCaches.Create(Mock.Of<IRequestCache>());
+        var repository = CreateRepositoryWithCache(cache);
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More");
+
+            Assert.AreEqual("Read More", dictionaryItem.Translations.Single(x => x.LanguageIsoCode == "en-US").Value);
+        }
+
+        // Modify the value directly in the database. This won't be reflected in the repository cache and hence if the cache
+        // is working as expected we should get the same value as above.
+        using (var scope = ScopeProvider.CreateScope())
+        {
+            scope.Database.Execute("UPDATE cmsLanguageText SET value = 'Read More (updated)' WHERE value = 'Read More' and LanguageId = 1");
+            scope.Complete();
+        }
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More");
+
+            Assert.AreEqual("Read More", dictionaryItem.Translations.Single(x => x.LanguageIsoCode == "en-US").Value);
+        }
+
+        cache.IsolatedCaches.ClearCache<IDictionaryItem>();
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More");
+
+            Assert.AreEqual("Read More (updated)", dictionaryItem.Translations.Single(x => x.LanguageIsoCode == "en-US").Value);
+        }
+    }
+
+    [Test]
+    public void Can_Perform_Cached_Request_For_NonExisting_Value_By_Key_On_DictionaryRepository_With_Cache()
+    {
+        var cache = AppCaches.Create(Mock.Of<IRequestCache>());
+        var repository = CreateRepositoryWithCache(cache);
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More Updated");
+
+            Assert.IsNull(dictionaryItem);
+        }
+
+        // Modify the value directly in the database such that it now exists. This won't be reflected in the repository cache and hence if the cache
+        // is working as expected we should get the same null value as above.
+        using (var scope = ScopeProvider.CreateScope())
+        {
+            scope.Database.Execute("UPDATE cmsDictionary SET [key] = 'Read More Updated' WHERE [key] = 'Read More'");
+            scope.Complete();
+        }
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More Updated");
+
+            Assert.IsNull(dictionaryItem);
+        }
+
+        cache.IsolatedCaches.ClearCache<IDictionaryItem>();
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More Updated");
+
+            Assert.IsNotNull(dictionaryItem);
+        }
+    }
+
+    [Test]
+    public void Cannot_Perform_Cached_Request_For_Existing_Value_By_Key_On_DictionaryRepository_Without_Cache()
+    {
+        var repository = CreateRepository();
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More");
+
+            Assert.AreEqual("Read More", dictionaryItem.Translations.Single(x => x.LanguageIsoCode == "en-US").Value);
+        }
+
+        // Modify the value directly in the database. As we don't have caching enabled on the repository we should get the new value.
+        using (var scope = ScopeProvider.CreateScope())
+        {
+            scope.Database.Execute("UPDATE cmsLanguageText SET value = 'Read More (updated)' WHERE value = 'Read More' and LanguageId = 1");
+            scope.Complete();
+        }
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More");
+
+            Assert.AreEqual("Read More (updated)", dictionaryItem.Translations.Single(x => x.LanguageIsoCode == "en-US").Value);
+        }
+    }
+
+    [Test]
+    public void Cannot_Perform_Cached_Request_For_NonExisting_Value_By_Key_On_DictionaryRepository_Without_Cache()
+    {
+        var repository = CreateRepository();
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More Updated");
+
+            Assert.IsNull(dictionaryItem);
+        }
+
+        // Modify the value directly in the database such that it now exists. As we don't have caching enabled on the repository we should get the new value.
+        using (var scope = ScopeProvider.CreateScope())
+        {
+            scope.Database.Execute("UPDATE cmsDictionary SET [key] = 'Read More Updated' WHERE [key] = 'Read More'");
+            scope.Complete();
+        }
+
+        using (ScopeProvider.CreateScope())
+        {
+            var dictionaryItem = repository.Get("Read More Updated");
+
+            Assert.IsNotNull(dictionaryItem);
+        }
+    }
+
+    public async Task CreateTestData()
+    {
+        var languageService = GetRequiredService<ILanguageService>();
+        var dictionaryItemService = GetRequiredService<IDictionaryItemService>();
+        var language = await languageService.GetAsync("en-US");
 
         var languageDK = new Language("da-DK", "Danish (Denmark)");
-        localizationService.Save(languageDK); //Id 2
+        await languageService.CreateAsync(languageDK, Constants.Security.SuperUserKey); //Id 2
 
-        var readMore = new DictionaryItem("Read More");
-        var translations = new List<IDictionaryTranslation>
-        {
-            new DictionaryTranslation(language, "Read More"), new DictionaryTranslation(languageDK, "Læs mere")
-        };
-        readMore.Translations = translations;
-        localizationService.Save(readMore); // Id 1
+        await dictionaryItemService.CreateAsync(
+            new DictionaryItem("Read More")
+            {
+                Translations = new List<IDictionaryTranslation>
+                {
+                    new DictionaryTranslation(language, "Read More"), new DictionaryTranslation(languageDK, "Læs mere")
+                }
+            },
+            Constants.Security.SuperUserKey); // Id 1
 
-        var article = new DictionaryItem("Article");
-        var translations2 = new List<IDictionaryTranslation>
-        {
-            new DictionaryTranslation(language, "Article"), new DictionaryTranslation(languageDK, "Artikel")
-        };
-        article.Translations = translations2;
-        localizationService.Save(article); // Id 2
+        await dictionaryItemService.CreateAsync(
+            new DictionaryItem("Article")
+            {
+                Translations = new List<IDictionaryTranslation>
+                {
+                    new DictionaryTranslation(language, "Article"), new DictionaryTranslation(languageDK, "Artikel")
+                }
+            },
+            Constants.Security.SuperUserKey); // Id 2
     }
 }

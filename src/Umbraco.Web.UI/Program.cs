@@ -3,7 +3,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
     .AddWebsite()
+#if UseDeliveryApi
     .AddDeliveryApi()
+#endif
     .AddComposers()
     .Build();
 
@@ -11,7 +13,7 @@ WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
 
-#if (UseHttpsRedirect)
+#if UseHttpsRedirect
 app.UseHttpsRedirection();
 #endif
 
@@ -23,7 +25,6 @@ app.UseUmbraco()
     })
     .WithEndpoints(u =>
     {
-        u.UseInstallerEndpoints();
         u.UseBackOfficeEndpoints();
         u.UseWebsiteEndpoints();
     });

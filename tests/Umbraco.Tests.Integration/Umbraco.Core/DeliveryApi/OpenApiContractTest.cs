@@ -1,19 +1,15 @@
-﻿using System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Umbraco.Cms.Api.Delivery.Controllers;
-using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Hosting;
 using Umbraco.Cms.Tests.Integration.TestServerTest;
 
 namespace Umbraco.Cms.Tests.Integration.Umbraco.Core.DeliveryApi;
 
 [TestFixture]
-public class OpenApiContractTest : UmbracoTestServerTestBase
+internal sealed class OpenApiContractTest : UmbracoTestServerTestBase
 {
-    private GlobalSettings GlobalSettings => GetRequiredService<IOptions<GlobalSettings>>().Value;
-
     private IHostingEnvironment HostingEnvironment => GetRequiredService<IHostingEnvironment>();
 
     protected override void CustomTestSetup(IUmbracoBuilder builder)
@@ -26,7 +22,7 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
     [Test]
     public async Task Validate_OpenApi_Contract()
     {
-        var backOfficePath = GlobalSettings.GetBackOfficePath(HostingEnvironment);
+        var backOfficePath = HostingEnvironment.GetBackOfficePath();
 
         var swaggerPath = $"{backOfficePath}/swagger/delivery/swagger.json";
 
@@ -43,251 +39,13 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
     private const string ExpectedOpenApiContract =
     """
     {
-      "openapi": "3.0.1",
+      "openapi": "3.0.4",
       "info": {
         "title": "Umbraco Delivery API",
         "description": "You can find out more about the Umbraco Delivery API in [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api).",
         "version": "Latest"
       },
       "paths": {
-        "/umbraco/delivery/api/v1/content": {
-          "get": {
-            "tags": [
-              "Content"
-            ],
-            "operationId": "GetContent",
-            "parameters": [
-              {
-                "name": "fetch",
-                "in": "query",
-                "description": "Specifies the content items to fetch. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Select all": {
-                    "value": ""
-                  },
-                  "Select all ancestors of a node by id": {
-                    "value": "ancestors:id"
-                  },
-                  "Select all ancestors of a node by path": {
-                    "value": "ancestors:path"
-                  },
-                  "Select all children of a node by id": {
-                    "value": "children:id"
-                  },
-                  "Select all children of a node by path": {
-                    "value": "children:path"
-                  },
-                  "Select all descendants of a node by id": {
-                    "value": "descendants:id"
-                  },
-                  "Select all descendants of a node by path": {
-                    "value": "descendants:path"
-                  }
-                }
-              },
-              {
-                "name": "filter",
-                "in": "query",
-                "description": "Defines how to filter the fetched content items. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "examples": {
-                  "Default filter": {
-                    "value": ""
-                  },
-                  "Filter by content type (equals)": {
-                    "value": [
-                      "contentType:alias1"
-                    ]
-                  },
-                  "Filter by name (contains)": {
-                    "value": [
-                      "name:nodeName"
-                    ]
-                  },
-                  "Filter by creation date (less than)": {
-                    "value": [
-                      "createDate<2024-01-01"
-                    ]
-                  },
-                  "Filter by update date (greater than or equal)": {
-                    "value": [
-                      "updateDate>:2023-01-01"
-                    ]
-                  }
-                }
-              },
-              {
-                "name": "sort",
-                "in": "query",
-                "description": "Defines how to sort the found content items. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "examples": {
-                  "Default sort": {
-                    "value": ""
-                  },
-                  "Sort by create date": {
-                    "value": [
-                      "createDate:asc",
-                      "createDate:desc"
-                    ]
-                  },
-                  "Sort by level": {
-                    "value": [
-                      "level:asc",
-                      "level:desc"
-                    ]
-                  },
-                  "Sort by name": {
-                    "value": [
-                      "name:asc",
-                      "name:desc"
-                    ]
-                  },
-                  "Sort by sort order": {
-                    "value": [
-                      "sortOrder:asc",
-                      "sortOrder:desc"
-                    ]
-                  },
-                  "Sort by update date": {
-                    "value": [
-                      "updateDate:asc",
-                      "updateDate:desc"
-                    ]
-                  }
-                }
-              },
-              {
-                "name": "skip",
-                "in": "query",
-                "description": "Specifies the number of found content items to skip. Use this to control pagination of the response.",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32",
-                  "default": 0
-                }
-              },
-              {
-                "name": "take",
-                "in": "query",
-                "description": "Specifies the number of found content items to take. Use this to control pagination of the response.",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32",
-                  "default": 10
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Accept-Language",
-                "in": "header",
-                "description": "Defines the language to return. Use this when querying language variant content items.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Default": {
-                    "value": ""
-                  },
-                  "English culture": {
-                    "value": "en-us"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              {
-                "name": "Preview",
-                "in": "header",
-                "description": "Whether to request draft content.",
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              {
-                "name": "Start-Item",
-                "in": "header",
-                "description": "URL segment or GUID of a root content item.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/PagedIApiContentResponseModel"
-                    }
-                  }
-                }
-              },
-              "400": {
-                "description": "Bad Request",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              },
-              "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
-          }
-        },
         "/umbraco/delivery/api/v2/content": {
           "get": {
             "tags": [
@@ -492,6 +250,22 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 }
               },
               {
+                "name": "Accept-Segment",
+                "in": "header",
+                "description": "Defines the segment to return. Use this when querying segment variant content items.",
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "Default": {
+                    "value": ""
+                  },
+                  "Segment One": {
+                    "value": "segment-one"
+                  }
+                }
+              },
+              {
                 "name": "Api-Key",
                 "in": "header",
                 "description": "API key specified through configuration to authorize access to the API.",
@@ -522,7 +296,11 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/PagedIApiContentResponseModel"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/PagedIApiContentResponseModel"
+                        }
+                      ]
                     }
                   }
                 }
@@ -532,266 +310,19 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ProblemDetails"
+                        }
+                      ]
                     }
                   }
                 }
               },
               "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Not Found"
               }
             }
-          }
-        },
-        "/umbraco/delivery/api/v1/content/item": {
-          "get": {
-            "tags": [
-              "Content"
-            ],
-            "operationId": "GetContentItem",
-            "parameters": [
-              {
-                "name": "id",
-                "in": "query",
-                "schema": {
-                  "uniqueItems": true,
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Accept-Language",
-                "in": "header",
-                "description": "Defines the language to return. Use this when querying language variant content items.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Default": {
-                    "value": ""
-                  },
-                  "English culture": {
-                    "value": "en-us"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              {
-                "name": "Preview",
-                "in": "header",
-                "description": "Whether to request draft content.",
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              {
-                "name": "Start-Item",
-                "in": "header",
-                "description": "URL segment or GUID of a root content item.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/IApiContentResponseModel"
-                      }
-                    }
-                  }
-                }
-              },
-              "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              },
-              "403": {
-                "description": "Forbidden",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
-          }
-        },
-        "/umbraco/delivery/api/v1/content/item/{path}": {
-          "get": {
-            "tags": [
-              "Content"
-            ],
-            "operationId": "GetContentItemByPath",
-            "parameters": [
-              {
-                "name": "path",
-                "in": "path",
-                "required": true,
-                "schema": {
-                  "type": "string",
-                  "default": ""
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Accept-Language",
-                "in": "header",
-                "description": "Defines the language to return. Use this when querying language variant content items.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Default": {
-                    "value": ""
-                  },
-                  "English culture": {
-                    "value": "en-us"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              {
-                "name": "Preview",
-                "in": "header",
-                "description": "Whether to request draft content.",
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              {
-                "name": "Start-Item",
-                "in": "header",
-                "description": "URL segment or GUID of a root content item.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/IApiContentResponseModel"
-                    }
-                  }
-                }
-              },
-              "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              },
-              "403": {
-                "description": "Forbidden",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              },
-              "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
           }
         },
         "/umbraco/delivery/api/v2/content/item/{path}": {
@@ -874,116 +405,9 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 }
               },
               {
-                "name": "Api-Key",
+                "name": "Accept-Segment",
                 "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              {
-                "name": "Preview",
-                "in": "header",
-                "description": "Whether to request draft content.",
-                "schema": {
-                  "type": "boolean"
-                }
-              },
-              {
-                "name": "Start-Item",
-                "in": "header",
-                "description": "URL segment or GUID of a root content item.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/IApiContentResponseModel"
-                    }
-                  }
-                }
-              },
-              "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              },
-              "403": {
-                "description": "Forbidden",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              },
-              "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "/umbraco/delivery/api/v1/content/item/{id}": {
-          "get": {
-            "tags": [
-              "Content"
-            ],
-            "operationId": "GetContentItemById",
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "required": true,
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Accept-Language",
-                "in": "header",
-                "description": "Defines the language to return. Use this when querying language variant content items.",
+                "description": "Defines the segment to return. Use this when querying segment variant content items.",
                 "schema": {
                   "type": "string"
                 },
@@ -991,8 +415,8 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                   "Default": {
                     "value": ""
                   },
-                  "English culture": {
-                    "value": "en-us"
+                  "Segment One": {
+                    "value": "segment-one"
                   }
                 }
               },
@@ -1027,43 +451,25 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/IApiContentResponseModel"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ApiContentResponseModel"
+                        }
+                      ]
                     }
                   }
                 }
               },
               "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Unauthorized"
               },
               "403": {
-                "description": "Forbidden",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Forbidden"
               },
               "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Not Found"
               }
-            },
-            "deprecated": true
+            }
           }
         },
         "/umbraco/delivery/api/v2/content/item/{id}": {
@@ -1146,6 +552,22 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 }
               },
               {
+                "name": "Accept-Segment",
+                "in": "header",
+                "description": "Defines the segment to return. Use this when querying segment variant content items.",
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "Default": {
+                    "value": ""
+                  },
+                  "Segment One": {
+                    "value": "segment-one"
+                  }
+                }
+              },
+              {
                 "name": "Api-Key",
                 "in": "header",
                 "description": "API key specified through configuration to authorize access to the API.",
@@ -1176,40 +598,23 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/IApiContentResponseModel"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ApiContentResponseModel"
+                        }
+                      ]
                     }
                   }
                 }
               },
               "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Unauthorized"
               },
               "403": {
-                "description": "Forbidden",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Forbidden"
               },
               "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Not Found"
               }
             }
           }
@@ -1297,6 +702,22 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 }
               },
               {
+                "name": "Accept-Segment",
+                "in": "header",
+                "description": "Defines the segment to return. Use this when querying segment variant content items.",
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "Default": {
+                    "value": ""
+                  },
+                  "Segment One": {
+                    "value": "segment-one"
+                  }
+                }
+              },
+              {
                 "name": "Api-Key",
                 "in": "header",
                 "description": "API key specified through configuration to authorize access to the API.",
@@ -1329,201 +750,23 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                     "schema": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/IApiContentResponseModel"
+                        "oneOf": [
+                          {
+                            "$ref": "#/components/schemas/ApiContentResponseModel"
+                          }
+                        ]
                       }
                     }
                   }
                 }
               },
               "401": {
-                "description": "Unauthorized",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Unauthorized"
               },
               "403": {
-                "description": "Forbidden",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Forbidden"
               }
             }
-          }
-        },
-        "/umbraco/delivery/api/v1/media": {
-          "get": {
-            "tags": [
-              "Media"
-            ],
-            "operationId": "GetMedia",
-            "parameters": [
-              {
-                "name": "fetch",
-                "in": "query",
-                "description": "Specifies the media items to fetch. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Select all children at root level": {
-                    "value": "children:/"
-                  },
-                  "Select all children of a media item by id": {
-                    "value": "children:id"
-                  },
-                  "Select all children of a media item by path": {
-                    "value": "children:path"
-                  }
-                }
-              },
-              {
-                "name": "filter",
-                "in": "query",
-                "description": "Defines how to filter the fetched media items. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "examples": {
-                  "Default filter": {
-                    "value": ""
-                  },
-                  "Filter by media type": {
-                    "value": [
-                      "mediaType:alias1"
-                    ]
-                  },
-                  "Filter by name": {
-                    "value": [
-                      "name:nodeName"
-                    ]
-                  }
-                }
-              },
-              {
-                "name": "sort",
-                "in": "query",
-                "description": "Defines how to sort the found media items. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "examples": {
-                  "Default sort": {
-                    "value": ""
-                  },
-                  "Sort by create date": {
-                    "value": [
-                      "createDate:asc",
-                      "createDate:desc"
-                    ]
-                  },
-                  "Sort by name": {
-                    "value": [
-                      "name:asc",
-                      "name:desc"
-                    ]
-                  },
-                  "Sort by sort order": {
-                    "value": [
-                      "sortOrder:asc",
-                      "sortOrder:desc"
-                    ]
-                  },
-                  "Sort by update date": {
-                    "value": [
-                      "updateDate:asc",
-                      "updateDate:desc"
-                    ]
-                  }
-                }
-              },
-              {
-                "name": "skip",
-                "in": "query",
-                "description": "Specifies the number of found media items to skip. Use this to control pagination of the response.",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32",
-                  "default": 0
-                }
-              },
-              {
-                "name": "take",
-                "in": "query",
-                "description": "Specifies the number of found media items to take. Use this to control pagination of the response.",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32",
-                  "default": 10
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/PagedIApiMediaWithCropsResponseModel"
-                    }
-                  }
-                }
-              },
-              "400": {
-                "description": "Bad Request",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
           }
         },
         "/umbraco/delivery/api/v2/media": {
@@ -1700,7 +943,11 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/PagedIApiMediaWithCropsResponseModel"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/PagedIApiMediaWithCropsResponseModel"
+                        }
+                      ]
                     }
                   }
                 }
@@ -1710,151 +957,16 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ProblemDetails"
+                        }
+                      ]
                     }
                   }
                 }
               }
             }
-          }
-        },
-        "/umbraco/delivery/api/v1/media/item": {
-          "get": {
-            "tags": [
-              "Media"
-            ],
-            "operationId": "GetMediaItem",
-            "parameters": [
-              {
-                "name": "id",
-                "in": "query",
-                "schema": {
-                  "uniqueItems": true,
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
-          }
-        },
-        "/umbraco/delivery/api/v1/media/item/{path}": {
-          "get": {
-            "tags": [
-              "Media"
-            ],
-            "operationId": "GetMediaItemByPath",
-            "parameters": [
-              {
-                "name": "path",
-                "in": "path",
-                "required": true,
-                "schema": {
-                  "type": "string"
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
-                    }
-                  }
-                }
-              },
-              "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
           }
         },
         "/umbraco/delivery/api/v2/media/item/{path}": {
@@ -1934,94 +1046,19 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ApiMediaWithCropsResponseModel"
+                        }
+                      ]
                     }
                   }
                 }
               },
               "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Not Found"
               }
             }
-          }
-        },
-        "/umbraco/delivery/api/v1/media/item/{id}": {
-          "get": {
-            "tags": [
-              "Media"
-            ],
-            "operationId": "GetMediaItemById",
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "required": true,
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              },
-              {
-                "name": "expand",
-                "in": "query",
-                "description": "Defines the properties that should be expanded in the response. Refer to [the documentation](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api/media-delivery-api#query-parameters) for more details on this.",
-                "schema": {
-                  "type": "string"
-                },
-                "examples": {
-                  "Expand none": {
-                    "value": ""
-                  },
-                  "Expand all": {
-                    "value": "all"
-                  },
-                  "Expand specific property": {
-                    "value": "property:alias1"
-                  },
-                  "Expand specific properties": {
-                    "value": "property:alias1,alias2"
-                  }
-                }
-              },
-              {
-                "name": "Api-Key",
-                "in": "header",
-                "description": "API key specified through configuration to authorize access to the API.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "OK",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
-                    }
-                  }
-                }
-              },
-              "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
-              }
-            },
-            "deprecated": true
           }
         },
         "/umbraco/delivery/api/v2/media/item/{id}": {
@@ -2102,20 +1139,17 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "content": {
                   "application/json": {
                     "schema": {
-                      "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ApiMediaWithCropsResponseModel"
+                        }
+                      ]
                     }
                   }
                 }
               },
               "404": {
-                "description": "Not Found",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/components/schemas/ProblemDetails"
-                    }
-                  }
-                }
+                "description": "Not Found"
               }
             }
           }
@@ -2203,7 +1237,11 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                     "schema": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
+                        "oneOf": [
+                          {
+                            "$ref": "#/components/schemas/ApiMediaWithCropsResponseModel"
+                          }
+                        ]
                       }
                     }
                   }
@@ -2215,86 +1253,119 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
       },
       "components": {
         "schemas": {
-          "IApiContentResponseModel": {
+          "ApiContentResponseModel": {
+            "required": [
+              "contentType",
+              "createDate",
+              "cultures",
+              "id",
+              "name",
+              "properties",
+              "route",
+              "updateDate"
+            ],
             "type": "object",
             "properties": {
               "id": {
                 "type": "string",
-                "format": "uuid",
-                "readOnly": true
+                "format": "uuid"
               },
               "contentType": {
-                "type": "string",
-                "readOnly": true
+                "type": "string"
               },
               "properties": {
                 "type": "object",
                 "additionalProperties": {
                   "nullable": true
-                },
-                "readOnly": true
+                }
               },
               "name": {
-                "type": "string",
-                "nullable": true,
-                "readOnly": true
+                "type": "string"
               },
               "createDate": {
                 "type": "string",
-                "format": "date-time",
-                "readOnly": true
+                "format": "date-time"
               },
               "updateDate": {
                 "type": "string",
-                "format": "date-time",
-                "readOnly": true
+                "format": "date-time"
               },
               "route": {
-                "$ref": "#/components/schemas/IApiContentRouteModel"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ApiContentRouteModel"
+                  }
+                ]
               },
               "cultures": {
                 "type": "object",
                 "additionalProperties": {
-                  "$ref": "#/components/schemas/IApiContentRouteModel"
-                },
-                "readOnly": true
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiContentRouteModel"
+                    }
+                  ]
+                }
               }
             },
             "additionalProperties": false
           },
-          "IApiContentRouteModel": {
+          "ApiContentRouteModel": {
+            "required": [
+              "path",
+              "startItem"
+            ],
             "type": "object",
             "properties": {
               "path": {
+                "type": "string"
+              },
+              "queryString": {
                 "type": "string",
-                "readOnly": true
+                "nullable": true
               },
               "queryString": {
                 "type": "string",
                 "nullable": true
               },
               "startItem": {
-                "$ref": "#/components/schemas/IApiContentStartItemModel"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ApiContentStartItemModel"
+                  }
+                ]
               }
             },
             "additionalProperties": false
           },
-          "IApiContentStartItemModel": {
+          "ApiContentStartItemModel": {
+            "required": [
+              "id",
+              "path"
+            ],
             "type": "object",
             "properties": {
               "id": {
                 "type": "string",
-                "format": "uuid",
-                "readOnly": true
+                "format": "uuid"
               },
               "path": {
-                "type": "string",
-                "readOnly": true
+                "type": "string"
               }
             },
             "additionalProperties": false
           },
-          "IApiMediaWithCropsResponseModel": {
+          "ApiMediaWithCropsResponseModel": {
+            "required": [
+              "createDate",
+              "id",
+              "mediaType",
+              "name",
+              "path",
+              "properties",
+              "updateDate",
+              "url"
+            ],
             "type": "object",
             "properties": {
               "id": {
@@ -2345,34 +1416,45 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "readOnly": true
               },
               "focalPoint": {
-                "$ref": "#/components/schemas/ImageFocalPointModel"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ImageFocalPointModel"
+                  }
+                ],
+                "nullable": true
               },
               "crops": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/ImageCropModel"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ImageCropModel"
+                    }
+                  ]
                 },
-                "nullable": true,
-                "readOnly": true
+                "nullable": true
               },
               "path": {
-                "type": "string",
-                "readOnly": true
+                "type": "string"
               },
               "createDate": {
                 "type": "string",
-                "format": "date-time",
-                "readOnly": true
+                "format": "date-time"
               },
               "updateDate": {
                 "type": "string",
-                "format": "date-time",
-                "readOnly": true
+                "format": "date-time"
               }
             },
             "additionalProperties": false
           },
           "ImageCropCoordinatesModel": {
+            "required": [
+              "x1",
+              "x2",
+              "y1",
+              "y2"
+            ],
             "type": "object",
             "properties": {
               "x1": {
@@ -2395,6 +1477,10 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
             "additionalProperties": false
           },
           "ImageCropModel": {
+            "required": [
+              "height",
+              "width"
+            ],
             "type": "object",
             "properties": {
               "alias": {
@@ -2410,12 +1496,21 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
                 "format": "int32"
               },
               "coordinates": {
-                "$ref": "#/components/schemas/ImageCropCoordinatesModel"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ImageCropCoordinatesModel"
+                  }
+                ],
+                "nullable": true
               }
             },
             "additionalProperties": false
           },
           "ImageFocalPointModel": {
+            "required": [
+              "left",
+              "top"
+            ],
             "type": "object",
             "properties": {
               "left": {
@@ -2443,7 +1538,11 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
               "items": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/IApiContentResponseModel"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiContentResponseModel"
+                    }
+                  ]
                 }
               }
             },
@@ -2463,7 +1562,11 @@ public class OpenApiContractTest : UmbracoTestServerTestBase
               "items": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/IApiMediaWithCropsResponseModel"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiMediaWithCropsResponseModel"
+                    }
+                  ]
                 }
               }
             },

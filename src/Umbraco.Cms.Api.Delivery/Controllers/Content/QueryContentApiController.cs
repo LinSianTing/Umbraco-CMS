@@ -1,11 +1,9 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Api.Common.ViewModels.Pagination;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.DeliveryApi;
-using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.DeliveryApi;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -14,27 +12,12 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Api.Delivery.Controllers.Content;
 
-[ApiVersion("1.0")]
 [ApiVersion("2.0")]
 public class QueryContentApiController : ContentApiControllerBase
 {
     private readonly IRequestMemberAccessService _requestMemberAccessService;
     private readonly IApiContentQueryService _apiContentQueryService;
 
-    [Obsolete($"Please use the constructor that accepts {nameof(IRequestMemberAccessService)}. Will be removed in V14.")]
-    public QueryContentApiController(
-        IApiPublishedContentCache apiPublishedContentCache,
-        IApiContentResponseBuilder apiContentResponseBuilderBuilder,
-        IApiContentQueryService apiContentQueryService)
-        : this(
-            apiPublishedContentCache,
-            apiContentResponseBuilderBuilder,
-            apiContentQueryService,
-            StaticServiceProvider.Instance.GetRequiredService<IRequestMemberAccessService>())
-    {
-    }
-
-    [ActivatorUtilitiesConstructor]
     public QueryContentApiController(
         IApiPublishedContentCache apiPublishedContentCache,
         IApiContentResponseBuilder apiContentResponseBuilderBuilder,
@@ -45,20 +28,6 @@ public class QueryContentApiController : ContentApiControllerBase
         _apiContentQueryService = apiContentQueryService;
         _requestMemberAccessService = requestMemberAccessService;
     }
-
-    [HttpGet]
-    [MapToApiVersion("1.0")]
-    [ProducesResponseType(typeof(PagedViewModel<IApiContentResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Obsolete("Please use version 2 of this API. Will be removed in V15.")]
-    public async Task<IActionResult> Query(
-        string? fetch,
-        [FromQuery] string[] filter,
-        [FromQuery] string[] sort,
-        int skip = 0,
-        int take = 10)
-        => await HandleRequest(fetch, filter, sort, skip, take);
 
     /// <summary>
     ///     Gets a paginated list of content item(s) from query.

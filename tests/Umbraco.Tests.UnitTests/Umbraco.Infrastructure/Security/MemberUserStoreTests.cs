@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
@@ -35,9 +36,9 @@ public class MemberUserStoreTests
             new UmbracoMapper(new MapDefinitionCollection(() => new List<IMapDefinition>()), mockScopeProvider, NullLogger<UmbracoMapper>.Instance),
             mockScopeProvider,
             new IdentityErrorDescriber(),
-            Mock.Of<IPublishedSnapshotAccessor>(),
             Mock.Of<IExternalLoginWithKeyService>(),
-            Mock.Of<ITwoFactorLoginService>());
+            Mock.Of<ITwoFactorLoginService>(),
+            Mock.Of<IPublishedMemberCache>());
     }
 
     [Test]
@@ -90,7 +91,7 @@ public class MemberUserStoreTests
         _mockMemberService
             .Setup(x => x.CreateMember(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(mockMember);
-        _mockMemberService.Setup(x => x.Save(mockMember));
+        _mockMemberService.Setup(x => x.Save(mockMember, Constants.Security.SuperUserId));
 
         // act
         var actual = await sut.CreateAsync(null);
@@ -122,8 +123,9 @@ public class MemberUserStoreTests
         _mockMemberService
             .Setup(x => x.CreateMember(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(mockMember);
-        _mockMemberService.Setup(x => x.Save(mockMember, PublishNotificationSaveOptions.Saving));
-
+        _mockMemberService
+            .Setup(x => x.Save(mockMember, PublishNotificationSaveOptions.Saving, Constants.Security.SuperUserId))
+            .Returns(Attempt.Succeed<OperationResult?>(null));
         // act
         var identityResult = await sut.CreateAsync(fakeUser, CancellationToken.None);
 
@@ -132,7 +134,7 @@ public class MemberUserStoreTests
         Assert.IsTrue(!identityResult.Errors.Any());
         _mockMemberService.Verify(x =>
             x.CreateMember(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-        _mockMemberService.Verify(x => x.Save(mockMember, PublishNotificationSaveOptions.Saving));
+        _mockMemberService.Verify(x => x.Save(mockMember, PublishNotificationSaveOptions.Saving, Constants.Security.SuperUserId));
     }
 
     [Test]
@@ -147,8 +149,8 @@ public class MemberUserStoreTests
             Email = "fakeemail@umbraco.com",
             UserName = "fakeUsername",
             Comments = "hello",
-            LastLoginDateUtc = DateTime.UtcNow,
-            LastPasswordChangeDateUtc = DateTime.UtcNow,
+            LastLoginDate = DateTime.UtcNow,
+            LastPasswordChangeDate = DateTime.UtcNow,
             EmailConfirmed = true,
             AccessFailedCount = 3,
             LockoutEnd = DateTime.UtcNow.AddDays(10),
@@ -176,7 +178,7 @@ public class MemberUserStoreTests
             m.RawPasswordValue == "xyz" &&
             m.SecurityStamp == "xyz");
 
-        _mockMemberService.Setup(x => x.Save(mockMember));
+        _mockMemberService.Setup(x => x.Save(mockMember, Constants.Security.SuperUserId));
         _mockMemberService.Setup(x => x.GetById(123)).Returns(mockMember);
 
         // act
@@ -190,8 +192,8 @@ public class MemberUserStoreTests
         Assert.AreEqual(fakeUser.Email, mockMember.Email);
         Assert.AreEqual(fakeUser.UserName, mockMember.Username);
         Assert.AreEqual(fakeUser.Comments, mockMember.Comments);
-        Assert.AreEqual(fakeUser.LastPasswordChangeDateUtc.Value.ToLocalTime(), mockMember.LastPasswordChangeDate);
-        Assert.AreEqual(fakeUser.LastLoginDateUtc.Value.ToLocalTime(), mockMember.LastLoginDate);
+        Assert.AreEqual(fakeUser.LastPasswordChangeDate, mockMember.LastPasswordChangeDate);
+        Assert.AreEqual(fakeUser.LastLoginDate, mockMember.LastLoginDate);
         Assert.AreEqual(fakeUser.AccessFailedCount, mockMember.FailedPasswordAttempts);
         Assert.AreEqual(fakeUser.IsLockedOut, mockMember.IsLockedOut);
         Assert.AreEqual(fakeUser.IsApproved, mockMember.IsApproved);
@@ -199,7 +201,7 @@ public class MemberUserStoreTests
         Assert.AreEqual(fakeUser.SecurityStamp, mockMember.SecurityStamp);
         Assert.AreNotEqual(DateTime.MinValue, mockMember.EmailConfirmedDate.Value);
 
-        _mockMemberService.Verify(x => x.Save(mockMember));
+        _mockMemberService.Verify(x => x.Save(mockMember, Constants.Security.SuperUserId));
         _mockMemberService.Verify(x => x.GetById(123));
         _mockMemberService.Verify(x => x.ReplaceRoles(new[] { 123 }, new[] { "role1", "role2" }));
     }
@@ -216,7 +218,11 @@ public class MemberUserStoreTests
             Email = "a@b.com",
             UserName = "c",
             Comments = "e",
+<<<<<<< HEAD
             LastLoginDateUtc = DateTime.UtcNow,
+=======
+            LastLoginDate = DateTime.UtcNow,
+>>>>>>> v10/contrib_Merge20251106_Try
             SecurityStamp = "abc",
         };
 
@@ -250,14 +256,23 @@ public class MemberUserStoreTests
         Assert.AreEqual(fakeUser.Email, mockMember.Email);
         Assert.AreEqual(fakeUser.UserName, mockMember.Username);
         Assert.AreEqual(fakeUser.Comments, mockMember.Comments);
+<<<<<<< HEAD
         Assert.IsFalse(fakeUser.LastPasswordChangeDateUtc.HasValue);
         Assert.AreEqual(fakeUser.LastLoginDateUtc.Value.ToLocalTime(), mockMember.LastLoginDate);
+=======
+        Assert.IsFalse(fakeUser.LastPasswordChangeDate.HasValue);
+        Assert.AreEqual(fakeUser.LastLoginDate.Value, mockMember.LastLoginDate);
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.AreEqual(fakeUser.AccessFailedCount, mockMember.FailedPasswordAttempts);
         Assert.AreEqual(fakeUser.IsLockedOut, mockMember.IsLockedOut);
         Assert.AreEqual(fakeUser.IsApproved, mockMember.IsApproved);
         Assert.AreEqual(fakeUser.SecurityStamp, mockMember.SecurityStamp);
 
+<<<<<<< HEAD
         _mockMemberService.Verify(x => x.Save(mockMember), Times.Never);
+=======
+        _mockMemberService.Verify(x => x.Save(mockMember, Constants.Security.SuperUserId), Times.Never);
+>>>>>>> v10/contrib_Merge20251106_Try
         _mockMemberService.Verify(x => x.UpdateLoginPropertiesAsync(mockMember));
         _mockMemberService.Verify(x => x.GetById(123));
     }
@@ -282,14 +297,16 @@ public class MemberUserStoreTests
     public async Task GivenIDeleteUser_AndTheUserIsDeletedCorrectly_ThenIShouldGetASuccessResultAsync()
     {
         // arrange
+        var memberKey = new Guid("4B003A55-1DE9-4DEB-95A0-352FFC693D8F");
         var sut = CreateSut();
-        var fakeUser = new MemberIdentityUser(777);
+        var fakeUser = new MemberIdentityUser(777) { Key = memberKey };
         var fakeCancellationToken = CancellationToken.None;
 
         IMemberType fakeMemberType = new MemberType(new MockShortStringHelper(), 77);
         IMember mockMember = new Member(fakeMemberType)
         {
             Id = 777,
+            Key = memberKey,
             Name = "fakeName",
             Email = "fakeemail@umbraco.com",
             Username = "fakeUsername",
@@ -297,7 +314,8 @@ public class MemberUserStoreTests
         };
 
         _mockMemberService.Setup(x => x.GetById(mockMember.Id)).Returns(mockMember);
-        _mockMemberService.Setup(x => x.Delete(mockMember));
+        _mockMemberService.Setup(x => x.GetById(mockMember.Key)).Returns(mockMember);
+        _mockMemberService.Setup(x => x.Delete(mockMember, Constants.Security.SuperUserId));
 
         // act
         var identityResult = await sut.DeleteAsync(fakeUser, fakeCancellationToken);
@@ -305,8 +323,8 @@ public class MemberUserStoreTests
         // assert
         Assert.IsTrue(identityResult.Succeeded);
         Assert.IsTrue(!identityResult.Errors.Any());
-        _mockMemberService.Verify(x => x.GetById(mockMember.Id));
-        _mockMemberService.Verify(x => x.Delete(mockMember));
+        _mockMemberService.Verify(x => x.GetById(mockMember.Key));
+        _mockMemberService.Verify(x => x.Delete(mockMember, Constants.Security.SuperUserId));
         _mockMemberService.VerifyNoOtherCalls();
     }
 }

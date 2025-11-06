@@ -3,6 +3,7 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Core.Strings.Css;
 
+// FIXME: remove this class and all usage of it (moved to the client in V14)
 public class StylesheetHelper
 {
     private const string RuleRegexFormat =
@@ -38,8 +39,7 @@ public class StylesheetHelper
                     // Only match first selector when chained together
                     Styles = string.Join(
                         Environment.NewLine,
-                        match.Groups["Styles"].Value.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)
-                            .Select(x => x.Trim()).ToArray()),
+                        match.Groups["Styles"].Value.Split(new[] { "\r\n", "\n" }, StringSplitOptions.TrimEntries)),
                 });
             }
         }

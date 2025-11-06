@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Web;
 using SixLabors.ImageSharp.Web.Middleware;
 using SixLabors.ImageSharp.Web.Processors;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -35,15 +37,6 @@ public sealed class ImageSharpImageUrlGenerator : IImageUrlGenerator
         : this(configuration.ImageFormats.SelectMany(f => f.FileExtensions).ToArray(), options, requestAuthorizationUtilities)
     {
     }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ImageSharpImageUrlGenerator" /> class.
-    /// </summary>
-    /// <param name="configuration">The ImageSharp configuration.</param>
-    [Obsolete("Use ctor with all params - This will be removed in Umbraco 13.")]
-    public ImageSharpImageUrlGenerator(Configuration configuration)
-        : this(configuration, StaticServiceProvider.Instance.GetService<RequestAuthorizationUtilities>(), StaticServiceProvider.Instance.GetRequiredService<IOptions<ImageSharpMiddlewareOptions>>())
-    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageSharpImageUrlGenerator" /> class.

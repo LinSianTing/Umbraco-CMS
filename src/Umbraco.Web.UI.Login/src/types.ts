@@ -1,50 +1,60 @@
+import type { PasswordConfigurationResponseModel } from './api/index.js';
+
 export type LoginRequestModel = {
 	username: string;
 	password: string;
 	persist: boolean;
 };
 
-export interface IUmbAuthContext {
-	login(data: LoginRequestModel): Promise<LoginResponse>;
-	resetPassword(username: string): Promise<ResetPasswordResponse>;
-	validatePasswordResetCode(userId: string, resetCode: string): Promise<ValidatePasswordResetCodeResponse>;
-	newPassword(password: string, resetCode: string, userId: string): Promise<NewPasswordResponse>;
-	newInvitedUserPassword(password: string): Promise<NewPasswordResponse>;
-	getMfaProviders(): Promise<MfaProvidersResponse>;
-	validateMfaCode(code: string, provider: string): Promise<LoginResponse>;
-	getPasswordConfig(userId: string): Promise<any>; //TODO Figure out the type
-	getInvitedUser(): Promise<any>; //TODO Figure out the type
-	disableLocalLogin: boolean;
-	supportsPersistLogin: boolean;
-	returnPath: string;
-	twoFactorView?: string;
-	isMfaEnabled?: boolean;
-}
-
 export type LoginResponse = {
-	data?: string;
+	data?: {
+		username: string;
+	};
 	error?: string;
 	status: number;
 	twoFactorView?: string;
+	twoFactorProviders?: string[];
+};
+
+export type MfaCodeResponse = {
+	error?: string;
 };
 
 export type ResetPasswordResponse = {
 	error?: string;
-	status: number;
 };
 
 export type ValidatePasswordResetCodeResponse = {
 	error?: string;
-	status: number;
+	passwordConfiguration?: PasswordConfigurationModel;
 };
 
 export type NewPasswordResponse = {
 	error?: string;
-	status: number;
 };
 
-export type MfaProvidersResponse = {
+export type ValidateInviteCodeResponse = {
 	error?: string;
-	status: number;
-	providers: string[];
+	passwordConfiguration?: PasswordConfigurationModel;
+};
+
+export type PasswordConfigurationModel = PasswordConfigurationResponseModel;
+
+/**
+ * @deprecated Use `UmbProblemDetails` from `@umbraco-cms/backoffice/resources` instead.
+ */
+export type UmbProblemDetails = {
+	type?: string | null;
+	title?: string | null;
+	status?: number | null;
+	detail?: string | null;
+	instance?: string | null;
+	[key: string]:
+		| unknown
+		| (string | null)
+		| (string | null)
+		| (number | null)
+		| (string | null)
+		| (string | null)
+		| undefined;
 };

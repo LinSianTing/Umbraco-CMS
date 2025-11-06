@@ -9,16 +9,18 @@ namespace Umbraco.Cms.Core.Cache;
 
 public sealed class DomainCacheRefresher : PayloadCacheRefresherBase<DomainCacheRefresherNotification, DomainCacheRefresher.JsonPayload>
 {
-    private readonly IPublishedSnapshotService _publishedSnapshotService;
+    private readonly IDomainCacheService _domainCacheService;
 
     public DomainCacheRefresher(
         AppCaches appCaches,
         IJsonSerializer serializer,
-        IPublishedSnapshotService publishedSnapshotService,
         IEventAggregator eventAggregator,
-        ICacheRefresherNotificationFactory factory)
-        : base(appCaches, serializer, eventAggregator, factory) =>
-        _publishedSnapshotService = publishedSnapshotService;
+        ICacheRefresherNotificationFactory factory,
+        IDomainCacheService domainCacheService)
+        : base(appCaches, serializer, eventAggregator, factory)
+    {
+        _domainCacheService = domainCacheService;
+    }
 
     #region Json
 
@@ -49,7 +51,7 @@ public sealed class DomainCacheRefresher : PayloadCacheRefresherBase<DomainCache
 
     #region Refresher
 
-    public override void Refresh(JsonPayload[] payloads)
+    public override void RefreshInternal(JsonPayload[] payloads)
     {
         ClearAllIsolatedCacheByEntityType<IDomain>();
 
@@ -58,10 +60,9 @@ public sealed class DomainCacheRefresher : PayloadCacheRefresherBase<DomainCache
         // the new content...
 
         // notify
-        _publishedSnapshotService.Notify(payloads);
+        _domainCacheService.Refresh(payloads);
 
-        // then trigger event
-        base.Refresh(payloads);
+        base.RefreshInternal(payloads);
     }
 
     // these events should never trigger

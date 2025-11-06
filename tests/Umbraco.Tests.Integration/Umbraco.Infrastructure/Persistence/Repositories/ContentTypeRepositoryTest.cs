@@ -1,19 +1,19 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using Umbraco.Cms.Api.Management.Mapping.Permissions;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Models.ContentEditing;
+using Umbraco.Cms.Core.Models.Membership;
+using Umbraco.Cms.Core.Models.Membership.Permissions;
 using Umbraco.Cms.Core.Persistence;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.Services;
@@ -29,7 +29,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repos
 
 [TestFixture]
 [UmbracoTest(Mapper = true, Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
-public class ContentTypeRepositoryTest : UmbracoIntegrationTest
+internal sealed class ContentTypeRepositoryTest : UmbracoIntegrationTest
 {
     [SetUp]
     public void SetUpData() => CreateTestData();
@@ -52,7 +52,10 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
     private IMediaTypeRepository MediaTypeRepository => GetRequiredService<IMediaTypeRepository>();
 
     private IDocumentRepository DocumentRepository => GetRequiredService<IDocumentRepository>();
+
     private IContentService ContentService => GetRequiredService<IContentService>();
+
+    private IUserGroupRepository UserGroupRepository => GetRequiredService<IUserGroupRepository>();
 
     private ContentTypeRepository ContentTypeRepository =>
         (ContentTypeRepository)GetRequiredService<IContentTypeRepository>();
@@ -87,10 +90,11 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
                 AppCaches.Disabled,
                 LoggerFactory.CreateLogger<TemplateRepository>(),
                 FileSystems,
-                IOHelper,
                 ShortStringHelper,
                 Mock.Of<IViewHelper>(),
-                runtimeSettingsMock.Object);
+                runtimeSettingsMock.Object,
+                Mock.Of<IRepositoryCacheVersionService>(),
+                Mock.Of<ICacheSyncService>());
             var repository = ContentTypeRepository;
             Template[] templates =
             {
@@ -293,58 +297,6 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
     }
 
     [Test]
-    public void Can_Perform_Add_On_ContentTypeRepository_After_Model_Mapping()
-    {
-        // Arrange
-        var provider = ScopeProvider;
-        using (var scope = provider.CreateScope())
-        {
-            var repository = ContentTypeRepository;
-
-            // Act
-            var contentType = (IContentType)ContentTypeBuilder.CreateSimpleContentType2("test", "Test", propertyGroupAlias: "testGroup", propertyGroupName: "testGroup");
-
-            Assert.AreEqual(4, contentType.PropertyTypes.Count());
-
-            // remove all templates - since they are not saved, they would break the (!) mapping code
-            contentType.AllowedTemplates = new ITemplate[0];
-
-            // there is NO mapping from display to contentType, but only from save
-            // to contentType, so if we want to test, let's to it properly!
-            var display = Mapper.Map<DocumentTypeDisplay>(contentType);
-            var save = MapToContentTypeSave(display);
-            var mapped = Mapper.Map<IContentType>(save);
-
-            Assert.AreEqual(4, mapped.PropertyTypes.Count());
-
-            repository.Save(mapped);
-
-            Assert.AreEqual(4, mapped.PropertyTypes.Count());
-
-            // re-get
-            contentType = repository.Get(mapped.Id);
-
-            Assert.AreEqual(4, contentType.PropertyTypes.Count());
-
-            // Assert
-            Assert.That(contentType.HasIdentity, Is.True);
-            Assert.That(contentType.PropertyGroups.All(x => x.HasIdentity), Is.True);
-            Assert.That(contentType.PropertyTypes.All(x => x.HasIdentity), Is.True);
-            Assert.That(contentType.Path.Contains(","), Is.True);
-            Assert.That(contentType.SortOrder, Is.GreaterThan(0));
-
-            Assert.That(contentType.PropertyGroups.ElementAt(0).Name == "testGroup", Is.True);
-            var groupId = contentType.PropertyGroups.ElementAt(0).Id;
-
-            var propertyTypes = contentType.PropertyTypes.ToArray();
-            Assert.AreEqual("gen", propertyTypes[0].Alias); // just to be sure
-            Assert.IsNull(propertyTypes[0].PropertyGroupId);
-            Assert.IsTrue(propertyTypes.Skip(1).All(x => x.PropertyGroupId.Value == groupId));
-            Assert.That(propertyTypes.Single(x => x.Alias == "title").LabelOnTop, Is.True);
-        }
-    }
-
-    [Test]
     public void Can_Perform_Update_On_ContentTypeRepository()
     {
         // Arrange
@@ -377,113 +329,6 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
             Assert.That(contentType.Thumbnail, Is.EqualTo("Doc2.png"));
             Assert.That(contentType.PropertyTypes.Any(x => x.Alias == "subtitle"), Is.True);
             Assert.That(contentType.PropertyTypes.Single(x => x.Alias == "subtitle").LabelOnTop, Is.True);
-        }
-    }
-
-    // this is for tests only because it makes no sense at all to have such a
-    // mapping defined, we only need it for the weird tests that use it
-    private DocumentTypeSave MapToContentTypeSave(DocumentTypeDisplay display) =>
-        new()
-        {
-            // EntityBasic
-            Name = display.Name,
-            Icon = display.Icon,
-            Trashed = display.Trashed,
-            Key = display.Key,
-            ParentId = display.ParentId,
-            //// Alias = display.Alias,
-            Path = display.Path,
-            //// AdditionalData = display.AdditionalData,
-            HistoryCleanup = display.HistoryCleanup,
-
-            // ContentTypeBasic
-            Alias = display.Alias,
-            UpdateDate = display.UpdateDate,
-            CreateDate = display.CreateDate,
-            Description = display.Description,
-            Thumbnail = display.Thumbnail,
-
-            // ContentTypeSave
-            CompositeContentTypes = display.CompositeContentTypes,
-            IsContainer = display.IsContainer,
-            AllowAsRoot = display.AllowAsRoot,
-            AllowedTemplates = display.AllowedTemplates.Select(x => x.Alias),
-            AllowedContentTypes = display.AllowedContentTypes,
-            DefaultTemplate = display.DefaultTemplate?.Alias,
-            Groups = display.Groups.Select(x => new PropertyGroupBasic<PropertyTypeBasic>
-            {
-                Inherited = x.Inherited,
-                Id = x.Id,
-                Key = x.Key,
-                Type = x.Type,
-                Name = x.Name,
-                Alias = x.Alias,
-                SortOrder = x.SortOrder,
-                Properties = x.Properties
-            }).ToArray()
-        };
-
-    [Test]
-    public void Can_Perform_Update_On_ContentTypeRepository_After_Model_Mapping()
-    {
-        // Arrange
-        var provider = ScopeProvider;
-        using (var scope = provider.CreateScope())
-        {
-            var repository = ContentTypeRepository;
-
-            // Act
-            var contentType = repository.Get(_textpageContentType.Id);
-
-            // there is NO mapping from display to contentType, but only from save
-            // to contentType, so if we want to test, let's to it properly!
-            var display = Mapper.Map<DocumentTypeDisplay>(contentType);
-            var save = MapToContentTypeSave(display);
-
-            // modify...
-            save.Thumbnail = "Doc2.png";
-            var contentGroup = save.Groups.Single(x => x.Name == "Content");
-            contentGroup.Properties = contentGroup.Properties.Concat(new[]
-            {
-                new PropertyTypeBasic
-                {
-                    Alias = "subtitle",
-                    Label = "Subtitle",
-                    Description = "Optional Subtitle",
-                    Validation = new PropertyTypeValidation {Mandatory = false, Pattern = string.Empty},
-                    SortOrder = 1,
-                    DataTypeId = -88,
-                    LabelOnTop = true
-                }
-            });
-
-            var mapped = Mapper.Map(save, contentType);
-
-            // just making sure
-            Assert.AreEqual(mapped.Thumbnail, "Doc2.png");
-            Assert.IsTrue(mapped.PropertyTypes.Any(x => x.Alias == "subtitle"));
-            Assert.IsTrue(mapped.PropertyTypes.Single(x => x.Alias == "subtitle").LabelOnTop);
-
-            repository.Save(mapped);
-
-            var dirty = mapped.IsDirty();
-
-            // re-get
-            contentType = repository.Get(_textpageContentType.Id);
-
-            // Assert
-            Assert.That(contentType.HasIdentity, Is.True);
-            Assert.That(dirty, Is.False);
-            Assert.That(contentType.Thumbnail, Is.EqualTo("Doc2.png"));
-            Assert.That(contentType.PropertyTypes.Any(x => x.Alias == "subtitle"), Is.True);
-
-            Assert.That(contentType.PropertyTypes.Single(x => x.Alias == "subtitle").LabelOnTop, Is.True);
-
-            foreach (var propertyType in contentType.PropertyTypes)
-            {
-                Assert.IsTrue(propertyType.HasIdentity);
-                Assert.Greater(propertyType.Id, 0);
-            }
         }
     }
 
@@ -563,7 +408,7 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
             var repository = ContentTypeRepository;
 
             // Act
-            var contentTypes = repository.Get(provider.CreateQuery<IContentType>().Where(x => x.ParentId == contentType.Id)).ToArray();;
+            var contentTypes = repository.Get(provider.CreateQuery<IContentType>().Where(x => x.ParentId == contentType.Id)).ToArray();
 
             // Assert
             Assert.That(contentTypes.Count(), Is.EqualTo(3));
@@ -809,8 +654,8 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
             var contentType = repository.Get(_simpleContentType.Id);
             contentType.AllowedContentTypes = new List<ContentTypeSort>
             {
-                new(new Lazy<int>(() => subpageContentType.Id), 0, subpageContentType.Alias),
-                new(new Lazy<int>(() => simpleSubpageContentType.Id), 1, simpleSubpageContentType.Alias)
+                new(subpageContentType.Key, 0, subpageContentType.Alias),
+                new(simpleSubpageContentType.Key, 1, simpleSubpageContentType.Alias)
             };
             repository.Save(contentType);
 
@@ -1077,5 +922,84 @@ public class ContentTypeRepositoryTest : UmbracoIntegrationTest
             var hasCulture = renewedContent.Properties["title"].Values.First().Culture != null;
             Assert.That(hasCulture, Is.True);
         }
+    }
+
+    [Test]
+    public void Can_Remove_Property_Value_Permissions_On_Removal_Of_Property_Types()
+    {
+        var provider = ScopeProvider;
+        using (var scope = provider.CreateScope())
+        {
+            // Create, save and re-retrieve a content type and user group.
+            IContentType contentType = ContentTypeBuilder.CreateSimpleContentType(defaultTemplateId: 0);
+            ContentTypeRepository.Save(contentType);
+            contentType = ContentTypeRepository.Get(contentType.Id);
+
+            var userGroup = CreateUserGroupWithGranularPermissions(contentType);
+
+            // Remove property types and verify that the permission is removed from the user group.
+            contentType.RemovePropertyType("author");
+            ContentTypeRepository.Save(contentType);
+            userGroup = UserGroupRepository.Get(userGroup.Id);
+            Assert.AreEqual(3, userGroup.GranularPermissions.Count);
+
+            contentType.RemovePropertyType("bodyText");
+            ContentTypeRepository.Save(contentType);
+            userGroup = UserGroupRepository.Get(userGroup.Id);
+            Assert.AreEqual(2, userGroup.GranularPermissions.Count);
+
+            contentType.RemovePropertyType("title");
+            ContentTypeRepository.Save(contentType);
+            userGroup = UserGroupRepository.Get(userGroup.Id);
+            Assert.AreEqual(0, userGroup.GranularPermissions.Count);
+        }
+    }
+
+    [Test]
+    public void Can_Remove_Property_Value_Permissions_On_Removal_Of_Content_Type()
+    {
+        var provider = ScopeProvider;
+        using (var scope = provider.CreateScope())
+        {
+            // Create, save and re-retrieve a content type and user group.
+            IContentType contentType = ContentTypeBuilder.CreateSimpleContentType(defaultTemplateId: 0);
+            ContentTypeRepository.Save(contentType);
+            contentType = ContentTypeRepository.Get(contentType.Id);
+
+            var userGroup = CreateUserGroupWithGranularPermissions(contentType);
+
+            // Remove the content type and verify all permissions are removed from the user group.
+            ContentTypeRepository.Delete(contentType);
+            userGroup = UserGroupRepository.Get(userGroup.Id);
+            Assert.AreEqual(0, userGroup.GranularPermissions.Count);
+        }
+    }
+
+    private IUserGroup CreateUserGroupWithGranularPermissions(IContentType contentType)
+    {
+        DocumentPropertyValueGranularPermission CreatePermission(IPropertyType propertyType, string permission = "")
+            => new()
+            {
+                Key = contentType.Key,
+                Permission = propertyType.Key.ToString().ToLowerInvariant() + "|" + permission,
+            };
+
+        var titlePropertyType = contentType.PropertyTypes.Single(x => x.Alias == "title");
+        var bodyTextPropertyType = contentType.PropertyTypes.Single(x => x.Alias == "bodyText");
+        var authorPropertyType = contentType.PropertyTypes.Single(x => x.Alias == "author");
+
+        var userGroup = new UserGroupBuilder()
+            .WithGranularPermissions([
+                CreatePermission(titlePropertyType, "Umb.Document.PropertyValue.Read"),
+                CreatePermission(titlePropertyType, "Umb.Document.PropertyValue.Write"),
+                CreatePermission(bodyTextPropertyType, "Umb.Document.PropertyValue.Read"),
+                CreatePermission(authorPropertyType)
+            ])
+            .Build();
+        UserGroupRepository.Save(userGroup);
+        userGroup = UserGroupRepository.Get(userGroup.Id);
+
+        Assert.AreEqual(4, userGroup.GranularPermissions.Count);
+        return userGroup;
     }
 }

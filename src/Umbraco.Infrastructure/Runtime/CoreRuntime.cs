@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
@@ -69,64 +67,6 @@ public class CoreRuntime : IRuntime
         _logger = _loggerFactory.CreateLogger<CoreRuntime>();
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Obsolete]
-    public CoreRuntime(
-        ILoggerFactory loggerFactory,
-        IRuntimeState state,
-        ComponentCollection components,
-        IApplicationShutdownRegistry applicationShutdownRegistry,
-        IProfilingLogger profilingLogger,
-        IMainDom mainDom,
-        IUmbracoDatabaseFactory databaseFactory,
-        IEventAggregator eventAggregator,
-        IHostingEnvironment hostingEnvironment,
-        IUmbracoVersion umbracoVersion,
-        IServiceProvider? serviceProvider)
-        : this(
-            state,
-            loggerFactory,
-            components,
-            applicationShutdownRegistry,
-            profilingLogger,
-            mainDom,
-            databaseFactory,
-            eventAggregator,
-            hostingEnvironment,
-            umbracoVersion,
-            serviceProvider,
-            serviceProvider?.GetRequiredService<IHostApplicationLifetime>())
-    {
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [Obsolete]
-    public CoreRuntime(
-        ILoggerFactory loggerFactory,
-        IRuntimeState state,
-        ComponentCollection components,
-        IApplicationShutdownRegistry applicationShutdownRegistry,
-        IProfilingLogger profilingLogger,
-        IMainDom mainDom,
-        IUmbracoDatabaseFactory databaseFactory,
-        IEventAggregator eventAggregator,
-        IHostingEnvironment hostingEnvironment,
-        IUmbracoVersion umbracoVersion)
-        : this(
-            loggerFactory,
-            state,
-            components,
-            applicationShutdownRegistry,
-            profilingLogger,
-            mainDom,
-            databaseFactory,
-            eventAggregator,
-            hostingEnvironment,
-            umbracoVersion,
-            null)
-    {
-    }
-
     /// <summary>
     ///     Gets the state of the Umbraco runtime.
     /// </summary>
@@ -179,6 +119,30 @@ public class CoreRuntime : IRuntime
             throw new InvalidOperationException($"An instance of {typeof(IApplicationShutdownRegistry)} could not be resolved from the container, ensure that one if registered in your runtime before calling {nameof(IRuntime)}.{nameof(StartAsync)}");
         }
 
+        var premigrationUpgradeNotification = new RuntimePremigrationsUpgradeNotification();
+        await _eventAggregator.PublishAsync(premigrationUpgradeNotification, cancellationToken);
+        switch (premigrationUpgradeNotification.UpgradeResult)
+        {
+            case RuntimePremigrationsUpgradeNotification.PremigrationUpgradeResult.HasErrors:
+                if (State.BootFailedException is null)
+                {
+                    throw new InvalidOperationException($"Premigration upgrade result was {RuntimePremigrationsUpgradeNotification.PremigrationUpgradeResult.HasErrors} but no {nameof(BootFailedException)} was registered");
+                }
+
+                // We cannot continue here, the exception will be rethrown by BootFailedMiddelware
+                return;
+            case RuntimePremigrationsUpgradeNotification.PremigrationUpgradeResult.CoreUpgradeComplete:
+                // Upgrade is done, set reason to Run
+                DetermineRuntimeLevel();
+                break;
+            case RuntimePremigrationsUpgradeNotification.PremigrationUpgradeResult.NotRequired:
+                break;
+        }
+
+        //
+        var postRuntimePremigrationsUpgradeNotification = new PostRuntimePremigrationsUpgradeNotification();
+        await _eventAggregator.PublishAsync(postRuntimePremigrationsUpgradeNotification, cancellationToken);
+
         // If level is Run and reason is UpgradeMigrations, that means we need to perform an unattended upgrade
         var unattendedUpgradeNotification = new RuntimeUnattendedUpgradeNotification();
         await _eventAggregator.PublishAsync(unattendedUpgradeNotification, cancellationToken);
@@ -202,7 +166,7 @@ public class CoreRuntime : IRuntime
         }
 
         // Initialize the components
-        _components.Initialize();
+        await _components.InitializeAsync(isRestarting, cancellationToken);
 
         await _eventAggregator.PublishAsync(new UmbracoApplicationStartingNotification(State.Level, isRestarting), cancellationToken);
 
@@ -216,7 +180,7 @@ public class CoreRuntime : IRuntime
 
     private async Task StopAsync(CancellationToken cancellationToken, bool isRestarting)
     {
-        _components.Terminate();
+        await _components.TerminateAsync(isRestarting, cancellationToken);
         await _eventAggregator.PublishAsync(new UmbracoApplicationStoppingNotification(isRestarting), cancellationToken);
     }
 

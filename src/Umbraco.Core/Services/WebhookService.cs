@@ -88,6 +88,8 @@ public class WebhookService : IWebhookService
         currentWebhook.Enabled = webhook.Enabled;
         currentWebhook.ContentTypeKeys = webhook.ContentTypeKeys;
         currentWebhook.Events = webhook.Events;
+        currentWebhook.Name = webhook.Name;
+        currentWebhook.Description = webhook.Description;
         currentWebhook.Url = webhook.Url;
         currentWebhook.Headers = webhook.Headers;
 
@@ -133,6 +135,16 @@ public class WebhookService : IWebhookService
         IWebhook? webhook = await _webhookRepository.GetAsync(key);
         scope.Complete();
         return webhook;
+    }
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<IWebhook?>> GetMultipleAsync(IEnumerable<Guid> keys)
+    {
+        using ICoreScope scope = _provider.CreateCoreScope();
+        PagedModel<IWebhook> webhooks = await _webhookRepository.GetByIdsAsync(keys);
+        scope.Complete();
+
+        return webhooks.Items;
     }
 
     /// <inheritdoc />

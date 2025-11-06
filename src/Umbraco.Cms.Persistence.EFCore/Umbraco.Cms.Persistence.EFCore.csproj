@@ -4,16 +4,19 @@
     <Description>Adds support for Entity Framework Core to Umbraco CMS.</Description>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- Take top-level depedendency on Azure.Identity, because Microsoft.EntityFrameworkCore.SqlServer depends on a vulnerable version -->
-    <PackageReference Include="Azure.Identity" />
+  <PropertyGroup>
+    <!--
+      TODO: Fix and remove overrides:
+      [IDE0270] Simplify null checks
+      [CS0108] resolve hiding inherited members
+      [CS1998] remove async or make method synchronous
+    -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors),IDE0270,CS0108,CS1998</WarningsNotAsErrors>
+  </PropertyGroup>
 
+  <ItemGroup>
     <!-- Take top-level depedendency on Microsoft.Extensions.Caching.Memory, because Microsoft.EntityFrameworkCore.* depends on a vulnerable version -->
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
-    <!-- Both Azure.Identity, Microsoft.EntityFrameworkCore.SqlServer,NPoco.SqlServer, and more bring in a vulnerable version of System.Text.Json -->
-    <PackageReference Include="System.Text.Json" />
-    <!-- Both Microsoft.EntityFrameworkCore.SqlServer and NPoco.SqlServer bring in a vulnerable version of Microsoft.Data.SqlClient -->
-    <PackageReference Include="Microsoft.Data.SqlClient" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />

@@ -1,8 +1,6 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Tests.Common.Builders;
@@ -34,12 +32,12 @@ public class MemberBuilderTests
         const int testSortOrder = 5;
         const bool testTrashed = false;
         var testKey = Guid.NewGuid();
-        var testCreateDate = DateTime.Now.AddHours(-1);
-        var testUpdateDate = DateTime.Now;
+        var testCreateDate = DateTime.UtcNow.AddHours(-1);
+        var testUpdateDate = DateTime.UtcNow;
         const int testFailedPasswordAttempts = 22;
-        var testLastLockoutDate = DateTime.Now.AddHours(-2);
-        var testLastLoginDate = DateTime.Now.AddHours(-3);
-        var testLastPasswordChangeDate = DateTime.Now.AddHours(-4);
+        var testLastLockoutDate = DateTime.UtcNow.AddHours(-2);
+        var testLastLoginDate = DateTime.UtcNow.AddHours(-3);
+        var testLastPasswordChangeDate = DateTime.UtcNow.AddHours(-4);
         var testPropertyType1 =
             new PropertyTypeDetail { Alias = "title", Name = "Title", SortOrder = 1, DataTypeId = -88 };
         var testPropertyType2 =
@@ -56,8 +54,6 @@ public class MemberBuilderTests
         var testPropertyData1 = new KeyValuePair<string, object>("title", "Name member");
         var testPropertyData2 = new KeyValuePair<string, object>("bodyText", "This is a subpage");
         var testPropertyData3 = new KeyValuePair<string, object>("author", "John Doe");
-        var testAdditionalData1 = new KeyValuePair<string, object>("test1", 123);
-        var testAdditionalData2 = new KeyValuePair<string, object>("test2", "hello");
         const int testPropertyIdsIncrementingFrom = 200;
 
         var builder = new MemberBuilder();
@@ -116,10 +112,6 @@ public class MemberBuilderTests
             .WithValue(testGroups[0])
             .WithValue(testGroups[1])
             .Done()
-            .AddAdditionalData()
-            .WithKeyValue(testAdditionalData1.Key, testAdditionalData1.Value)
-            .WithKeyValue(testAdditionalData2.Key, testAdditionalData2.Value)
-            .Done()
             .WithPropertyIdsIncrementingFrom(200)
             .AddPropertyData()
             .WithKeyValue(testPropertyData1.Key, testPropertyData1.Value)
@@ -153,9 +145,5 @@ public class MemberBuilderTests
         var propertyIds = member.Properties.Select(x => x.Id).OrderBy(x => x).ToArray();
         Assert.AreEqual(testPropertyIdsIncrementingFrom + 1, propertyIds.Min());
         Assert.AreEqual(testPropertyIdsIncrementingFrom + 4, propertyIds.Max());
-
-        Assert.AreEqual(2, member.AdditionalData.Count);
-        Assert.AreEqual(testAdditionalData1.Value, member.AdditionalData[testAdditionalData1.Key]);
-        Assert.AreEqual(testAdditionalData2.Value, member.AdditionalData[testAdditionalData2.Key]);
     }
 }

@@ -29,8 +29,8 @@ public static class IntExtensions
     /// </returns>
     public static Guid ToGuid(this int value)
     {
-        var bytes = new byte[16];
-        BitConverter.GetBytes(value).CopyTo(bytes, 0);
+        Span<byte> bytes = stackalloc byte[16];
+        BitConverter.GetBytes(value).CopyTo(bytes);
         return new Guid(bytes);
     }
 
@@ -42,9 +42,12 @@ public static class IntExtensions
     /// <returns>
     ///     True if the <see cref="int" /> value could be created, otherwise false.
     /// </returns>
+<<<<<<< HEAD
     /// <remarks>
     ///     This is used with Umbraco entities that only have integer references in the database (e.g. users).
     /// </remarks>
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
     public static bool TryParseFromGuid(Guid value, [NotNullWhen(true)] out int? result)
     {
         if (value.ToString().EndsWith("-0000-0000-0000-000000000000") is false)

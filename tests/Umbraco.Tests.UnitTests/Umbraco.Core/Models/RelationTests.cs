@@ -2,7 +2,7 @@
 // See LICENSE for more details.
 
 using System.Diagnostics;
-using Newtonsoft.Json;
+using System.Text.Json;
 using NUnit.Framework;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Tests.Common.Builders;
@@ -51,7 +51,7 @@ public class RelationTests
     {
         var relation = BuildRelation();
 
-        var json = JsonConvert.SerializeObject(relation);
+        var json = JsonSerializer.Serialize(relation);
         Debug.Print(json);
     }
 
@@ -60,8 +60,8 @@ public class RelationTests
             .BetweenIds(9, 8)
             .WithId(4)
             .WithComment("test comment")
-            .WithCreateDate(DateTime.Now)
-            .WithUpdateDate(DateTime.Now)
+            .WithCreateDate(DateTime.UtcNow)
+            .WithUpdateDate(DateTime.UtcNow)
             .WithKey(Guid.NewGuid())
             .AddRelationType()
             .WithId(66)

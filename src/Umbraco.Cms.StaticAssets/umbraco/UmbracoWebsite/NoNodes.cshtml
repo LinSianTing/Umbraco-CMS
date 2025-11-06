@@ -1,13 +1,11 @@
-@using Microsoft.Extensions.Options
-@using Umbraco.Cms.Core.Configuration.Models
+@model Umbraco.Cms.Web.Website.Models.NoNodesViewModel
+@using Umbraco.Cms.Api.Management.Controllers.Security
 @using Umbraco.Cms.Core.Hosting
 @using Umbraco.Cms.Core.Routing
-@using Umbraco.Extensions
-@model Umbraco.Cms.Web.Website.Models.NoNodesViewModel
-@inject IHostingEnvironment hostingEnvironment
-@inject IOptions<GlobalSettings> globalSettings
+@inject IHostingEnvironment HostingEnvironment
 @{
-    var backOfficePath = globalSettings.Value.GetBackOfficePath(hostingEnvironment);
+    var backOfficePath = HostingEnvironment.GetBackOfficePath();
+    var logoImage = Url.RouteUrl(BackOfficeGraphicsController.LogoRouteName, new {Version= "1"});
 }
 <!doctype html>
 <html class="no-js" lang="en">
@@ -18,7 +16,7 @@
 
     <title>Umbraco: No Published Content</title>
 
-    <link rel="stylesheet" href="@WebPath.Combine(backOfficePath.TrimStart("~"), "/assets/css/nonodes.style.min.css")" />
+    <link rel="stylesheet" href="@WebPath.Combine(backOfficePath , "website", "/nonodes.css")" />
 </head>
 <body>
 
@@ -26,7 +24,7 @@
         <article>
             <div>
                 <div class="logo" aria-hidden="true">
-                    <img alt="Umbraco" src="umbraco/assets/img/application/logo_white.svg" width="91" height="91" />
+                    <img alt="logo" src="@logoImage" height="91"/>
                 </div>
 
                 <h1>Welcome to your Umbraco installation</h1>
@@ -45,10 +43,10 @@
                     </div>
 
                     <div class="col">
-                        <h2>Be a part of the community</h2>
-                        <p>The Umbraco community is the best of its kind, be sure to visit, and if you have any questions, we're sure that you can get your answers from the community.</p>
+                        <h2>The Umbraco community forum</h2>
+                        <p>The forum is the central hub for the Umbraco developer community. This is where developers, integrators, and contributors come together to ask questions, share knowledge, and collaborate on all things Umbraco.</p>
 
-                        <a href="https://our.umbraco.com/?ref=ourFromInstaller" target="_blank" rel="noopener">our.Umbraco &rarr;</a>
+                        <a href="https://forum.umbraco.com/" target="_blank" rel="noopener">Umbraco community forum &rarr;</a>
                     </div>
                 </div>
 

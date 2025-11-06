@@ -37,4 +37,12 @@ public interface ILanguageRepository : IReadWriteQueryRepository<int, ILanguage>
     ///     <para>This can be optimized and bypass all deep cloning.</para>
     /// </remarks>
     int? GetDefaultId();
+
+    /// <summary>
+    ///     Gets multiple language ISO codes from the provided Ids.
+    /// </summary>
+    /// <param name="ids">The language Ids.</param>
+    /// <param name="throwOnNotFound">Indicates whether to throw an exception if the provided Id is not found as a language.</param>
+    /// <returns></returns>
+    string[] GetIsoCodesByIds(ICollection<int> ids, bool throwOnNotFound = true);
 }

@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 // using Newtonsoft.Json;
 
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Cache.PartialViewCacheInvalidators;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -9,7 +12,6 @@ using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Core.Cache;
 
@@ -20,6 +22,7 @@ public sealed class MemberCacheRefresher : PayloadCacheRefresherBase<MemberCache
     private readonly IIdKeyMap _idKeyMap;
     private readonly IMemberPartialViewCacheInvalidator _memberPartialViewCacheInvalidator;
 
+<<<<<<< HEAD
     [Obsolete("Use the non obsoleted constructor instead. Scheduled for removal in v17")]
     public MemberCacheRefresher(
         AppCaches appCaches,
@@ -27,6 +30,10 @@ public sealed class MemberCacheRefresher : PayloadCacheRefresherBase<MemberCache
         IIdKeyMap idKeyMap,
         IEventAggregator eventAggregator,
         ICacheRefresherNotificationFactory factory)
+=======
+    [Obsolete("Use the non obsoleted contructor instead. Planned for removal in V18")]
+    public MemberCacheRefresher(AppCaches appCaches, IJsonSerializer serializer, IIdKeyMap idKeyMap, IEventAggregator eventAggregator, ICacheRefresherNotificationFactory factory)
+>>>>>>> v10/contrib_Merge20251106_Try
         : this(
             appCaches,
             serializer,
@@ -79,10 +86,10 @@ public sealed class MemberCacheRefresher : PayloadCacheRefresherBase<MemberCache
 
     public override string Name => "Member Cache Refresher";
 
-    public override void Refresh(JsonPayload[] payloads)
+    public override void RefreshInternal(JsonPayload[] payloads)
     {
         ClearCache(payloads);
-        base.Refresh(payloads);
+        base.RefreshInternal(payloads);
     }
 
     public override void Refresh(int id)
@@ -99,7 +106,10 @@ public sealed class MemberCacheRefresher : PayloadCacheRefresherBase<MemberCache
 
     private void ClearCache(params JsonPayload[] payloads)
     {
+<<<<<<< HEAD
         // Clear the partial views cache for all partials that are cached by member, for the updates members.
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
         _memberPartialViewCacheInvalidator.ClearPartialViewCacheItems(payloads.Select(p => p.Id));
 
         Attempt<IAppPolicyCache?> memberCache = AppCaches.IsolatedCaches.Get<IMember>();

@@ -24,8 +24,8 @@ public class MediaTypeBuilderTests
         const string testPropertyGroupName = "Additional Content";
         const int testParentId = 98;
         const int testCreatorId = 22;
-        var testCreateDate = DateTime.Now.AddHours(-1);
-        var testUpdateDate = DateTime.Now;
+        var testCreateDate = DateTime.UtcNow.AddHours(-1);
+        var testUpdateDate = DateTime.UtcNow;
         const int testLevel = 3;
         const string testPath = "-1, 4, 10";
         const int testSortOrder = 5;
@@ -99,7 +99,7 @@ public class MediaTypeBuilderTests
         Assert.AreEqual(testIcon, mediaType.Icon);
         Assert.AreEqual(testThumbnail, mediaType.Thumbnail);
         Assert.AreEqual(testTrashed, mediaType.Trashed);
-        Assert.IsFalse(mediaType.IsContainer);
+        Assert.IsNull(mediaType.ListView);
         Assert.AreEqual(7, mediaType.PropertyTypes.Count()); // 5 from media properties group, 2 custom
 
         var propertyTypeIds = mediaType.PropertyTypes.Select(x => x.Id).OrderBy(x => x).ToArray();

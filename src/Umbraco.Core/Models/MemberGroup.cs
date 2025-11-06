@@ -10,24 +10,14 @@ namespace Umbraco.Cms.Core.Models;
 [DataContract(IsReference = true)]
 public class MemberGroup : EntityBase, IMemberGroup
 {
-    private IDictionary<string, object?>? _additionalData;
     private int _creatorId;
     private string? _name;
-
-    /// <inheritdoc />
-    [DataMember]
-    [DoNotClone]
-    public IDictionary<string, object?> AdditionalData =>
-_additionalData ??= new Dictionary<string, object?>();
-
-    /// <inheritdoc />
-    [IgnoreDataMember]
-    public bool HasAdditionalData => _additionalData != null;
 
     [DataMember]
     public string? Name
     {
         get => _name;
+<<<<<<< HEAD
         set
         {
             if (_name != value)
@@ -40,6 +30,9 @@ _additionalData ??= new Dictionary<string, object?>();
 
             SetPropertyValueAndDetectChanges(value, ref _name, nameof(Name));
         }
+=======
+        set => SetPropertyValueAndDetectChanges(value, ref _name, nameof(Name));
+>>>>>>> v10/contrib_Merge20251106_Try
     }
 
     [DataMember]

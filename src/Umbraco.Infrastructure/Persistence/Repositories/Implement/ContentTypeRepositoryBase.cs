@@ -29,7 +29,11 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
     where TEntity : class, IContentTypeComposition
 {
     private readonly IShortStringHelper _shortStringHelper;
+<<<<<<< HEAD
     private readonly Lazy<IIdKeyMap> _idKeyMap;
+=======
+    private readonly IIdKeyMap _idKeyMap;
+>>>>>>> v10/contrib_Merge20251106_Try
 
     protected ContentTypeRepositoryBase(
         IScopeAccessor scopeAccessor,
@@ -38,8 +42,20 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         IContentTypeCommonRepository commonRepository,
         ILanguageRepository languageRepository,
         IShortStringHelper shortStringHelper,
+<<<<<<< HEAD
         Lazy<IIdKeyMap> idKeyMap)
         : base(scopeAccessor, cache, logger)
+=======
+        IRepositoryCacheVersionService repositoryCacheVersionService,
+        IIdKeyMap idKeyMap,
+        ICacheSyncService cacheSyncService)
+        : base(
+            scopeAccessor,
+            cache,
+            logger,
+            repositoryCacheVersionService,
+            cacheSyncService)
+>>>>>>> v10/contrib_Merge20251106_Try
     {
         _shortStringHelper = shortStringHelper;
         CommonRepository = commonRepository;
@@ -87,6 +103,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
     public IEnumerable<MoveEventInfo<TEntity>> Move(TEntity moving, EntityContainer? container)
     {
         var parentId = Constants.System.Root;
+        Guid? parentKey = Constants.System.RootKey;
         if (container != null)
         {
             // check path
@@ -99,10 +116,11 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
             }
 
             parentId = container.Id;
+            parentKey = container.Key;
         }
 
         // track moved entities
-        var moveInfo = new List<MoveEventInfo<TEntity>> { new(moving, moving.Path, parentId) };
+        var moveInfo = new List<MoveEventInfo<TEntity>> { new(moving, moving.Path, parentId, parentKey) };
 
         // get the level delta (old pos to new pos)
         var levelDelta = container == null
@@ -125,6 +143,7 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
 
         foreach (TEntity descendant in descendants.OrderBy(x => x.Level))
         {
+            //FIXME: Use MoveEventInfo constructor that takes a parentKey when this method is refactored
             moveInfo.Add(new MoveEventInfo<TEntity>(descendant, descendant.Path, descendant.ParentId));
 
             descendant.Path = paths[descendant.Id] = paths[descendant.ParentId] + "," + descendant.Id;
@@ -178,28 +197,36 @@ internal abstract class ContentTypeRepositoryBase<TEntity> : EntityRepositoryBas
         ContentTypeDto dto = ContentTypeFactory.BuildContentTypeDto(entity);
 
         // Cannot add a duplicate content type
-        var exists = Database.ExecuteScalar<int>(
-            @"SELECT COUNT(*) FROM cmsContentType
-INNER JOIN umbracoNode ON cmsContentType.nodeId = umbracoNode.id
-WHERE cmsContentType." + SqlSyntax.GetQuotedColumnName("alias") + @"= @alias
-AND umbracoNode.nodeObjectType = @objectType",
-            new { alias = entity.Alias, objectType = NodeObjectTypeId });
+        Sql<ISqlContext> sqlDuplicates = Sql()
+            .SelectCount()
+            .From<ContentTypeDto>()
+            .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>(left => left.NodeId, right => right.NodeId)
+            .Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId)
+            .Where<ContentTypeDto>(x => x.Alias == entity.Alias);
+        var exists = Database.ExecuteScalar<int>(sqlDuplicates);
         if (exists > 0)
         {
             throw new DuplicateNameException("An item with the alias " + entity.Alias + " already exists");
         }
 
         // Logic for setting Path, Level and SortOrder
-        NodeDto? parent = Database.First<NodeDto>("WHERE id = @ParentId", new { entity.ParentId });
-        var level = parent.Level + 1;
-        var sortOrder =
-            Database.ExecuteScalar<int>(
-                "SELECT COUNT(*) FROM umbracoNode WHERE parentID = @ParentId AND nodeObjectType = @NodeObjectType",
-                new { entity.ParentId, NodeObjectType = NodeObjectTypeId });
+        Sql<ISqlContext> sqlParent = Sql()
+            .SelectAll()
+            .From<NodeDto>()
+            .Where<NodeDto>(x => x.NodeId == entity.ParentId)
+            .SelectTop(1);
+        NodeDto? parent = Database.FirstOrDefault<NodeDto>(sqlParent);
+
+        var level = (parent?.Level ?? 0) + 1;
+        Sql<ISqlContext> sqlSortOrder = Sql()
+            .SelectCount()
+            .From<NodeDto>()
+            .Where<NodeDto>(x => x.ParentId == entity.ParentId && x.NodeObjectType == NodeObjectTypeId);
+        var sortOrder = Database.ExecuteScalar<int>(sqlSortOrder);
 
         // Create the (base) node data - umbracoNode
         NodeDto nodeDto = dto.NodeDto;
-        nodeDto.Path = parent.Path;
+        nodeDto.Path = parent?.Path ?? Constants.System.RootString;
         nodeDto.Level = short.Parse(level.ToString(CultureInfo.InvariantCulture));
         nodeDto.SortOrder = sortOrder;
         var o = Database.IsNew(nodeDto)
@@ -207,7 +234,7 @@ AND umbracoNode.nodeObjectType = @objectType",
             : Database.Update(nodeDto);
 
         // Update with new correct path
-        nodeDto.Path = string.Concat(parent.Path, ",", nodeDto.NodeId);
+        nodeDto.Path = string.Concat(nodeDto.Path, ",", nodeDto.NodeId);
         Database.Update(nodeDto);
 
         // Update entity with correct values
@@ -235,10 +262,12 @@ AND umbracoNode.nodeObjectType = @objectType",
             else
             {
                 // Fallback for ContentTypes with no identity
-                ContentTypeDto? contentTypeDto =
-                    Database.FirstOrDefault<ContentTypeDto>(
-                        "WHERE alias = @Alias",
-                        new { composition.Alias });
+                Sql<ISqlContext> sqlDto = Sql()
+                    .SelectAll()
+                    .From<ContentTypeDto>()
+                    .Where<ContentTypeDto>(x => x.Alias == composition.Alias)
+                    .SelectTop(1);
+                ContentTypeDto? contentTypeDto = Database.FirstOrDefault<ContentTypeDto>(sqlDto);
                 if (contentTypeDto != null)
                 {
                     Database.Insert(new ContentType2ContentTypeDto
@@ -250,22 +279,24 @@ AND umbracoNode.nodeObjectType = @objectType",
             }
         }
 
-        if (entity.AllowedContentTypes is not null)
+        (TEntity Entity, int SortOrder)[] allowedContentTypes = GetAllowedContentTypes(entity);
+        if (allowedContentTypes.Length > 0)
         {
             // Insert collection of allowed content types
-            foreach (ContentTypeSort allowedContentType in entity.AllowedContentTypes)
+            foreach ((TEntity entity1, int sortOrder1) in allowedContentTypes)
             {
                 Database.Insert(new ContentTypeAllowedContentTypeDto
                 {
                     Id = entity.Id,
-                    AllowedId = allowedContentType.Id.Value,
-                    SortOrder = allowedContentType.SortOrder,
+                    AllowedId = entity1.Id,
+                    SortOrder = sortOrder1,
                 });
             }
         }
 
         // Insert Tabs
-        foreach (PropertyGroup propertyGroup in entity.PropertyGroups)
+        PropertyGroupCollection propertyGroups = entity.PropertyGroups;
+        foreach (PropertyGroup propertyGroup in propertyGroups)
         {
             PropertyTypeGroupDto tabDto = PropertyGroupFactory.BuildGroupDto(propertyGroup, nodeDto.NodeId);
             var primaryKey = Convert.ToInt32(Database.Insert(tabDto));
@@ -287,7 +318,8 @@ AND umbracoNode.nodeObjectType = @objectType",
         }
 
         // Insert PropertyTypes
-        foreach (IPropertyType propertyType in entity.PropertyTypes)
+        IEnumerable<IPropertyType> propertyTypes = entity.PropertyTypes;
+        foreach (IPropertyType propertyType in propertyTypes)
         {
             var tabId = propertyType.PropertyGroupId != null ? propertyType.PropertyGroupId.Value : default;
 
@@ -303,10 +335,17 @@ AND umbracoNode.nodeObjectType = @objectType",
             propertyType.Id = typePrimaryKey; // Set Id on new PropertyType
 
             // Update the current PropertyType with correct PropertyEditorAlias and DatabaseType
-            DataTypeDto? dataTypeDto =
-                Database.FirstOrDefault<DataTypeDto>("WHERE nodeId = @Id", new { Id = propertyTypeDto.DataTypeId });
-            propertyType.PropertyEditorAlias = dataTypeDto.EditorAlias;
-            propertyType.ValueStorageType = dataTypeDto.DbType.EnumParse<ValueStorageType>(true);
+            Sql<ISqlContext> sqlDataType = Sql()
+                .SelectAll()
+                .From<DataTypeDto>()
+                .Where<DataTypeDto>(x => x.NodeId == propertyType.DataTypeId)
+                .SelectTop(1);
+            DataTypeDto? dataTypeDto = Database.FirstOrDefault<DataTypeDto>(sqlDataType);
+            if (dataTypeDto is not null)
+            {
+                propertyType.PropertyEditorAlias = dataTypeDto.EditorAlias;
+                propertyType.ValueStorageType = dataTypeDto.DbType.EnumParse<ValueStorageType>(true);
+            }
         }
 
         CommonRepository.ClearCache(); // always
@@ -320,13 +359,14 @@ AND umbracoNode.nodeObjectType = @objectType",
         ContentTypeDto dto = ContentTypeFactory.BuildContentTypeDto(entity);
 
         // ensure the alias is not used already
-        var exists = Database.ExecuteScalar<int>(
-            @"SELECT COUNT(*) FROM cmsContentType
-INNER JOIN umbracoNode ON cmsContentType.nodeId = umbracoNode.id
-WHERE cmsContentType." + SqlSyntax.GetQuotedColumnName("alias") + @"= @alias
-AND umbracoNode.nodeObjectType = @objectType
-AND umbracoNode.id <> @id",
-            new { id = dto.NodeId, alias = dto.Alias, objectType = NodeObjectTypeId });
+        Sql<ISqlContext> sqlContentType1 = Sql()
+           .SelectCount()
+           .From<ContentTypeDto>()
+           .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>(left => left.NodeId, right => right.NodeId)
+           .Where<ContentTypeDto>(x => x.Alias == dto.Alias)
+           .Where<NodeDto>(x => x.NodeObjectType == NodeObjectTypeId && x.NodeId != dto.NodeId);
+        var exists = Database.ExecuteScalar<int>(sqlContentType1);
+
         if (exists > 0)
         {
             throw new DuplicateNameException("An item with the alias " + dto.Alias + " already exists");
@@ -340,12 +380,20 @@ AND umbracoNode.id <> @id",
         // we NEED this: updating, so the .PrimaryKey already exists, but the entity does
         // not carry it and therefore the dto does not have it yet - must get it from db,
         // look up ContentType entry to get PrimaryKey for updating the DTO
-        ContentTypeDto? dtoPk = Database.First<ContentTypeDto>("WHERE nodeId = @Id", new { entity.Id });
+        Sql<ISqlContext> sqlContentType2 = Sql()
+            .SelectAll()
+            .From<ContentTypeDto>()
+            .Where<ContentTypeDto>(x => x.NodeId == dto.NodeId)
+            .SelectTop(1);
+        ContentTypeDto? dtoPk = Database.First<ContentTypeDto>(sqlContentType2);
         dto.PrimaryKey = dtoPk.PrimaryKey;
         Database.Update(dto);
 
         // handle (delete then recreate) compositions
-        Database.Delete<ContentType2ContentTypeDto>("WHERE childContentTypeId = @Id", new { entity.Id });
+        Sql<ISqlContext> sqlContentType2ContentType = Sql()
+            .Delete<ContentType2ContentTypeDto>()
+            .Where<ContentType2ContentTypeDto>(x => x.ChildId == entity.Id);
+        Database.Execute(sqlContentType2ContentType);
         foreach (IContentTypeComposition composition in entity.ContentTypeComposition)
         {
             Database.Insert(new ContentType2ContentTypeDto { ParentId = composition.Id, ChildId = entity.Id });
@@ -360,20 +408,24 @@ AND umbracoNode.id <> @id",
             // TODO: Could we do the below with bulk SQL statements instead of looking everything up and then manipulating?
 
             // find Content based on the current ContentType
-            Sql<ISqlContext> sql = Sql()
+            Sql<ISqlContext> sqlContent = Sql()
                 .SelectAll()
                 .From<ContentDto>()
                 .InnerJoin<NodeDto>().On<ContentDto, NodeDto>(left => left.NodeId, right => right.NodeId)
                 .Where<NodeDto>(x => x.NodeObjectType == Constants.ObjectTypes.Document)
                 .Where<ContentDto>(x => x.ContentTypeId == entity.Id);
-            List<ContentDto>? contentDtos = Database.Fetch<ContentDto>(sql);
+            List<ContentDto>? contentDtos = Database.Fetch<ContentDto>(sqlContent);
 
             // loop through all tracked keys, which corresponds to the ContentTypes that has been removed from the composition
             foreach (var key in entity.RemovedContentTypes)
             {
                 // find PropertyTypes for the removed ContentType
+                Sql<ISqlContext> sqlPropertyType = Sql()
+                    .SelectAll()
+                    .From<PropertyTypeDto>()
+                    .Where<PropertyTypeDto>(x => x.ContentTypeId == key);
                 List<PropertyTypeDto>? propertyTypes =
-                    Database.Fetch<PropertyTypeDto>("WHERE contentTypeId = @Id", new { Id = key });
+                    Database.Fetch<PropertyTypeDto>(sqlPropertyType);
 
                 // loop through the Content that is based on the current ContentType in order to remove the Properties that are
                 // based on the PropertyTypes that belong to the removed ContentType.
@@ -384,7 +436,7 @@ AND umbracoNode.id <> @id",
                     {
                         var nodeId = contentDto.NodeId;
                         var propertyTypeId = propertyType.Id;
-                        Sql<ISqlContext> propertySql = Sql()
+                        Sql<ISqlContext> sqlProperty = Sql()
                             .Select<PropertyDataDto>(x => x.Id)
                             .From<PropertyDataDto>()
                             .InnerJoin<PropertyTypeDto>()
@@ -395,25 +447,31 @@ AND umbracoNode.id <> @id",
                             .Where<PropertyTypeDto>(x => x.Id == propertyTypeId);
 
                         // finally delete the properties that match our criteria for removing a ContentType from the composition
-                        Database.Delete<PropertyDataDto>(new Sql(
-                            "WHERE id IN (" + propertySql.SQL + ")",
-                            propertySql.Arguments));
+                        Sql<ISqlContext> sqlPropertydata = Sql()
+                            .Delete<PropertyDataDto>()
+                            .WhereIn<PropertyDataDto>(x => x.Id, sqlProperty.Arguments);
+                        Database.Execute(sqlPropertydata);
                     }
                 }
             }
         }
 
         // delete the allowed content type entries before re-inserting the collection of allowed content types
-        Database.Delete<ContentTypeAllowedContentTypeDto>("WHERE Id = @Id", new { entity.Id });
-        if (entity.AllowedContentTypes is not null)
+        Sql<ISqlContext> sqlAllowedContent = Sql()
+            .Delete<ContentTypeAllowedContentTypeDto>()
+            .Where<ContentTypeAllowedContentTypeDto>(x => x.Id == entity.Id);
+        Database.Execute(sqlAllowedContent);
+
+        (TEntity Entity, int SortOrder)[] allowedContentTypes = GetAllowedContentTypes(entity);
+        if (allowedContentTypes.Any())
         {
-            foreach (ContentTypeSort allowedContentType in entity.AllowedContentTypes)
+            foreach ((TEntity entity1, int sortOrder) in allowedContentTypes)
             {
                 Database.Insert(new ContentTypeAllowedContentTypeDto
                 {
                     Id = entity.Id,
-                    AllowedId = allowedContentType.Id.Value,
-                    SortOrder = allowedContentType.SortOrder,
+                    AllowedId = entity1.Id,
+                    SortOrder = sortOrder,
                 });
             }
         }
@@ -425,14 +483,17 @@ AND umbracoNode.id <> @id",
         if (entity.IsPropertyDirty("NoGroupPropertyTypes") ||
             entity.PropertyGroups.Any(x => x.IsPropertyDirty("PropertyTypes")))
         {
-            List<PropertyTypeDto>? dbPropertyTypes =
-                Database.Fetch<PropertyTypeDto>("WHERE contentTypeId = @Id", new { entity.Id });
+            Sql<ISqlContext> sqlPropertyType = Sql()
+                .SelectAll()
+                .From<PropertyTypeDto>()
+                .Where<PropertyTypeDto>(x => x.ContentTypeId == entity.Id);
+            List<PropertyTypeDto>? dbPropertyTypes = Database.Fetch<PropertyTypeDto>(sqlPropertyType);
             IEnumerable<int> dbPropertyTypeIds = dbPropertyTypes.Select(x => x.Id);
             IEnumerable<int> entityPropertyTypes = entity.PropertyTypes.Where(x => x.HasIdentity).Select(x => x.Id);
             IEnumerable<int> propertyTypeToDeleteIds = dbPropertyTypeIds.Except(entityPropertyTypes);
             foreach (var propertyTypeId in propertyTypeToDeleteIds)
             {
-                DeletePropertyType(entity.Id, propertyTypeId);
+                DeletePropertyType(entity, propertyTypeId);
             }
         }
 
@@ -459,10 +520,12 @@ AND umbracoNode.id <> @id",
             // delete tabs that do not exist anymore
             // get the tabs that are currently existing (in the db), get the tabs that we want,
             // now, and derive the tabs that we want to delete
-            var existingPropertyGroups = Database
-                .Fetch<PropertyTypeGroupDto>("WHERE contentTypeNodeId = @id", new { id = entity.Id })
-                .Select(x => x.Id)
-                .ToList();
+            Sql<ISqlContext> sqlPropTypeGrp1 = Sql()
+                .Select<PropertyTypeGroupDto>(x => x.Id)
+                .From<PropertyTypeGroupDto>()
+                .Where<PropertyTypeGroupDto>(x => x.ContentTypeNodeId == entity.Id);
+            List<int> existingPropertyGroups = Database.Fetch<int>(sqlPropTypeGrp1);
+
             var newPropertyGroups = entity.PropertyGroups.Select(x => x.Id).ToList();
             var groupsToDelete = existingPropertyGroups
                 .Except(newPropertyGroups)
@@ -475,16 +538,21 @@ AND umbracoNode.id <> @id",
                 // - move them to 'generic properties' so they remain consistent
                 // - keep track of them, later on we'll figure out what to do with them
                 // see http://issues.umbraco.org/issue/U4-8663
-                orphanPropertyTypeIds = Database.Fetch<PropertyTypeDto>(
-                    "WHERE propertyTypeGroupId IN (@ids)",
-                    new { ids = groupsToDelete })
-                    .Select(x => x.Id).ToList();
-                Database.Update<PropertyTypeDto>(
-                    "SET propertyTypeGroupId = NULL WHERE propertyTypeGroupId IN (@ids)",
-                    new { ids = groupsToDelete });
+                Sql<ISqlContext> sqlPropTypeGrp2 = Sql()
+                    .Select<PropertyTypeDto>(x => x.Id)
+                    .From<PropertyTypeDto>()
+                    .WhereIn<PropertyTypeDto>(x => x.PropertyTypeGroupId, groupsToDelete);
+                orphanPropertyTypeIds = Database.Fetch<int>(sqlPropTypeGrp2);
+                Sql<ISqlContext> sqlPropTypeGrp3 = Sql()
+                    .Update<PropertyTypeDto>(u => u.Set(x => x.PropertyTypeGroupId, null))
+                    .WhereIn<PropertyTypeDto>(x => x.PropertyTypeGroupId, groupsToDelete);
+                Database.Execute(sqlPropTypeGrp3);
 
                 // now we can delete the tabs
-                Database.Delete<PropertyTypeGroupDto>("WHERE id IN (@ids)", new { ids = groupsToDelete });
+                Sql<ISqlContext> sqlPropTypeGrp4 = Sql()
+                    .Delete<PropertyTypeGroupDto>()
+                    .WhereIn<PropertyTypeGroupDto>(x => x.Id, groupsToDelete);
+                Database.Execute(sqlPropTypeGrp4);
             }
         }
 
@@ -540,11 +608,7 @@ AND umbracoNode.id <> @id",
             if (propertyType.IsPropertyDirty("Variations"))
             {
                 // allocate the list only when needed
-                if (propertyTypeVariationDirty == null)
-                {
-                    propertyTypeVariationDirty = new List<IPropertyType>();
-                }
-
+                propertyTypeVariationDirty ??= new List<IPropertyType>();
                 propertyTypeVariationDirty.Add(propertyType);
             }
         }
@@ -645,7 +709,7 @@ AND umbracoNode.id <> @id",
         {
             foreach (var id in orphanPropertyTypeIds)
             {
-                DeletePropertyType(entity.Id, id);
+                DeletePropertyType(entity, id);
             }
         }
 
@@ -798,11 +862,7 @@ AND umbracoNode.id <> @id",
             }
 
             // allocate the dictionary only when needed
-            if (changes == null)
-            {
-                changes = new Dictionary<int, (ContentVariation, ContentVariation)>();
-            }
-
+            changes ??= new Dictionary<int, (ContentVariation, ContentVariation)>();
             changes[propertyType.Id] = (oldVariation, newVariation);
         }
 
@@ -865,10 +925,10 @@ AND umbracoNode.id <> @id",
                  propertyTypeChanges.GroupBy(x => x.Value))
         {
             var propertyTypeIds = grouping.Select(x => x.Key).ToList();
-            (ContentVariation FromVariation, ContentVariation ToVariation) = grouping.Key;
+            (ContentVariation fromVariation, ContentVariation toVariation) = grouping.Key;
 
-            var fromCultureEnabled = FromVariation.HasFlag(ContentVariation.Culture);
-            var toCultureEnabled = ToVariation.HasFlag(ContentVariation.Culture);
+            var fromCultureEnabled = fromVariation.HasFlag(ContentVariation.Culture);
+            var toCultureEnabled = toVariation.HasFlag(ContentVariation.Culture);
 
             if (!fromCultureEnabled && toCultureEnabled)
             {
@@ -890,7 +950,9 @@ AND umbracoNode.id <> @id",
     /// <summary>
     ///     Moves variant data for a content type variation change.
     /// </summary>
-    private void MoveContentTypeVariantData(IContentTypeComposition contentType, ContentVariation fromVariation,
+    private void MoveContentTypeVariantData(
+        IContentTypeComposition contentType,
+        ContentVariation fromVariation,
         ContentVariation toVariation)
     {
         var defaultLanguageId = GetDefaultLanguageId();
@@ -905,59 +967,59 @@ AND umbracoNode.id <> @id",
             // there's 2x tables to update
 
             // clear out the versionCultureVariation table
-            Sql<ISqlContext> sqlSelect = Sql().Select<ContentVersionCultureVariationDto>(x => x.Id)
+            Sql<ISqlContext> sqlSelectContentVersion = Sql().Select<ContentVersionCultureVariationDto>(x => x.Id)
                 .From<ContentVersionCultureVariationDto>()
                 .InnerJoin<ContentVersionDto>()
                 .On<ContentVersionDto, ContentVersionCultureVariationDto>(x => x.Id, x => x.VersionId)
                 .InnerJoin<ContentDto>().On<ContentDto, ContentVersionDto>(x => x.NodeId, x => x.NodeId)
                 .Where<ContentDto>(x => x.ContentTypeId == contentType.Id)
                 .Where<ContentVersionCultureVariationDto>(x => x.LanguageId == defaultLanguageId);
-            Sql<ISqlContext> sqlDelete = Sql()
+            Sql<ISqlContext> sqlDeleteContentVersion = Sql()
                 .Delete<ContentVersionCultureVariationDto>()
-                .WhereIn<ContentVersionCultureVariationDto>(x => x.Id, sqlSelect);
+                .WhereIn<ContentVersionCultureVariationDto>(x => x.Id, sqlSelectContentVersion);
 
-            Database.Execute(sqlDelete);
+            Database.Execute(sqlDeleteContentVersion);
 
             // clear out the documentCultureVariation table
-            sqlSelect = Sql().Select<DocumentCultureVariationDto>(x => x.Id)
+            Sql<ISqlContext> sqlDocumentCulture = Sql().Select<DocumentCultureVariationDto>(x => x.Id)
                 .From<DocumentCultureVariationDto>()
                 .InnerJoin<ContentDto>().On<ContentDto, DocumentCultureVariationDto>(x => x.NodeId, x => x.NodeId)
                 .Where<ContentDto>(x => x.ContentTypeId == contentType.Id)
                 .Where<DocumentCultureVariationDto>(x => x.LanguageId == defaultLanguageId);
-            sqlDelete = Sql()
+            Sql<ISqlContext> sqlDeleteDocumentCulture = Sql()
                 .Delete<DocumentCultureVariationDto>()
-                .WhereIn<DocumentCultureVariationDto>(x => x.Id, sqlSelect);
+                .WhereIn<DocumentCultureVariationDto>(x => x.Id, sqlDocumentCulture);
 
-            Database.Execute(sqlDelete);
+            Database.Execute(sqlDeleteDocumentCulture);
 
             // now we need to insert names into these 2 tables based on the invariant data
 
             // insert rows into the versionCultureVariationDto table based on the data from contentVersionDto for the default lang
             var cols = Sql().ColumnsForInsert<ContentVersionCultureVariationDto>(x => x.VersionId, x => x.Name,
                 x => x.UpdateUserId, x => x.UpdateDate, x => x.LanguageId);
-            sqlSelect = Sql().Select<ContentVersionDto>(x => x.Id, x => x.Text, x => x.UserId, x => x.VersionDate)
+            Sql<ISqlContext> sqlSelect2 = Sql().Select<ContentVersionDto>(x => x.Id, x => x.Text, x => x.UserId, x => x.VersionDate)
                 .Append($", {defaultLanguageId}") // default language ID
                 .From<ContentVersionDto>()
                 .InnerJoin<ContentDto>().On<ContentDto, ContentVersionDto>(x => x.NodeId, x => x.NodeId)
                 .Where<ContentDto>(x => x.ContentTypeId == contentType.Id);
-            Sql<ISqlContext>? sqlInsert = Sql($"INSERT INTO {ContentVersionCultureVariationDto.TableName} ({cols})")
-                .Append(sqlSelect);
+            Sql<ISqlContext>? sqlInsertContentVersion = Sql($"INSERT INTO {QuoteTableName(ContentVersionCultureVariationDto.TableName)} ({cols})")
+                .Append(sqlSelect2);
 
-            Database.Execute(sqlInsert);
+            Database.Execute(sqlInsertContentVersion);
 
             // insert rows into the documentCultureVariation table
             cols = Sql().ColumnsForInsert<DocumentCultureVariationDto>(x => x.NodeId, x => x.Edited, x => x.Published,
                 x => x.Name, x => x.Available, x => x.LanguageId);
-            sqlSelect = Sql().Select<DocumentDto>(x => x.NodeId, x => x.Edited, x => x.Published)
+            Sql<ISqlContext> sqlSelectDocument = Sql().Select<DocumentDto>(x => x.NodeId, x => x.Edited, x => x.Published)
                 .AndSelect<NodeDto>(x => x.Text)
-                .Append($", 1, {defaultLanguageId}") // make Available + default language ID
+                .Append($", {SqlSyntax.ConvertIntegerToBoolean(1)}, {defaultLanguageId}") // make Available + default language ID
                 .From<DocumentDto>()
                 .InnerJoin<NodeDto>().On<NodeDto, DocumentDto>(x => x.NodeId, x => x.NodeId)
                 .InnerJoin<ContentDto>().On<ContentDto, NodeDto>(x => x.NodeId, x => x.NodeId)
                 .Where<ContentDto>(x => x.ContentTypeId == contentType.Id);
-            sqlInsert = Sql($"INSERT INTO {DocumentCultureVariationDto.TableName} ({cols})").Append(sqlSelect);
+            Sql<ISqlContext> sqlInsertDocumentCulture = Sql($"INSERT INTO {QuoteTableName(DocumentCultureVariationDto.TableName)} ({cols})").Append(sqlSelectDocument);
 
-            Database.Execute(sqlInsert);
+            Database.Execute(sqlInsertDocumentCulture);
         }
     }
 
@@ -977,28 +1039,28 @@ AND umbracoNode.id <> @id",
 
         // delete existing relations (for target language)
         // do *not* delete existing tags
-        Sql<ISqlContext> sqlSelectTagsToDelete = Sql()
+        Sql<ISqlContext> sqlSelectTagsToDelete1 = Sql()
             .Select<TagDto>(x => x.Id)
             .From<TagDto>()
             .InnerJoin<TagRelationshipDto>().On<TagDto, TagRelationshipDto>((tag, rel) => tag.Id == rel.TagId);
 
         if (contentTypeIds != null)
         {
-            sqlSelectTagsToDelete
+            sqlSelectTagsToDelete1
                 .InnerJoin<ContentDto>()
                 .On<TagRelationshipDto, ContentDto>((rel, content) => rel.NodeId == content.NodeId)
                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
         }
 
-        sqlSelectTagsToDelete
+        sqlSelectTagsToDelete1
             .WhereIn<TagRelationshipDto>(x => x.PropertyTypeId, propertyTypeIds)
             .Where<TagDto>(x => x.LanguageId.SqlNullableEquals(targetLanguageId, -1));
 
-        Sql<ISqlContext> sqlDeleteRelations = Sql()
+        Sql<ISqlContext> sqlDeleteRelations1 = Sql()
             .Delete<TagRelationshipDto>()
-            .WhereIn<TagRelationshipDto>(x => x.TagId, sqlSelectTagsToDelete);
+            .WhereIn<TagRelationshipDto>(x => x.TagId, sqlSelectTagsToDelete1);
 
-        Database.Execute(sqlDeleteRelations);
+        Database.Execute(sqlDeleteRelations1);
 
         // do *not* delete the tags - they could be used by other content types / property types
         /*
@@ -1015,12 +1077,12 @@ AND umbracoNode.id <> @id",
         // and of source language, and where we cannot left join to an existing tag with same text,
         // group and languageId
         var targetLanguageIdS = targetLanguageId.HasValue ? targetLanguageId.ToString() : "NULL";
-        Sql<ISqlContext> sqlSelectTagsToInsert = Sql()
+        Sql<ISqlContext> sqlSelectTagsToInsert1 = Sql()
             .SelectDistinct<TagDto>(x => x.Text, x => x.Group)
             .Append(", " + targetLanguageIdS)
             .From<TagDto>();
 
-        sqlSelectTagsToInsert
+        sqlSelectTagsToInsert1
             .InnerJoin<TagRelationshipDto>().On<TagDto, TagRelationshipDto>((tag, rel) => tag.Id == rel.TagId)
             .LeftJoin<TagDto>("xtags")
             .On<TagDto, TagDto>(
@@ -1029,19 +1091,19 @@ AND umbracoNode.id <> @id",
 
         if (contentTypeIds != null)
         {
-            sqlSelectTagsToInsert
+            sqlSelectTagsToInsert1
                 .InnerJoin<ContentDto>()
                 .On<TagRelationshipDto, ContentDto>((rel, content) => rel.NodeId == content.NodeId)
                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
         }
 
-        sqlSelectTagsToInsert
+        sqlSelectTagsToInsert1
             .WhereIn<TagRelationshipDto>(x => x.PropertyTypeId, propertyTypeIds)
             .WhereNull<TagDto>(x => x.Id, "xtags") // ie, not exists
             .Where<TagDto>(x => x.LanguageId.SqlNullableEquals(sourceLanguageId, -1));
 
         var cols = Sql().ColumnsForInsert<TagDto>(x => x.Text, x => x.Group, x => x.LanguageId);
-        Sql<ISqlContext>? sqlInsertTags = Sql($"INSERT INTO {TagDto.TableName} ({cols})").Append(sqlSelectTagsToInsert);
+        Sql<ISqlContext>? sqlInsertTags = Sql($"INSERT INTO {QuoteTableName(TagDto.TableName)} ({cols})").Append(sqlSelectTagsToInsert1);
 
         Database.Execute(sqlInsertTags);
 
@@ -1076,33 +1138,33 @@ AND umbracoNode.id <> @id",
         var relationColumnsToInsert =
             Sql().ColumnsForInsert<TagRelationshipDto>(x => x.NodeId, x => x.PropertyTypeId, x => x.TagId);
         Sql<ISqlContext>? sqlInsertRelations =
-            Sql($"INSERT INTO {TagRelationshipDto.TableName} ({relationColumnsToInsert})")
+            Sql($"INSERT INTO {QuoteTableName(TagRelationshipDto.TableName)} ({relationColumnsToInsert})")
                 .Append(sqlSelectRelationsToInsert);
 
         Database.Execute(sqlInsertRelations);
 
         // delete original relations - *not* the tags - all of them
         // cannot really "go back" with relations, would have to do it with property values
-        sqlSelectTagsToDelete = Sql()
+        Sql<ISqlContext> sqlSelectTagsToDelete2 = Sql()
             .Select<TagDto>(x => x.Id)
             .From<TagDto>()
             .InnerJoin<TagRelationshipDto>().On<TagDto, TagRelationshipDto>((tag, rel) => tag.Id == rel.TagId);
 
         if (contentTypeIds != null)
         {
-            sqlSelectTagsToDelete
+            sqlSelectTagsToDelete2
                 .InnerJoin<ContentDto>()
                 .On<TagRelationshipDto, ContentDto>((rel, content) => rel.NodeId == content.NodeId)
                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
         }
 
-        sqlSelectTagsToDelete
+        sqlSelectTagsToDelete2
             .WhereIn<TagRelationshipDto>(x => x.PropertyTypeId, propertyTypeIds)
             .Where<TagDto>(x => !x.LanguageId.SqlNullableEquals(targetLanguageId, -1));
 
-        sqlDeleteRelations = Sql()
+        Sql<ISqlContext> sqlDeleteRelations = Sql()
             .Delete<TagRelationshipDto>()
-            .WhereIn<TagRelationshipDto>(x => x.TagId, sqlSelectTagsToDelete);
+            .WhereIn<TagRelationshipDto>(x => x.TagId, sqlSelectTagsToDelete2);
 
         Database.Execute(sqlDeleteRelations);
 
@@ -1142,15 +1204,14 @@ AND umbracoNode.id <> @id",
         //        .From<PropertyDataDto>()
         //        .InnerJoin<ContentVersionDto>().On<PropertyDataDto, ContentVersionDto>((pdata, cversion) => pdata.VersionId == cversion.Id)
         //        .InnerJoin<ContentDto>().On<ContentVersionDto, ContentDto>((cversion, c) => cversion.NodeId == c.NodeId);
-        Sql<ISqlContext>? inSql = null;
-        if (contentTypeIds != null)
+        if (contentTypeIds is not null)
         {
-            inSql = Sql()
-                .Select<ContentVersionDto>(x => x.Id)
-                .From<ContentVersionDto>()
-                .InnerJoin<ContentDto>()
-                .On<ContentVersionDto, ContentDto>((cversion, c) => cversion.NodeId == c.NodeId)
-                .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
+            Sql<ISqlContext> inSql = Sql()
+                 .Select<ContentVersionDto>(x => x.Id)
+                 .From<ContentVersionDto>()
+                 .InnerJoin<ContentDto>()
+                 .On<ContentVersionDto, ContentDto>((cversion, c) => cversion.NodeId == c.NodeId)
+                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
             sqlDelete.WhereIn<PropertyDataDto>(x => x.VersionId, inSql);
         }
 
@@ -1196,7 +1257,7 @@ AND umbracoNode.id <> @id",
                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
         }
 
-        Sql<ISqlContext>? sqlInsert = Sql($"INSERT INTO {PropertyDataDto.TableName} ({cols})").Append(sqlSelectData);
+        Sql<ISqlContext>? sqlInsert = Sql($"INSERT INTO {QuoteTableName(PropertyDataDto.TableName)} ({cols})").Append(sqlSelectData);
 
         Database.Execute(sqlInsert);
 
@@ -1209,6 +1270,12 @@ AND umbracoNode.id <> @id",
 
             if (contentTypeIds != null)
             {
+                Sql<ISqlContext> inSql = Sql()
+                 .Select<ContentVersionDto>(x => x.Id)
+                 .From<ContentVersionDto>()
+                 .InnerJoin<ContentDto>()
+                 .On<ContentVersionDto, ContentDto>((cversion, c) => cversion.NodeId == c.NodeId)
+                 .WhereIn<ContentDto>(x => x.ContentTypeId, contentTypeIds);
                 sqlDelete.WhereIn<PropertyDataDto>(x => x.VersionId, inSql);
             }
 
@@ -1410,16 +1477,37 @@ AND umbracoNode.id <> @id",
         }
     }
 
-    private void DeletePropertyType(int contentTypeId, int propertyTypeId)
+    private void DeletePropertyType(IContentTypeComposition contentType, int propertyTypeId)
     {
         // first clear dependencies
-        Database.Delete<TagRelationshipDto>("WHERE propertyTypeId = @Id", new { Id = propertyTypeId });
-        Database.Delete<PropertyDataDto>("WHERE propertyTypeId = @Id", new { Id = propertyTypeId });
+        Sql<ISqlContext> sqlTagRelationship = Sql()
+            .Delete<TagRelationshipDto>()
+            .Where<TagRelationshipDto>(x => x.PropertyTypeId == propertyTypeId);
+        Database.Execute(sqlTagRelationship);
 
-        // then delete the property type
-        Database.Delete<PropertyTypeDto>(
-            "WHERE contentTypeId = @Id AND id = @PropertyTypeId",
-            new { Id = contentTypeId, PropertyTypeId = propertyTypeId });
+        Sql<ISqlContext> sqlPropertyData = Sql()
+            .Delete<PropertyDataDto>()
+            .Where<PropertyDataDto>(x => x.PropertyTypeId == propertyTypeId);
+        Database.Execute(sqlPropertyData);
+
+        Sql<ISqlContext> delSql = Sql()
+            .Delete<UserGroup2GranularPermissionDto>()
+            .Where<UserGroup2GranularPermissionDto>(c => c.UniqueId == contentType.Key)
+            .WhereLike<UserGroup2GranularPermissionDto>(
+                c => c.Permission,
+                Sql()
+                    .SelectClosure<PropertyTypeDto>(c => c.ConvertUniqueIdentifierToString(x => x.UniqueId))
+                    .From<PropertyTypeDto>()
+                    .WhereClosure<PropertyTypeDto>(c => c.Id == propertyTypeId),
+                $"'|{SqlSyntax.GetWildcardPlaceholder()}'");
+
+        Database.Execute(delSql);
+
+        // Finally delete the property type.
+        Sql<ISqlContext> sqlPropertyType = Sql()
+            .Delete<PropertyTypeDto>()
+            .Where<PropertyTypeDto>(x => x.ContentTypeId == contentType.Id && x.Id == propertyTypeId);
+        Database.Execute(sqlPropertyType);
     }
 
     protected void ValidateAlias(TEntity entity)
@@ -1449,7 +1537,11 @@ AND umbracoNode.id <> @id",
         // If a key is provided, use that.
         if (propertyType.DataTypeKey != Guid.Empty)
         {
+<<<<<<< HEAD
             Attempt<int> dataTypeIdAttempt = _idKeyMap.Value.GetIdForKey(propertyType.DataTypeKey, UmbracoObjectTypes.DataType);
+=======
+            Attempt<int> dataTypeIdAttempt = _idKeyMap.GetIdForKey(propertyType.DataTypeKey, UmbracoObjectTypes.DataType);
+>>>>>>> v10/contrib_Merge20251106_Try
             if (dataTypeIdAttempt.Success)
             {
                 propertyType.DataTypeId = dataTypeIdAttempt.Result;
@@ -1475,9 +1567,13 @@ AND umbracoNode.id <> @id",
             .Select<DataTypeDto>(dt => dt.Select(x => x.NodeDto))
             .From<DataTypeDto>()
             .InnerJoin<NodeDto>().On<DataTypeDto, NodeDto>((dt, n) => dt.NodeId == n.NodeId)
+<<<<<<< HEAD
             .Where(
                 "propertyEditorAlias = @propertyEditorAlias",
                 new { propertyEditorAlias = propertyType.PropertyEditorAlias })
+=======
+            .Where<DataTypeDto>(c => c.EditorAlias == propertyType.PropertyEditorAlias)
+>>>>>>> v10/contrib_Merge20251106_Try
             .OrderBy<DataTypeDto>(typeDto => typeDto.NodeId);
         DataTypeDto? datatype = Database.FirstOrDefault<DataTypeDto>(sql);
 
@@ -1505,12 +1601,14 @@ AND umbracoNode.id <> @id",
     public string GetUniqueAlias(string alias)
     {
         // alias is unique across ALL content types!
-        var aliasColumn = SqlSyntax.GetQuotedColumnName("alias");
-        List<string>? aliases = Database.Fetch<string>(
-            @"SELECT cmsContentType." + aliasColumn + @" FROM cmsContentType
-INNER JOIN umbracoNode ON cmsContentType.nodeId = umbracoNode.id
-WHERE cmsContentType." + aliasColumn + @" LIKE @pattern",
-            new { pattern = alias + "%", objectType = NodeObjectTypeId });
+        Sql<ISqlContext> sql = Sql()
+            .Select<ContentTypeDto>(c => c.Alias)
+            .From<ContentTypeDto>()
+            .InnerJoin<NodeDto>().On<ContentTypeDto, NodeDto>((ct, n) => ct.NodeId == n.NodeId)
+            .WhereLike<ContentTypeDto>(c => c.Alias, $"{alias}{SqlSyntax.GetWildcardPlaceholder()}");
+        List<string> aliases = Database.Fetch<string>(sql);
+
+
         var i = 1;
         string test;
         while (aliases.Contains(test = alias + i))
@@ -1530,11 +1628,13 @@ WHERE cmsContentType." + aliasColumn + @" LIKE @pattern",
 
     public bool HasContainerInPath(params int[] ids)
     {
-        var sql = new Sql(
-            $@"SELECT COUNT(*) FROM cmsContentType
-INNER JOIN {Constants.DatabaseSchema.Tables.Content} ON cmsContentType.nodeId={Constants.DatabaseSchema.Tables.Content}.contentTypeId
-WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentType.isContainer=@isContainer",
-            new { ids, isContainer = true });
+        Sql<ISqlContext> sql = Sql()
+            .SelectCount()
+            .From<ContentTypeDto>()
+            .InnerJoin<ContentDto>()
+            .On<ContentTypeDto, ContentDto>((ct, c) => ct.NodeId == c.ContentTypeId)
+            .WhereIn<ContentDto>(x => x.NodeId, ids)
+            .Where<ContentTypeDto>(x => x.ListView == null);
         return Database.ExecuteScalar<int>(sql) > 0;
     }
 
@@ -1544,7 +1644,7 @@ WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentT
     public bool HasContentNodes(int id)
     {
         var sql = new Sql(
-            $"SELECT CASE WHEN EXISTS (SELECT * FROM {Constants.DatabaseSchema.Tables.Content} WHERE contentTypeId = @id) THEN 1 ELSE 0 END",
+            $"SELECT CASE WHEN EXISTS (SELECT * FROM {QuoteTableName(ContentDto.TableName)} WHERE {QuoteColumnName("contentTypeId")} = @id) THEN 1 ELSE 0 END",
             new { id });
         return Database.ExecuteScalar<int>(sql) == 1;
     }
@@ -1556,25 +1656,43 @@ WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentT
         // is included here just to be 100% sure since it has a FK on cmsPropertyType.
         var list = new List<string>
         {
-            "DELETE FROM umbracoUser2NodeNotify WHERE nodeId = @id",
-            "DELETE FROM umbracoUserGroup2Node WHERE nodeId = @id",
-            "DELETE FROM umbracoUserGroup2NodePermission WHERE nodeId = @id",
-            "DELETE FROM cmsTagRelationship WHERE nodeId = @id",
-            "DELETE FROM cmsContentTypeAllowedContentType WHERE Id = @id",
-            "DELETE FROM cmsContentTypeAllowedContentType WHERE AllowedId = @id",
-            "DELETE FROM cmsContentType2ContentType WHERE parentContentTypeId = @id",
-            "DELETE FROM cmsContentType2ContentType WHERE childContentTypeId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyData +
-            " WHERE propertyTypeId IN (SELECT id FROM cmsPropertyType WHERE contentTypeId = @id)",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyType +
-            " WHERE contentTypeId = @id",
-            "DELETE FROM " + Constants.DatabaseSchema.Tables.PropertyTypeGroup +
-            " WHERE contenttypeNodeId = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.User2NodeNotify)} WHERE {QuoteColumnName("nodeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.UserGroup2GranularPermission)} WHERE {QuoteColumnName("uniqueId")} IN
+                (SELECT {QuoteColumnName("uniqueId")} FROM {QuoteTableName(NodeDto.TableName)} WHERE id = @id)",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.TagRelationship)} WHERE {QuoteColumnName("nodeId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentChildType)} WHERE {QuoteColumnName("Id")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentChildType)} WHERE {QuoteColumnName("AllowedId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentTypeTree)} WHERE {QuoteColumnName("parentContentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.ContentTypeTree)} WHERE {QuoteColumnName("childContentTypeId")} = @id",
+            $@"DELETE FROM {QuoteTableName(PropertyDataDto.TableName)} WHERE {QuoteColumnName("propertyTypeId")} IN
+                (SELECT id FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyType)} WHERE {QuoteColumnName("contentTypeId")} = @id)",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyType)} WHERE {QuoteColumnName("contentTypeId")} = @id",
+            $"DELETE FROM {QuoteTableName(Constants.DatabaseSchema.Tables.PropertyTypeGroup)} WHERE {QuoteColumnName("contenttypeNodeId")} = @id",
         };
         return list;
     }
 
-    private class NameCompareDto
+    private (TEntity Entity, int SortOrder)[] GetAllowedContentTypes(IContentTypeBase contentTypeBase)
+    {
+        if (contentTypeBase.AllowedContentTypes?.Any() is not true)
+        {
+            return Array.Empty<(TEntity, int)>();
+        }
+
+        Guid[] allowedContentTypeKeys = contentTypeBase
+            .AllowedContentTypes
+            .OrderBy(c => c.SortOrder)
+            .Select(c => c.Key)
+            .ToArray();
+
+        // NOTE: we're efficiently discarding the input sort order here in favor of a "0 to n" sorting (which is the correct sort order).
+        //       i.e. if the input sort orders are [5, 3, 17] they will be come [1, 0, 2] (in effect though they will also be sorted by
+        //       the 0 based sort order, so they will be returned as [0, 1, 2]).
+        return PerformGetAll(allowedContentTypeKeys)?.Select(c => (c, allowedContentTypeKeys.IndexOf(c.Key))).ToArray()
+            ?? Array.Empty<(TEntity, int)>();
+    }
+
+    private sealed class NameCompareDto
     {
         public int NodeId { get; set; }
 
@@ -1593,7 +1711,7 @@ WHERE {Constants.DatabaseSchema.Tables.Content}.nodeId IN (@ids) AND cmsContentT
         public bool Edited { get; set; }
     }
 
-    private class PropertyValueVersionDto
+    private sealed class PropertyValueVersionDto
     {
         private decimal? _decimalValue;
 

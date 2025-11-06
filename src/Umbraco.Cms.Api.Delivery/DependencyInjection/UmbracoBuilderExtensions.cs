@@ -22,6 +22,7 @@ using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DeliveryApi;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Infrastructure.Security;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 
@@ -53,6 +54,8 @@ public static class UmbracoBuilderExtensions
             ServiceLifetime.Scoped);
 
         builder.Services.AddSingleton<IRequestCultureService, RequestCultureService>();
+        builder.Services.AddSingleton<IRequestSegmmentService, RequestSegmentService>();
+        builder.Services.AddSingleton<IRequestSegmentService, RequestSegmentService>();
         builder.Services.AddSingleton<IRequestRoutingService, RequestRoutingService>();
         builder.Services.AddSingleton<IRequestRedirectService, RequestRedirectService>();
         builder.Services.AddSingleton<IRequestPreviewService, RequestPreviewService>();
@@ -112,7 +115,7 @@ public static class UmbracoBuilderExtensions
 
         builder.Services.AddOutputCache(options =>
         {
-            options.AddBasePolicy(_ => { });
+            options.AddBasePolicy(build => build.AddPolicy<NoOutputCachePolicy>());
 
             if (outputCacheSettings.ContentDuration.TotalSeconds > 0)
             {
@@ -120,7 +123,11 @@ public static class UmbracoBuilderExtensions
                     Constants.DeliveryApi.OutputCache.ContentCachePolicy,
                     new DeliveryApiOutputCachePolicy(
                         outputCacheSettings.ContentDuration,
+<<<<<<< HEAD
                         new StringValues([Constants.DeliveryApi.HeaderNames.AcceptLanguage, Constants.DeliveryApi.HeaderNames.StartItem])));
+=======
+                        new StringValues([Constants.DeliveryApi.HeaderNames.AcceptLanguage, Constants.DeliveryApi.HeaderNames.AcceptSegment, Constants.DeliveryApi.HeaderNames.StartItem])));
+>>>>>>> v10/contrib_Merge20251106_Try
             }
 
             if (outputCacheSettings.MediaDuration.TotalSeconds > 0)

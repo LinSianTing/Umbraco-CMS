@@ -133,8 +133,11 @@ public sealed class TimedScope : IDisposable, IAsyncDisposable
         {
             Thread.Sleep(remaining);
         }
+<<<<<<< HEAD
 
         _cancellationTokenSource.Dispose();
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
     }
 
     /// <summary>
@@ -153,8 +156,11 @@ public sealed class TimedScope : IDisposable, IAsyncDisposable
         {
             await Task.Delay(remaining, _timeProvider, _cancellationTokenSource.Token).ConfigureAwait(false);
         }
+<<<<<<< HEAD
 
         _cancellationTokenSource.Dispose();
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
     }
 
     private bool TryGetRemaining(out TimeSpan remaining)

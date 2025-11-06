@@ -29,7 +29,7 @@ public class LanguageBuilder<TParent>
     private CultureInfo _cultureInfo;
     private string _cultureName;
     private DateTime? _deleteDate;
-    private int? _fallbackLanguageId;
+    private string? _fallbackLanguageIsoCode;
     private int? _id;
     private bool? _isDefault;
     private bool? _isMandatory;
@@ -95,10 +95,9 @@ public class LanguageBuilder<TParent>
         return this;
     }
 
-    [Obsolete("This will be replaced in V14 by a corresponding method accepting language ISO code instead of language ID.")]
-    public LanguageBuilder<TParent> WithFallbackLanguageId(int fallbackLanguageId)
+    public LanguageBuilder<TParent> WithFallbackLanguageIsoCode(string fallbackLanguageIsoCode)
     {
-        _fallbackLanguageId = fallbackLanguageId;
+        _fallbackLanguageIsoCode = fallbackLanguageIsoCode;
         return this;
     }
 
@@ -107,10 +106,10 @@ public class LanguageBuilder<TParent>
         var cultureInfo = _cultureInfo ?? CultureInfo.GetCultureInfo("en-US");
         var cultureName = _cultureName ?? cultureInfo.EnglishName;
         var key = _key ?? Guid.NewGuid();
-        var createDate = _createDate ?? DateTime.Now;
-        var updateDate = _updateDate ?? DateTime.Now;
+        var createDate = _createDate ?? DateTime.UtcNow;
+        var updateDate = _updateDate ?? DateTime.UtcNow;
         var deleteDate = _deleteDate;
-        var fallbackLanguageId = _fallbackLanguageId;
+        var fallbackLanguageIsoCode = _fallbackLanguageIsoCode;
         var isDefault = _isDefault ?? false;
         var isMandatory = _isMandatory ?? false;
 
@@ -123,7 +122,7 @@ public class LanguageBuilder<TParent>
             DeleteDate = deleteDate,
             IsDefault = isDefault,
             IsMandatory = isMandatory,
-            FallbackLanguageId = fallbackLanguageId
+            FallbackIsoCode = fallbackLanguageIsoCode
         };
     }
 }

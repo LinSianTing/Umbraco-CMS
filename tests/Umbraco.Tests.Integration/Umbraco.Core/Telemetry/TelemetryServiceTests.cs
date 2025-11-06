@@ -13,7 +13,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Core.Telemetry;
 
 [TestFixture]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
-public class TelemetryServiceTests : UmbracoIntegrationTest
+internal sealed class TelemetryServiceTests : UmbracoIntegrationTest
 {
     protected override void CustomTestSetup(IUmbracoBuilder builder) =>
         builder.Services.Configure<GlobalSettings>(options => options.Id = Guid.NewGuid().ToString());
@@ -25,7 +25,7 @@ public class TelemetryServiceTests : UmbracoIntegrationTest
     private WebhookEventCollection WebhookEventCollection => GetRequiredService<WebhookEventCollection>();
 
     [Test]
-    public void Expected_Detailed_Telemetry_Exists()
+    public async Task Expected_Detailed_Telemetry_Exists()
     {
         var expectedData = new List<string>
         {
@@ -33,7 +33,6 @@ public class TelemetryServiceTests : UmbracoIntegrationTest
             Constants.Telemetry.DomainCount,
             Constants.Telemetry.ExamineIndexCount,
             Constants.Telemetry.LanguageCount,
-            Constants.Telemetry.MacroCount,
             Constants.Telemetry.MediaCount,
             Constants.Telemetry.MediaCount,
             Constants.Telemetry.TemplateCount,
@@ -68,11 +67,12 @@ public class TelemetryServiceTests : UmbracoIntegrationTest
         // Add the default webhook events.
         expectedData.AddRange(WebhookEventCollection.Select(eventInfo => $"{Constants.Telemetry.WebhookPrefix}{eventInfo.Alias}"));
 
-        MetricsConsentService.SetConsentLevel(TelemetryLevel.Detailed);
-        var success = TelemetryService.TryGetTelemetryReportData(out var telemetryReportData);
-        var detailed = telemetryReportData.Detailed.ToArray();
+        await MetricsConsentService.SetConsentLevelAsync(TelemetryLevel.Detailed);
+        var telemetryReportData = await TelemetryService.GetTelemetryReportDataAsync();
+        Assert.IsNotNull(telemetryReportData);
 
-        Assert.IsTrue(success);
+        var detailed = telemetryReportData!.Detailed.ToArray();
+
         Assert.Multiple(() =>
         {
             Assert.IsNotNull(detailed);

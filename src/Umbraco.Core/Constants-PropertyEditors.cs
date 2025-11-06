@@ -41,6 +41,11 @@ public static partial class Constants
             public const string BlockList = "Umbraco.BlockList";
 
             /// <summary>
+            ///     Block List.
+            /// </summary>
+            public const string SingleBlock = "Umbraco.SingleBlock";
+
+            /// <summary>
             /// Block Grid.
             /// </summary>
             public const string BlockGrid = "Umbraco.BlockGrid";
@@ -71,6 +76,31 @@ public static partial class Constants
             public const string DateTime = "Umbraco.DateTime";
 
             /// <summary>
+            ///     Date Time (unspecified).
+            /// </summary>
+            public const string DateTimeUnspecified = "Umbraco.DateTimeUnspecified";
+
+            /// <summary>
+            ///     Date Time (with time zone).
+            /// </summary>
+            public const string DateTimeWithTimeZone = "Umbraco.DateTimeWithTimeZone";
+
+            /// <summary>
+            ///     Date Only.
+            /// </summary>
+            public const string DateOnly = "Umbraco.DateOnly";
+
+            /// <summary>
+            ///     Entity Data Picker
+            /// </summary>
+            public const string EntityDataPicker = "Umbraco.EntityDataPicker";
+
+            /// <summary>
+            ///     Time Only.
+            /// </summary>
+            public const string TimeOnly = "Umbraco.TimeOnly";
+
+            /// <summary>
             ///     DropDown List.
             /// </summary>
             public const string DropDownListFlexible = "Umbraco.DropDown.Flexible";
@@ -99,11 +129,6 @@ public static partial class Constants
             ///     ListView.
             /// </summary>
             public const string ListView = "Umbraco.ListView";
-
-            /// <summary>
-            ///     Media Picker.
-            /// </summary>
-            public const string MediaPicker = "Umbraco.MediaPicker";
 
             /// <summary>
             ///     Media Picker v.3.
@@ -171,9 +196,9 @@ public static partial class Constants
             public const string TextArea = "Umbraco.TextArea";
 
             /// <summary>
-            ///     TinyMCE
+            ///     Rich Text Editor.
             /// </summary>
-            public const string TinyMce = "Umbraco.TinyMCE";
+            public const string RichText = "Umbraco.RichText";
 
             /// <summary>
             ///     Boolean.
@@ -209,6 +234,36 @@ public static partial class Constants
             ///     Alias for the multi URL picker editor.
             /// </summary>
             public const string MultiUrlPicker = "Umbraco.MultiUrlPicker";
+
+            /// <summary>
+            ///     Configuration-less string.
+            /// </summary>
+            public const string PlainString = "Umbraco.Plain.String";
+
+            /// <summary>
+            ///     Configuration-less JSON.
+            /// </summary>
+            public const string PlainJson = "Umbraco.Plain.Json";
+
+            /// <summary>
+            ///     Configuration-less decimal.
+            /// </summary>
+            public const string PlainDecimal = "Umbraco.Plain.Decimal";
+
+            /// <summary>
+            ///     Configuration-less integer.
+            /// </summary>
+            public const string PlainInteger = "Umbraco.Plain.Integer";
+
+            /// <summary>
+            ///     Configuration-less date/time.
+            /// </summary>
+            public const string PlainDateTime = "Umbraco.Plain.DateTime";
+
+            /// <summary>
+            ///     Configuration-less time.
+            /// </summary>
+            public const string PlainTime = "Umbraco.Plain.Time";
         }
 
         /// <summary>

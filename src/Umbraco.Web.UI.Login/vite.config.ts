@@ -5,18 +5,12 @@ export default defineConfig({
 	build: {
 		lib: {
 			entry: 'src/index.ts',
-      formats: ['iife'],
-      name: 'umblogin',
-      fileName: 'login'
+			formats: ['es'],
+			fileName: 'login',
 		},
-    rollupOptions: {
-      external: [/^@umbraco/],
-      output: {
-        globals: {
-          '@umbraco-ui/uui': 'uui',
-        },
-      }
-    },
+		rollupOptions: {
+			external: [/^@umbraco-cms/],
+		},
 		target: 'esnext',
 		sourcemap: true,
 		outDir: '../Umbraco.Cms.StaticAssets/wwwroot/umbraco/login',

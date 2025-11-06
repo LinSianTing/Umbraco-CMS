@@ -1,23 +1,19 @@
-using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Umbraco.Cms.Core.Configuration;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration.Models;
-using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Runtime;
 using Umbraco.Cms.Infrastructure.ModelsBuilder.Building;
-using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Infrastructure.ModelsBuilder;
 
 /// <summary>
-///     Notification handlers used by <see cref="ModelsMode.SourceCodeAuto" />.
+///     Notification handlers used by SourceCodeAuto.
 /// </summary>
 /// <remarks>
-///     supports <see cref="ModelsMode.SourceCodeAuto" /> mode but not <see cref="ModelsMode.InMemoryAuto" /> mode.
+///     supports SourceCodeAuto mode but not InMemoryAuto mode.
 /// </remarks>
 public sealed class AutoModelsNotificationHandler : INotificationHandler<UmbracoApplicationStartingNotification>,
     INotificationHandler<UmbracoRequestEndNotification>,
@@ -30,34 +26,6 @@ public sealed class AutoModelsNotificationHandler : INotificationHandler<Umbraco
     private readonly IMainDom _mainDom;
     private readonly ModelsGenerationError _mbErrors;
     private readonly IModelsGenerator _modelGenerator;
-
-    // TODO: Remove in v13
-    private readonly ModelsGenerator? _concreteModelGenerator;
-
-    [Obsolete("This constructor is obsolete and will be removed in v13. Use the constructor with IModelsGenerator instead.")]
-    [Browsable(false)]
-    public AutoModelsNotificationHandler(
-        ILogger<AutoModelsNotificationHandler> logger,
-        IOptionsMonitor<ModelsBuilderSettings> config,
-        ModelsGenerator modelGenerator,
-        ModelsGenerationError mbErrors,
-        IMainDom mainDom)
-        : this(logger, config, StaticServiceProvider.Instance.GetRequiredService<IModelsGenerator>(), mbErrors, mainDom)
-    {
-    }
-
-    [Obsolete("This constructor is obsolete and will be removed in v13. Use the constructor with only IModelsGenerator instead.")]
-    [Browsable(false)]
-    public AutoModelsNotificationHandler(
-        ILogger<AutoModelsNotificationHandler> logger,
-        IOptionsMonitor<ModelsBuilderSettings> config,
-        ModelsGenerator concreteModelGenerator,
-        IModelsGenerator modelGenerator,
-        ModelsGenerationError mbErrors,
-        IMainDom mainDom)
-        : this(logger, config, modelGenerator, mbErrors, mainDom)
-    {
-    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutoModelsNotificationHandler" /> class.
@@ -79,7 +47,7 @@ public sealed class AutoModelsNotificationHandler : INotificationHandler<Umbraco
     }
 
     // we do not manage InMemory models here
-    internal bool IsEnabled => _config.ModelsMode.IsAutoNotInMemory();
+    internal bool IsEnabled => _config.ModelsMode == Constants.ModelsBuilder.ModelsModes.SourceCodeAuto;
 
     public void Handle(ContentTypeCacheRefresherNotification notification) => RequestModelsGeneration();
 

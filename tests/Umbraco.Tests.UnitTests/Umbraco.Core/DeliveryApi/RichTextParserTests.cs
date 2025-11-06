@@ -26,7 +26,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse("<p>Hello</p>");
+        var element = parser.Parse("<p>Hello</p>", RichTextBlockModel.Empty);
         Assert.IsNotNull(element);
         Assert.AreEqual("#root", element.Tag);
     }
@@ -36,7 +36,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse("<p>Some text paragraph</p>") as RichTextRootElement;
+        var element = parser.Parse("<p>Some text paragraph</p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         Assert.AreEqual(1, element.Elements.Count());
         var paragraph = element.Elements.Single() as RichTextGenericElement;
@@ -52,7 +52,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse("<p>Some text<br/>More text<br/>Even more text</p>") as RichTextRootElement;
+        var element = parser.Parse("<p>Some text<br/>More text<br/>Even more text</p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         Assert.AreEqual(1, element.Elements.Count());
         var paragraph = element.Elements.Single() as RichTextGenericElement;
@@ -100,7 +100,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse("<p><span data-something=\"the data-something value\">Text in a data-something SPAN</span></p>") as RichTextRootElement;
+        var element = parser.Parse("<p><span data-something=\"the data-something value\">Text in a data-something SPAN</span></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var span = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(span);
@@ -118,7 +118,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse("<p><span something=\"the original something\" data-something=\"the data something\">Text in a data-something SPAN</span></p>") as RichTextRootElement;
+        var element = parser.Parse("<p><span something=\"the original something\" data-something=\"the data something\">Text in a data-something SPAN</span></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var span = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(span);
@@ -128,7 +128,10 @@ public class RichTextParserTests : PropertyValueConverterTests
         Assert.AreEqual("the original something", span.Attributes.First().Value);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
     [TestCase(null)]
     [TestCase("")]
     [TestCase("#some-anchor")]
@@ -137,7 +140,11 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
+<<<<<<< HEAD
         var element = parser.Parse($"<p><a href=\"/{{localLink:umb://document/{_contentKey:N}}}{postfix}\"></a></p>") as RichTextRootElement;
+=======
+        var element = parser.Parse($"<p><a href=\"/{{localLink:umb://document/{_contentKey:N}}}{postfix}\"></a></p>", RichTextBlockModel.Empty) as RichTextRootElement;
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -157,7 +164,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse($"<p><a href=\"/{{localLink:umb://media/{_mediaKey:N}}}\"></a></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><a href=\"/{{localLink:umb://media/{_mediaKey:N}}}\"></a></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -172,7 +179,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse($"<p><a href=\"https://some.where/else/\"></a></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><a href=\"https://some.where/else/\"></a></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -188,7 +195,11 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
+<<<<<<< HEAD
         var element = parser.Parse($"<p><a href=\"https://some.where/else/{postfix}\"></a></p>") as RichTextRootElement;
+=======
+        var element = parser.Parse($"<p><a href=\"https://some.where/else/{postfix}\"></a></p>", RichTextBlockModel.Empty) as RichTextRootElement;
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -203,7 +214,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse($"<p><a href=\"https://some.where/else/\">This is the link text</a></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><a href=\"https://some.where/else/\">This is the link text</a></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -219,7 +230,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse($"<p><a href=\"/{href}\"></a></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><a href=\"/{href}\"></a></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -232,7 +243,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse($"<p><img src=\"/media/whatever/something.png?rmode=max&amp;width=500\" data-udi=\"umb://media/{_mediaKey:N}\"></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><img src=\"/media/whatever/something.png?rmode=max&amp;width=500\" data-udi=\"umb://media/{_mediaKey:N}\"></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -247,7 +258,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse($"<p><img src=\"https://some.where/something.png?rmode=max&amp;width=500\"></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><img src=\"https://some.where/something.png?rmode=max&amp;width=500\"></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var link = element.Elements.OfType<RichTextGenericElement>().Single().Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(link);
@@ -262,7 +273,7 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
-        var element = parser.Parse("<p>some text<!-- a comment -->some more text</p>") as RichTextRootElement;
+        var element = parser.Parse("<p>some text<!-- a comment -->some more text</p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var paragraph = element.Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(paragraph);
@@ -281,7 +292,7 @@ public class RichTextParserTests : PropertyValueConverterTests
         var id = Guid.NewGuid();
 
         var tagName = $"umb-rte-block{(inlineBlock ? "-inline" : string.Empty)}";
-        var element = parser.Parse($"<p><{tagName} data-content-udi=\"umb://element/{id:N}\"><!--Umbraco-Block--></{tagName}></p>") as RichTextRootElement;
+        var element = parser.Parse($"<p><{tagName} data-content-key=\"{id:N}\"><!--Umbraco-Block--></{tagName}></p>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         var paragraph = element.Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(paragraph);
@@ -318,7 +329,7 @@ public class RichTextParserTests : PropertyValueConverterTests
             });
 
         var tagName = $"umb-rte-block{(inlineBlock ? "-inline" : string.Empty)}";
-        var element = parser.Parse($"<p><{tagName} data-content-udi=\"umb://element/{block1ContentId:N}\"><!--Umbraco-Block--></{tagName}><{tagName} data-content-udi=\"umb://element/{block2ContentId:N}\"><!--Umbraco-Block--></{tagName}></p>", richTextBlockModel) as RichTextRootElement;
+        var element = parser.Parse($"<p><{tagName} data-content-key=\"{block1ContentId:N}\"><!--Umbraco-Block--></{tagName}><{tagName} data-content-key=\"{block2ContentId:N}\"><!--Umbraco-Block--></{tagName}></p>", richTextBlockModel) as RichTextRootElement;
         Assert.IsNotNull(element);
         var paragraph = element.Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(paragraph);
@@ -355,7 +366,7 @@ public class RichTextParserTests : PropertyValueConverterTests
         var id1 = Guid.NewGuid();
         var id2 = Guid.NewGuid();
 
-        var element = parser.Parse($"<p><umb-rte-block-inline data-content-udi=\"umb://element/{id1:N}\"><!--Umbraco-Block--></umb-rte-block-inline></p><umb-rte-block data-content-udi=\"umb://element/{id2:N}\"><!--Umbraco-Block--></umb-rte-block>") as RichTextRootElement;
+        var element = parser.Parse($"<p><umb-rte-block-inline data-content-key=\"{id1:N}\"><!--Umbraco-Block--></umb-rte-block-inline></p><umb-rte-block data-content-key=\"{id2:N}\"><!--Umbraco-Block--></umb-rte-block>", RichTextBlockModel.Empty) as RichTextRootElement;
         Assert.IsNotNull(element);
         Assert.AreEqual(2, element.Elements.Count());
 
@@ -386,7 +397,11 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextElementParser();
 
+<<<<<<< HEAD
         var element = parser.Parse($"<p>{TestParagraph}</p>") as RichTextRootElement;
+=======
+        var element = parser.Parse($"<p>{TestParagraph}</p>", RichTextBlockModel.Empty) as RichTextRootElement;
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.IsNotNull(element);
         var paragraphElement = element.Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(paragraphElement);
@@ -405,7 +420,11 @@ public class RichTextParserTests : PropertyValueConverterTests
         var parser = CreateRichTextElementParser();
 
         var newLineSeparator = string.Concat(Enumerable.Repeat(newlineCharacter, numberOfNewLineCharacters));
+<<<<<<< HEAD
         var element = parser.Parse($"<table>{newLineSeparator}<tr>{newLineSeparator}<td>{TestParagraph}</td>{newLineSeparator}</tr>{newLineSeparator}</table>") as RichTextRootElement;
+=======
+        var element = parser.Parse($"<table>{newLineSeparator}<tr>{newLineSeparator}<td>{TestParagraph}</td>{newLineSeparator}</tr>{newLineSeparator}</table>", RichTextBlockModel.Empty) as RichTextRootElement;
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.IsNotNull(element);
         var tableElement = element.Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(tableElement);
@@ -430,7 +449,11 @@ public class RichTextParserTests : PropertyValueConverterTests
         var parser = CreateRichTextElementParser();
 
         var newLineSeparator = string.Concat(Enumerable.Repeat(newlineCharacter, numberOfNewLineCharacters));
+<<<<<<< HEAD
         var element = parser.Parse($"<div><p>{TestParagraph}</p>{newLineSeparator}<p></p>{newLineSeparator}<p>&nbsp;</p>{newLineSeparator}<p>{TestParagraph}</p></div>") as RichTextRootElement;
+=======
+        var element = parser.Parse($"<div><p>{TestParagraph}</p>{newLineSeparator}<p></p>{newLineSeparator}<p>&nbsp;</p>{newLineSeparator}<p>{TestParagraph}</p></div>", RichTextBlockModel.Empty) as RichTextRootElement;
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.IsNotNull(element);
         var divElement = element.Elements.Single() as RichTextGenericElement;
         Assert.IsNotNull(divElement);
@@ -481,6 +504,17 @@ public class RichTextParserTests : PropertyValueConverterTests
     {
         var parser = CreateRichTextMarkupParser();
 
+        var result = parser.Parse($"<p><a href=\"/{{localLink:{_contentKey:N}}}\" type=\"document\"></a></p>");
+        Assert.IsTrue(result.Contains("href=\"/some-content-path\""));
+        Assert.IsTrue(result.Contains("data-start-item-path=\"the-root-path\""));
+        Assert.IsTrue(result.Contains($"data-start-item-id=\"{_contentRootKey:D}\""));
+    }
+
+    [Test]
+    public void ParseMarkup_CanParseLegacyContentLink()
+    {
+        var parser = CreateRichTextMarkupParser();
+
         var result = parser.Parse($"<p><a href=\"/{{localLink:umb://document/{_contentKey:N}}}\"></a></p>");
         Assert.IsTrue(result.Contains("href=\"/some-content-path\""));
         Assert.IsTrue(result.Contains("data-start-item-path=\"the-root-path\""));
@@ -489,10 +523,32 @@ public class RichTextParserTests : PropertyValueConverterTests
 
     [TestCase("#some-anchor")]
     [TestCase("?something=true")]
+<<<<<<< HEAD
+=======
+    [TestCase("#!some-hashbang")]
+    [TestCase("?something=true#some-anchor")]
+>>>>>>> v10/contrib_Merge20251106_Try
     public void ParseMarkup_CanParseContentLink_WithPostfix(string postfix)
     {
         var parser = CreateRichTextMarkupParser();
 
+<<<<<<< HEAD
+=======
+        var result = parser.Parse($"<p><a href=\"/{{localLink:{_contentKey:N}}}{postfix}\" type=\"document\"></a></p>");
+        Assert.IsTrue(result.Contains($"href=\"/some-content-path{postfix}\""));
+        Assert.IsTrue(result.Contains("data-start-item-path=\"the-root-path\""));
+        Assert.IsTrue(result.Contains($"data-start-item-id=\"{_contentRootKey:D}\""));
+    }
+
+    [TestCase("#some-anchor")]
+    [TestCase("?something=true")]
+    [TestCase("#!some-hashbang")]
+    [TestCase("?something=true#some-anchor")]
+    public void ParseMarkup_CanParseLegacyContentLink_WithPostfix(string postfix)
+    {
+        var parser = CreateRichTextMarkupParser();
+
+>>>>>>> v10/contrib_Merge20251106_Try
         var result = parser.Parse($"<p><a href=\"/{{localLink:umb://document/{_contentKey:N}}}{postfix}\"></a></p>");
         Assert.IsTrue(result.Contains($"href=\"/some-content-path{postfix}\""));
         Assert.IsTrue(result.Contains("data-start-item-path=\"the-root-path\""));
@@ -568,7 +624,7 @@ public class RichTextParserTests : PropertyValueConverterTests
         var id = Guid.NewGuid();
 
         var tagName = $"umb-rte-block{(inlineBlock ? "-inline" : string.Empty)}";
-        var result = parser.Parse($"<p><{tagName} data-content-udi=\"umb://element/{id:N}\"><!--Umbraco-Block--></{tagName}></p>");
+        var result = parser.Parse($"<p><{tagName} data-content-key=\"{id:N}\"><!--Umbraco-Block--></{tagName}></p>");
         Assert.AreEqual($"<p><{tagName} data-content-id=\"{id:D}\"></{tagName}></p>", result);
     }
 
@@ -579,34 +635,36 @@ public class RichTextParserTests : PropertyValueConverterTests
         var id1 = Guid.NewGuid();
         var id2 = Guid.NewGuid();
 
-        var result = parser.Parse($"<p><umb-rte-block-inline data-content-udi=\"umb://element/{id1:N}\"><!--Umbraco-Block--></umb-rte-block-inline></p><umb-rte-block data-content-udi=\"umb://element/{id2:N}\"><!--Umbraco-Block--></umb-rte-block>");
+        var result = parser.Parse($"<p><umb-rte-block-inline data-content-key=\"{id1:D}\"><!--Umbraco-Block--></umb-rte-block-inline></p><umb-rte-block data-content-key=\"{id2:D}\"><!--Umbraco-Block--></umb-rte-block>");
         Assert.AreEqual($"<p><umb-rte-block-inline data-content-id=\"{id1:D}\"></umb-rte-block-inline></p><umb-rte-block data-content-id=\"{id2:D}\"></umb-rte-block>", result);
     }
 
     private ApiRichTextElementParser CreateRichTextElementParser()
     {
-        SetupTestContent(out var routeBuilder, out var snapshotAccessor, out var urlProvider);
+        SetupTestContent(out var routeBuilder, out var cacheManager, out var urlProvider);
 
         return new ApiRichTextElementParser(
             routeBuilder,
             urlProvider,
-            snapshotAccessor,
+            cacheManager.Content,
+            cacheManager.Media,
             new ApiElementBuilder(CreateOutputExpansionStrategyAccessor()),
             Mock.Of<ILogger<ApiRichTextElementParser>>());
     }
 
     private ApiRichTextMarkupParser CreateRichTextMarkupParser()
     {
-        SetupTestContent(out var routeBuilder, out var snapshotAccessor, out var urlProvider);
+        SetupTestContent(out var routeBuilder, out var cacheManager, out var urlProvider);
 
         return new ApiRichTextMarkupParser(
             routeBuilder,
             urlProvider,
-            snapshotAccessor,
+            cacheManager.Content,
+            cacheManager.Media,
             Mock.Of<ILogger<ApiRichTextMarkupParser>>());
     }
 
-    private void SetupTestContent(out IApiContentRouteBuilder routeBuilder, out IPublishedSnapshotAccessor snapshotAccessor, out IApiMediaUrlProvider apiMediaUrlProvider)
+    private void SetupTestContent(out IApiContentRouteBuilder routeBuilder, out ICacheManager cacheManager, out IApiMediaUrlProvider apiMediaUrlProvider)
     {
         var contentMock = new Mock<IPublishedContent>();
         contentMock.SetupGet(m => m.Key).Returns(_contentKey);
@@ -617,17 +675,14 @@ public class RichTextParserTests : PropertyValueConverterTests
         mediaMock.SetupGet(m => m.ItemType).Returns(PublishedItemType.Media);
 
         var contentCacheMock = new Mock<IPublishedContentCache>();
-        contentCacheMock.Setup(m => m.GetById(new GuidUdi(Constants.UdiEntityType.Document, _contentKey))).Returns(contentMock.Object);
+        contentCacheMock.Setup(m => m.GetById(_contentKey)).Returns(contentMock.Object);
         var mediaCacheMock = new Mock<IPublishedMediaCache>();
-        mediaCacheMock.Setup(m => m.GetById(new GuidUdi(Constants.UdiEntityType.Media, _mediaKey))).Returns(mediaMock.Object);
+        mediaCacheMock.Setup(m => m.GetById(_mediaKey)).Returns(mediaMock.Object);
 
-        var snapshotMock = new Mock<IPublishedSnapshot>();
-        snapshotMock.SetupGet(m => m.Content).Returns(contentCacheMock.Object);
-        snapshotMock.SetupGet(m => m.Media).Returns(mediaCacheMock.Object);
-
-        var snapshot = snapshotMock.Object;
-        var snapshotAccessorMock = new Mock<IPublishedSnapshotAccessor>();
-        snapshotAccessorMock.Setup(m => m.TryGetPublishedSnapshot(out snapshot)).Returns(true);
+        var cacheManagerMock = new Mock<ICacheManager>();
+        cacheManagerMock.SetupGet(m => m.Content).Returns(contentCacheMock.Object);
+        cacheManagerMock.SetupGet(m => m.Media).Returns(mediaCacheMock.Object);
+        cacheManager = cacheManagerMock.Object;
 
         var routeBuilderMock = new Mock<IApiContentRouteBuilder>();
         routeBuilderMock
@@ -640,7 +695,6 @@ public class RichTextParserTests : PropertyValueConverterTests
             .Returns("/some-media-url");
 
         routeBuilder = routeBuilderMock.Object;
-        snapshotAccessor = snapshotAccessorMock.Object;
         apiMediaUrlProvider = apiMediaUrlProviderMock.Object;
     }
 
@@ -655,7 +709,7 @@ public class RichTextParserTests : PropertyValueConverterTests
         element.SetupGet(c => c.ContentType).Returns(elementType.Object);
 
         var numberPropertyType = SetupPublishedPropertyType(new IntegerValueConverter(), "number", Constants.PropertyEditors.Aliases.Label);
-        var property = new PublishedElementPropertyBase(numberPropertyType, element.Object, false, PropertyCacheLevel.None, propertyValue);
+        var property = new PublishedElementPropertyBase(numberPropertyType, element.Object, false, PropertyCacheLevel.None, VariationContext, CacheManager, propertyValue);
 
         element.SetupGet(c => c.Properties).Returns(new[] { property });
         return element.Object;

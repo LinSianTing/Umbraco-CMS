@@ -9,22 +9,16 @@ namespace Umbraco.Cms.Core.Actions;
 public class ActionSort : IAction
 {
     /// <inheritdoc cref="IAction.ActionLetter"/>
-    public const char ActionLetter = 'S';
+    public const string ActionLetter = "Umb.Document.Sort";
 
     /// <inheritdoc cref="IAction.ActionAlias"/>
     public const string ActionAlias = "sort";
 
     /// <inheritdoc/>
-    public char Letter => ActionLetter;
+    public string Letter => ActionLetter;
 
     /// <inheritdoc/>
     public string Alias => ActionAlias;
-
-    /// <inheritdoc />
-    public string Category => Constants.Conventions.PermissionCategories.StructureCategory;
-
-    /// <inheritdoc />
-    public string Icon => "icon-navigation-vertical";
 
     /// <inheritdoc />
     public bool ShowInNotifier => true;

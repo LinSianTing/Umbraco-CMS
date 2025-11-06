@@ -9,22 +9,16 @@ namespace Umbraco.Cms.Core.Actions;
 public class ActionUnpublish : IAction
 {
     /// <inheritdoc cref="IAction.ActionLetter"/>
-    public const char ActionLetter = 'Z';
+    public const string ActionLetter = "Umb.Document.Unpublish";
 
     /// <inheritdoc cref="IAction.ActionAlias"/>
     public const string ActionAlias = "unpublish";
 
     /// <inheritdoc/>
-    public char Letter => ActionLetter;
+    public string Letter => ActionLetter;
 
     /// <inheritdoc/>
     public string Alias => ActionAlias;
-
-    /// <inheritdoc />
-    public string Category => Constants.Conventions.PermissionCategories.ContentCategory;
-
-    /// <inheritdoc />
-    public string Icon => "icon-circle-dotted";
 
     /// <inheritdoc />
     public bool ShowInNotifier => false;

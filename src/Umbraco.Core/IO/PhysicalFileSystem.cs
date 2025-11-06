@@ -321,7 +321,7 @@ namespace Umbraco.Cms.Core.IO
             var originalPath = path;
             path = EnsureDirectorySeparatorChar(path);
 
-            // FIXME: this part should go!
+            // TODO: this part should go!
             // not sure what we are doing here - so if input starts with a (back) slash,
             // we assume it's not a FS relative path and we try to convert it... but it
             // really makes little sense?
@@ -428,13 +428,9 @@ namespace Umbraco.Cms.Core.IO
                 WithRetry(() => File.Delete(fullPath));
             }
 
-            var directory = Path.GetDirectoryName(fullPath);
-            if (directory == null)
-            {
-                throw new InvalidOperationException("Could not get directory.");
-            }
-
-            Directory.CreateDirectory(directory); // ensure it exists
+            // Ensure the directory exists.
+            var directory = Path.GetDirectoryName(fullPath) ?? throw new InvalidOperationException("Could not get directory.");
+            Directory.CreateDirectory(directory);
 
             if (copy)
             {
@@ -444,6 +440,35 @@ namespace Umbraco.Cms.Core.IO
             {
                 WithRetry(() => File.Move(physicalPath, fullPath));
             }
+        }
+
+        /// <inheritdoc/>
+        public void MoveFile(string source, string target, bool overrideIfExists = true)
+        {
+            var fullSourcePath = GetFullPath(source);
+            if (File.Exists(fullSourcePath) is false)
+            {
+                throw new FileNotFoundException($"File at path '{source}' could not be found.");
+            }
+
+            var fullTargetPath = GetFullPath(target);
+            if (File.Exists(fullTargetPath))
+            {
+                if (overrideIfExists)
+                {
+                    DeleteFile(target);
+                }
+                else
+                {
+                    throw new IOException($"A file at path '{target}' already exists.");
+                }
+            }
+
+            // Ensure the directory exists.
+            var directory = Path.GetDirectoryName(fullTargetPath) ?? throw new InvalidOperationException("Could not get directory.");
+            Directory.CreateDirectory(directory);
+
+            WithRetry(() => File.Move(fullSourcePath, fullTargetPath));
         }
 
         #region Helper Methods

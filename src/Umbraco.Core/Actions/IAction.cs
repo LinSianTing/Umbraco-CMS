@@ -14,15 +14,15 @@ namespace Umbraco.Cms.Core.Actions;
 public interface IAction : IDiscoverable
 {
     /// <inheritdoc cref="Letter"/>
-    const char ActionLetter = default;
+    const string ActionLetter = "";
 
     /// <inheritdoc cref="Alias"/>
-    const string ActionAlias = default;
+    const string ActionAlias = "";
 
     /// <summary>
     ///     Gets the letter used to assign a permission (must be unique).
     /// </summary>
-    char Letter { get; }
+    string Letter { get; }
 
     /// <summary>
     ///     Gets a value indicating whether whether to allow subscribing to notifications for this action
@@ -35,21 +35,8 @@ public interface IAction : IDiscoverable
     bool CanBePermissionAssigned { get; }
 
     /// <summary>
-    ///     Gets the icon to display for this action
-    /// </summary>
-    string Icon { get; }
-
-    /// <summary>
     ///     Gets the alias for this action (must be unique).
     ///     This is all lower-case because of case sensitive filesystems, see issue: https://github.com/umbraco/Umbraco-CMS/issues/11670.
     /// </summary>
     string Alias { get; }
-
-    /// <summary>
-    ///     Gets the category used for this action
-    /// </summary>
-    /// <remarks>
-    ///     Used in the UI when assigning permissions
-    /// </remarks>
-    string? Category { get; }
 }

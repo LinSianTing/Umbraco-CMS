@@ -157,8 +157,8 @@ public class MediaBuilder
         var id = _id ?? 0;
         var key = _key ?? Guid.NewGuid();
         var parentId = _parentId ?? -1;
-        var createDate = _createDate ?? DateTime.Now;
-        var updateDate = _updateDate ?? DateTime.Now;
+        var createDate = _createDate ?? DateTime.UtcNow;
+        var updateDate = _updateDate ?? DateTime.UtcNow;
         var name = _name ?? Guid.NewGuid().ToString();
         var creatorId = _creatorId ?? 0;
         var level = _level ?? 1;
@@ -224,7 +224,7 @@ public class MediaBuilder
         CreateMediaImage(mediaType, parentId, "/media/test-image.png");
 
     public static Media CreateMediaImageWithCrop(IMediaType mediaType, int parentId) =>
-        CreateMediaImage(mediaType, parentId, "{src: '/media/test-image.png', crops: []}");
+        CreateMediaImage(mediaType, parentId, "{\"src\": \"/media/test-image.png\", \"crops\": []}");
 
     private static Media CreateMediaImage(IMediaType mediaType, int parentId, string fileValue) => new MediaBuilder()
         .WithMediaType(mediaType)

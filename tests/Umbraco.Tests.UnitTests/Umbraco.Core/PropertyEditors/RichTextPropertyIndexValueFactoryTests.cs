@@ -6,12 +6,19 @@ using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
+<<<<<<< HEAD
 using Umbraco.Cms.Core.Services;
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
 
 namespace Umbraco.Cms.Tests.UnitTests.Umbraco.Core.PropertyEditors;
 
 /// <summary>
+<<<<<<< HEAD
 /// Tests for <see cref="RichTextPropertyIndexValueFactory"/> to ensure it correctly creates index values from rich text properties. 
+=======
+/// Tests for <see cref="RichTextPropertyIndexValueFactory"/> to ensure it correctly creates index values from rich text properties.
+>>>>>>> v10/contrib_Merge20251106_Try
 /// </summary>
 public class RichTextPropertyIndexValueFactoryTests
 {
@@ -20,7 +27,10 @@ public class RichTextPropertyIndexValueFactoryTests
     /// </summary>
     /// <param name="testContent"></param>
     /// <param name="expected"></param>
+<<<<<<< HEAD
     [Test]
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
     [TestCase("<p>Sample text</p>", "Sample text")]
     [TestCase("<p>John Smith<br>Company ABC<br>London</p>", "John Smith Company ABC London")]
     [TestCase("<p>John Smith<break>Company ABC<break>London</p>", "John SmithCompany ABCLondon")]
@@ -52,7 +62,10 @@ public class RichTextPropertyIndexValueFactoryTests
         var jsonSerializer = Mock.Of<IJsonSerializer>();
         var indexingSettings = Mock.Of<IOptionsMonitor<IndexingSettings>>();
         Mock.Get(indexingSettings).Setup(x => x.CurrentValue).Returns(new IndexingSettings { });
+<<<<<<< HEAD
         var contentTypeService = Mock.Of<IContentTypeService>();
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
         var logger = Mock.Of<ILogger<RichTextPropertyIndexValueFactory>>();
         string alias = "richText";
 
@@ -60,7 +73,10 @@ public class RichTextPropertyIndexValueFactoryTests
             propertyEditorCollection,
             jsonSerializer,
             indexingSettings,
+<<<<<<< HEAD
             contentTypeService,
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
             logger);
 
         // create a mock property with the rich text value
@@ -71,11 +87,19 @@ public class RichTextPropertyIndexValueFactoryTests
         // get the index value for the property
         var indexValue = factory
             .GetIndexValues(property, null, null, true, [], new Dictionary<Guid, IContentType>())
+<<<<<<< HEAD
             .FirstOrDefault(kvp => kvp.Key == alias);
         Assert.IsNotNull(indexValue);
 
         // assert that index the value is created correctly (it might contain a trailing whitespace, but that's OK)
         var expectedIndexValue = indexValue.Value.SingleOrDefault() as string;
+=======
+            .FirstOrDefault(kvp => kvp.FieldName == alias);
+        Assert.IsNotNull(indexValue);
+
+        // assert that index the value is created correctly (it might contain a trailing whitespace, but that's OK)
+        var expectedIndexValue = indexValue.Values.SingleOrDefault() as string;
+>>>>>>> v10/contrib_Merge20251106_Try
         Assert.IsNotNull(expectedIndexValue);
         Assert.AreEqual(expected, expectedIndexValue.TrimEnd());
     }

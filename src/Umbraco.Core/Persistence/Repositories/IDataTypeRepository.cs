@@ -5,6 +5,9 @@ namespace Umbraco.Cms.Core.Persistence.Repositories;
 
 public interface IDataTypeRepository : IReadWriteQueryRepository<int, IDataType>
 {
+
+    IDataType? Get(Guid key);
+
     IEnumerable<MoveEventInfo<IDataType>> Move(IDataType toMove, EntityContainer? container);
 
     /// <summary>
@@ -21,6 +24,5 @@ public interface IDataTypeRepository : IReadWriteQueryRepository<int, IDataType>
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-
     IReadOnlyDictionary<Udi, IEnumerable<string>> FindListViewUsages(int id) => throw new NotImplementedException();
 }

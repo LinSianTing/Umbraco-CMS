@@ -22,15 +22,14 @@ public class RenderRazorViewEngineOptionsSetup : IConfigureOptions<RazorViewEngi
     /// <summary>
     ///     Expands the default view locations
     /// </summary>
-    private class ViewLocationExpander : IViewLocationExpander
+    private sealed class ViewLocationExpander : IViewLocationExpander
     {
         public IEnumerable<string> ExpandViewLocations(
             ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
             string[] umbViewLocations =
             {
-                "/Views/{0}.cshtml", "/Views/Shared/{0}.cshtml", "/Views/Partials/{0}.cshtml",
-                "/Views/MacroPartials/{0}.cshtml",
+                "/Views/{0}.cshtml", "/Views/Shared/{0}.cshtml", "/Views/Partials/{0}.cshtml"
             };
 
             viewLocations = umbViewLocations.Concat(viewLocations);

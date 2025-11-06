@@ -3,7 +3,9 @@
 
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
+using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Persistence.Repositories;
 using Umbraco.Cms.Core.Services;
@@ -17,7 +19,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repos
 
 [TestFixture]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
-public class RedirectUrlRepositoryTests : UmbracoIntegrationTest
+internal sealed class RedirectUrlRepositoryTests : UmbracoIntegrationTest
 {
     [SetUp]
     public void SetUp() => CreateTestData();
@@ -90,7 +92,7 @@ public class RedirectUrlRepositoryTests : UmbracoIntegrationTest
 
             Assert.AreNotEqual(0, rurl.Id);
 
-            // FIXME: too fast = same date = key violation?
+            // TODO: too fast = same date = key violation?
             // and... can that happen in real life?
             // we don't really *care* about the IX, only supposed to make things faster...
             // BUT in realife we AddOrUpdate in a trx so it should be safe, always
@@ -133,7 +135,7 @@ public class RedirectUrlRepositoryTests : UmbracoIntegrationTest
 
             Assert.AreNotEqual(0, rurl.Id);
 
-            // FIXME: too fast = same date = key violation?
+            // TODO: too fast = same date = key violation?
             // and... can that happen in real life?
             // we don't really *care* about the IX, only supposed to make things faster...
             // BUT in realife we AddOrUpdate in a trx so it should be safe, always
@@ -176,7 +178,7 @@ public class RedirectUrlRepositoryTests : UmbracoIntegrationTest
 
             Assert.AreNotEqual(0, rurl.Id);
 
-            // FIXME: goes too fast and bam, errors, first is blah
+            // TODO: goes too fast and bam, errors, first is blah
             rurl = new RedirectUrl
             {
                 ContentKey = _textpage.Key,
@@ -235,7 +237,7 @@ public class RedirectUrlRepositoryTests : UmbracoIntegrationTest
     }
 
     private IRedirectUrlRepository CreateRepository(IScopeProvider provider) =>
-        new RedirectUrlRepository((IScopeAccessor)provider, AppCaches, LoggerFactory.CreateLogger<RedirectUrlRepository>());
+        new RedirectUrlRepository((IScopeAccessor)provider, AppCaches, LoggerFactory.CreateLogger<RedirectUrlRepository>(), Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
 
     private IContent _textpage;
     private IContent _subpage;

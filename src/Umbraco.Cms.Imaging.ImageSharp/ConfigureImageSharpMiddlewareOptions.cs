@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Web.Commands;
 using SixLabors.ImageSharp.Web.Middleware;
 using SixLabors.ImageSharp.Web.Processors;
@@ -51,8 +53,11 @@ public sealed class ConfigureImageSharpMiddlewareOptions : IConfigureOptions<Ima
 
             if (context.Commands.Contains(ResizeWebProcessor.Width))
             {
-                if (!int.TryParse(context.Commands.GetValueOrDefault(ResizeWebProcessor.Width), NumberStyles.Integer,
-                    CultureInfo.InvariantCulture, out var width)
+                if (!int.TryParse(
+                    context.Commands.GetValueOrDefault(ResizeWebProcessor.Width),
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var width)
                 || width < 0
                 || width >= _imagingSettings.Resize.MaxWidth)
                 {
@@ -62,8 +67,11 @@ public sealed class ConfigureImageSharpMiddlewareOptions : IConfigureOptions<Ima
 
             if (context.Commands.Contains(ResizeWebProcessor.Height))
             {
-                if (!int.TryParse(context.Commands.GetValueOrDefault(ResizeWebProcessor.Height), NumberStyles.Integer,
-                    CultureInfo.InvariantCulture, out var height)
+                if (!int.TryParse(
+                    context.Commands.GetValueOrDefault(ResizeWebProcessor.Height),
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var height)
                 || height < 0
                 || height >= _imagingSettings.Resize.MaxHeight)
                 {
@@ -96,5 +104,14 @@ public sealed class ConfigureImageSharpMiddlewareOptions : IConfigureOptions<Ima
 
             return Task.CompletedTask;
         };
+
+        options.Configuration.ImageFormatsManager.SetEncoder(
+            WebpFormat.Instance,
+            new WebpEncoder
+        {
+            // Default to Lossy encoding like in ImageSharp 2.x.
+            // ImageSharp 3.x seems to use Lossless for PNGs which creates files 10x larger than Lossy.
+            FileFormat = WebpFileFormatType.Lossy,
+        });
     }
 }

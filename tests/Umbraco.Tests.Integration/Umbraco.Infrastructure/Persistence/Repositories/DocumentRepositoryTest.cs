@@ -3,7 +3,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -31,7 +33,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence.Repos
 
 [TestFixture]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest)]
-public class DocumentRepositoryTest : UmbracoIntegrationTest
+internal sealed class DocumentRepositoryTest : UmbracoIntegrationTest
 {
     [SetUp]
     public void SetUpData()
@@ -60,12 +62,14 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
 
     private FileSystems FileSystems => GetRequiredService<FileSystems>();
 
+    private PropertyEditorCollection PropertyEditorCollection => GetRequiredService<PropertyEditorCollection>();
+
     private IConfigurationEditorJsonSerializer ConfigurationEditorJsonSerializer =>
         GetRequiredService<IConfigurationEditorJsonSerializer>();
 
     public void CreateTestData()
     {
-        var template = TemplateBuilder.CreateTextPageTemplate();
+        var template = TemplateBuilder.CreateTextPageTemplate("defaultTemplate");
         FileService.SaveTemplate(template);
 
         // Create and Save ContentType "umbTextpage" -> (_contentType.Id)
@@ -100,7 +104,16 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
 
         var ctRepository = CreateRepository(scopeAccessor, out contentTypeRepository, out TemplateRepository tr);
         var editors = new PropertyEditorCollection(new DataEditorCollection(() => Enumerable.Empty<IDataEditor>()));
-        dtdRepository = new DataTypeRepository(scopeAccessor, appCaches, editors, LoggerFactory.CreateLogger<DataTypeRepository>(), LoggerFactory, ConfigurationEditorJsonSerializer);
+        dtdRepository = new DataTypeRepository(
+            scopeAccessor,
+            appCaches,
+            editors,
+            LoggerFactory.CreateLogger<DataTypeRepository>(),
+            LoggerFactory,
+            ConfigurationEditorJsonSerializer,
+            Mock.Of<IRepositoryCacheVersionService>(),
+            Mock.Of<ICacheSyncService>(),
+            Services.GetRequiredService<IDataValueEditorFactory>());
         return ctRepository;
     }
 
@@ -114,20 +127,26 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
         var runtimeSettingsMock = new Mock<IOptionsMonitor<RuntimeSettings>>();
         runtimeSettingsMock.Setup(x => x.CurrentValue).Returns(new RuntimeSettings());
 
-        templateRepository = new TemplateRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TemplateRepository>(), FileSystems, IOHelper, ShortStringHelper, Mock.Of<IViewHelper>(), runtimeSettingsMock.Object);
-        var tagRepository = new TagRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TagRepository>());
+        templateRepository = new TemplateRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TemplateRepository>(), FileSystems, ShortStringHelper, Mock.Of<IViewHelper>(), runtimeSettingsMock.Object,  Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
+        var tagRepository = new TagRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<TagRepository>(), Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
         var commonRepository =
             new ContentTypeCommonRepository(scopeAccessor, templateRepository, appCaches, ShortStringHelper);
         var languageRepository =
+<<<<<<< HEAD
             new LanguageRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<LanguageRepository>());
         contentTypeRepository = new ContentTypeRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<ContentTypeRepository>(), commonRepository, languageRepository, ShortStringHelper, new Lazy<IIdKeyMap>(() => IdKeyMap));
         var relationTypeRepository = new RelationTypeRepository(scopeAccessor, AppCaches.Disabled, LoggerFactory.CreateLogger<RelationTypeRepository>());
+=======
+            new LanguageRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<LanguageRepository>(), Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
+        contentTypeRepository = new ContentTypeRepository(scopeAccessor, appCaches, LoggerFactory.CreateLogger<ContentTypeRepository>(), commonRepository, languageRepository, ShortStringHelper, Mock.Of<IRepositoryCacheVersionService>(), IdKeyMap, Mock.Of<ICacheSyncService>());
+        var relationTypeRepository = new RelationTypeRepository(scopeAccessor, AppCaches.Disabled, LoggerFactory.CreateLogger<RelationTypeRepository>(), Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
+>>>>>>> v10/contrib_Merge20251106_Try
         var entityRepository = new EntityRepository(scopeAccessor, AppCaches.Disabled);
-        var relationRepository = new RelationRepository(scopeAccessor, LoggerFactory.CreateLogger<RelationRepository>(), relationTypeRepository, entityRepository);
+        var relationRepository = new RelationRepository(scopeAccessor, LoggerFactory.CreateLogger<RelationRepository>(), relationTypeRepository, entityRepository, Mock.Of<IRepositoryCacheVersionService>(), Mock.Of<ICacheSyncService>());
         var propertyEditors =
             new PropertyEditorCollection(new DataEditorCollection(() => Enumerable.Empty<IDataEditor>()));
         var dataValueReferences =
-            new DataValueReferenceFactoryCollection(() => Enumerable.Empty<IDataValueReferenceFactory>());
+            new DataValueReferenceFactoryCollection(() => Enumerable.Empty<IDataValueReferenceFactory>(), new NullLogger<DataValueReferenceFactoryCollection>());
         var repository = new DocumentRepository(
             scopeAccessor,
             appCaches,
@@ -224,7 +243,7 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
 
             // publish = new edit version
             content1.SetValue("title", "title");
-            content1.PublishCulture(CultureImpact.Invariant);
+            content1.PublishCulture(CultureImpact.Invariant, DateTime.UtcNow, PropertyEditorCollection);
             content1.PublishedState = PublishedState.Publishing;
             repository.Save(content1);
 
@@ -300,7 +319,7 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
                     new { id = content1.Id }));
 
             // publish = version
-            content1.PublishCulture(CultureImpact.Invariant);
+            content1.PublishCulture(CultureImpact.Invariant, DateTime.UtcNow, PropertyEditorCollection);
             content1.PublishedState = PublishedState.Publishing;
             repository.Save(content1);
 
@@ -344,7 +363,7 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
             // publish = new version
             content1.Name = "name-4";
             content1.SetValue("title", "title-4");
-            content1.PublishCulture(CultureImpact.Invariant);
+            content1.PublishCulture(CultureImpact.Invariant, DateTime.UtcNow, PropertyEditorCollection);
             content1.PublishedState = PublishedState.Publishing;
             repository.Save(content1);
 
@@ -764,7 +783,7 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
             // publish them all
             foreach (var content in result)
             {
-                content.PublishCulture(CultureImpact.Invariant);
+                content.PublishCulture(CultureImpact.Invariant, DateTime.UtcNow, PropertyEditorCollection);
                 repository.Save(content);
             }
 
@@ -824,7 +843,7 @@ public class DocumentRepositoryTest : UmbracoIntegrationTest
         ContentTypeService.Save(variantCt);
 
         invariantCt.AllowedContentTypes =
-            new[] { new ContentTypeSort(invariantCt.Id, 0), new ContentTypeSort(variantCt.Id, 1) };
+            new[] { new ContentTypeSort(invariantCt.Key, 0, invariantCt.Alias), new ContentTypeSort(variantCt.Key, 1, variantCt.Alias) };
         ContentTypeService.Save(invariantCt);
 
         // Create content

@@ -47,11 +47,12 @@ internal class ContentVersionCleanupServiceTest : UmbracoIntegrationTest
         ContentTypeService.Save(contentTypeA);
 
         var content = ContentBuilder.CreateSimpleContent(contentTypeA);
-        ContentService.SaveAndPublish(content);
+        ContentService.Save(content);
+        ContentService.Publish(content, Array.Empty<string>());
 
         for (var i = 0; i < 10; i++)
         {
-            ContentService.SaveAndPublish(content);
+            ContentService.Publish(content, Array.Empty<string>());
         }
 
         var before = GetReport();
@@ -59,7 +60,7 @@ internal class ContentVersionCleanupServiceTest : UmbracoIntegrationTest
         Debug.Assert(before.ContentVersions == 12); // 10 historic + current draft + current published
         Debug.Assert(before.PropertyData == 12 * 3); // CreateSimpleContentType = 3 props
 
-        ContentVersionService.PerformContentVersionCleanup(DateTime.Now.AddHours(1));
+        ContentVersionService.PerformContentVersionCleanup(DateTime.UtcNow.AddHours(1));
 
         var after = GetReport();
 

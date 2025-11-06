@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Services.Navigation;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
@@ -14,6 +16,8 @@ public class AliasUrlProvider : IUrlProvider
     private readonly IPublishedValueFallback _publishedValueFallback;
     private readonly ISiteDomainMapper _siteDomainMapper;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    private readonly IDocumentNavigationQueryService _navigationQueryService;
+    private readonly IPublishedContentStatusFilteringService _publishedContentStatusFilteringService;
     private readonly UriUtility _uriUtility;
     private RequestHandlerSettings _requestConfig;
 
@@ -22,16 +26,23 @@ public class AliasUrlProvider : IUrlProvider
         ISiteDomainMapper siteDomainMapper,
         UriUtility uriUtility,
         IPublishedValueFallback publishedValueFallback,
-        IUmbracoContextAccessor umbracoContextAccessor)
+        IUmbracoContextAccessor umbracoContextAccessor,
+        IDocumentNavigationQueryService navigationQueryService,
+        IPublishedContentStatusFilteringService publishedContentStatusFilteringService)
     {
         _requestConfig = requestConfig.CurrentValue;
         _siteDomainMapper = siteDomainMapper;
         _uriUtility = uriUtility;
         _publishedValueFallback = publishedValueFallback;
         _umbracoContextAccessor = umbracoContextAccessor;
+        _navigationQueryService = navigationQueryService;
+        _publishedContentStatusFilteringService = publishedContentStatusFilteringService;
 
         requestConfig.OnChange(x => _requestConfig = x);
     }
+
+    /// <inheritdoc />
+    public string Alias => $"{Constants.UrlProviders.Content}ByAlias";
 
     // note - at the moment we seem to accept pretty much anything as an alias
     // without any form of validation ... could even prob. kill the XPath ...
@@ -74,16 +85,16 @@ public class AliasUrlProvider : IUrlProvider
 
         // look for domains, walking up the tree
         IPublishedContent? n = node;
-        IEnumerable<DomainAndUri>? domainUris = DomainUtilities.DomainsForNode(umbracoContext.PublishedSnapshot.Domains, _siteDomainMapper, n.Id, current, false);
+        IEnumerable<DomainAndUri>? domainUris = DomainUtilities.DomainsForNode(umbracoContext.Domains, _siteDomainMapper, n.Id, current, false);
 
         // n is null at root
         while (domainUris == null && n != null)
         {
             // move to parent node
-            n = n.Parent;
+            n = n.Parent<IPublishedContent>(_navigationQueryService, _publishedContentStatusFilteringService);
             domainUris = n == null
                 ? null
-                : DomainUtilities.DomainsForNode(umbracoContext.PublishedSnapshot.Domains, _siteDomainMapper, n.Id, current, false);
+                : DomainUtilities.DomainsForNode(umbracoContext.Domains, _siteDomainMapper, n.Id, current, false);
         }
 
         // determine whether the alias property varies
@@ -113,7 +124,7 @@ public class AliasUrlProvider : IUrlProvider
             {
                 var path = "/" + alias;
                 var uri = new Uri(path, UriKind.Relative);
-                yield return UrlInfo.Url(_uriUtility.UriFromUmbraco(uri, _requestConfig).ToString());
+                yield return UrlInfo.FromUri(_uriUtility.UriFromUmbraco(uri, _requestConfig), Alias);
             }
         }
         else
@@ -145,13 +156,19 @@ public class AliasUrlProvider : IUrlProvider
                 {
                     var path = "/" + alias;
                     var uri = new Uri(CombinePaths(domainUri.Uri.GetLeftPart(UriPartial.Authority), path));
-                    yield return UrlInfo.Url(
-                        _uriUtility.UriFromUmbraco(uri, _requestConfig).ToString(),
-                        domainUri.Culture);
+                    yield return UrlInfo.FromUri(_uriUtility.UriFromUmbraco(uri, _requestConfig), Alias, domainUri.Culture);
                 }
             }
         }
     }
+
+    #endregion
+
+    #region GetPreviewUrl
+
+    /// <inheritdoc />
+    public Task<UrlInfo?> GetPreviewUrlAsync(IContent content, string? culture, string? segment)
+        => Task.FromResult<UrlInfo?>(null);
 
     #endregion
 

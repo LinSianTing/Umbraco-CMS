@@ -9,22 +9,16 @@ namespace Umbraco.Cms.Core.Actions;
 public class ActionUpdate : IAction
 {
     /// <inheritdoc cref="IAction.ActionLetter"/>
-    public const char ActionLetter = 'A';
+    public const string ActionLetter = "Umb.Document.Update";
 
     /// <inheritdoc cref="IAction.ActionAlias"/>
     public const string ActionAlias = "update";
 
     /// <inheritdoc/>
-    public char Letter => ActionLetter;
+    public string Letter => ActionLetter;
 
     /// <inheritdoc/>
     public string Alias => ActionAlias;
-
-    /// <inheritdoc />
-    public string Category => Constants.Conventions.PermissionCategories.ContentCategory;
-
-    /// <inheritdoc />
-    public string Icon => "icon-save";
 
     /// <inheritdoc />
     public bool ShowInNotifier => true;

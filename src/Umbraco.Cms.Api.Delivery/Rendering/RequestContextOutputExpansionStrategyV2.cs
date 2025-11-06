@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Api.Common.Rendering;
 using Umbraco.Cms.Core.DeliveryApi;
+<<<<<<< HEAD
 using Umbraco.Cms.Web.Common.Rendering;
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
 
 namespace Umbraco.Cms.Api.Delivery.Rendering;
 
@@ -16,6 +20,10 @@ internal sealed class RequestContextOutputExpansionStrategyV2 : ElementOnlyOutpu
         : base(propertyRenderer)
     {
         _logger = logger;
+<<<<<<< HEAD
+=======
+
+>>>>>>> v10/contrib_Merge20251106_Try
         InitializeExpandAndInclude(httpContextAccessor);
     }
 

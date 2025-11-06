@@ -45,6 +45,14 @@ public static partial class Constants
             public const string AcceptLanguage = "Accept-Language";
 
             /// <summary>
+<<<<<<< HEAD
+=======
+            /// Header name for accept segment.
+            /// </summary>
+            public const string AcceptSegment = "Accept-Segment";
+
+            /// <summary>
+>>>>>>> v10/contrib_Merge20251106_Try
             /// Header name for API key.
             /// </summary>
             public const string ApiKey = "Api-Key";
@@ -58,8 +66,11 @@ public static partial class Constants
             /// Header name for start item.
             /// </summary>
             public const string StartItem = "Start-Item";
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
         }
     }
 }

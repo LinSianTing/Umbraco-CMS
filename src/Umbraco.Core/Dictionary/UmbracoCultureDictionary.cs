@@ -17,7 +17,7 @@ namespace Umbraco.Cms.Core.Dictionary;
 ///     fast
 ///     (even though there is caching involved, if there's lots of dictionary items the caching is not great)
 /// </remarks>
-internal class DefaultCultureDictionary : ICultureDictionary
+internal sealed class DefaultCultureDictionary : ICultureDictionary
 {
     private readonly ILocalizationService _localizationService;
     private readonly IAppCache _requestCache;
@@ -81,7 +81,7 @@ internal class DefaultCultureDictionary : ICultureDictionary
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
-    public string? this[string key]
+    public string this[string key]
     {
         get
         {
@@ -91,8 +91,7 @@ internal class DefaultCultureDictionary : ICultureDictionary
                 return string.Empty;
             }
 
-            IDictionaryTranslation? byLang =
-                found.Translations.FirstOrDefault(x => x.Language?.Equals(Language) ?? false);
+            IDictionaryTranslation? byLang = found.Translations.FirstOrDefault(IsCurrentLanguage);
             if (byLang == null)
             {
                 return string.Empty;
@@ -130,7 +129,7 @@ internal class DefaultCultureDictionary : ICultureDictionary
 
         foreach (IDictionaryItem dictionaryItem in children)
         {
-            IDictionaryTranslation? byLang = dictionaryItem.Translations.FirstOrDefault(x => x.Language?.Equals(Language) ?? false);
+            IDictionaryTranslation? byLang = dictionaryItem.Translations.FirstOrDefault(IsCurrentLanguage);
             if (byLang != null && dictionaryItem.ItemKey is not null && byLang.Value is not null)
             {
                 result.Add(dictionaryItem.ItemKey, byLang.Value);
@@ -139,4 +138,6 @@ internal class DefaultCultureDictionary : ICultureDictionary
 
         return result;
     }
+
+    private bool IsCurrentLanguage(IDictionaryTranslation translation) => translation.LanguageIsoCode.Equals(Language?.IsoCode);
 }

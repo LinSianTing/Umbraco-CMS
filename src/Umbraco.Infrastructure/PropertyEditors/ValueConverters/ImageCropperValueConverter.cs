@@ -1,12 +1,12 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using System.Globalization;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Umbraco.Cms.Core.Models.DeliveryApi;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors.DeliveryApi;
+using Umbraco.Cms.Core.Serialization;
 using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Core.PropertyEditors.ValueConverters;
@@ -17,15 +17,15 @@ namespace Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 [DefaultPropertyValueConverter(typeof(JsonValueConverter))]
 public class ImageCropperValueConverter : PropertyValueConverterBase, IDeliveryApiPropertyValueConverter
 {
-    private static readonly JsonSerializerSettings _imageCropperValueJsonSerializerSettings = new()
-    {
-        Culture = CultureInfo.InvariantCulture,
-        FloatParseHandling = FloatParseHandling.Decimal,
-    };
+    private readonly IJsonSerializer _jsonSerializer;
 
     private readonly ILogger<ImageCropperValueConverter> _logger;
 
-    public ImageCropperValueConverter(ILogger<ImageCropperValueConverter> logger) => _logger = logger;
+    public ImageCropperValueConverter(ILogger<ImageCropperValueConverter> logger, IJsonSerializer jsonSerializer)
+    {
+        _logger = logger;
+        _jsonSerializer = jsonSerializer;
+    }
 
     /// <inheritdoc />
     public override bool IsConverter(IPublishedPropertyType propertyType)
@@ -52,14 +52,12 @@ public class ImageCropperValueConverter : PropertyValueConverterBase, IDeliveryA
         ImageCropperValue? value;
         try
         {
-            value = JsonConvert.DeserializeObject<ImageCropperValue>(
-                sourceString,
-                _imageCropperValueJsonSerializerSettings);
+            value = _jsonSerializer.Deserialize<ImageCropperValue>(sourceString);
         }
-        catch (Exception ex)
+        catch (JsonException ex)
         {
-            // cannot deserialize, assume it may be a raw image URL
-            _logger.LogError(ex, "Could not deserialize string '{JsonString}' into an image cropper value.", sourceString);
+            // Cannot deserialize, assume it may be a raw image URL.
+            _logger.LogDebug(ex, "Could not deserialize string '{JsonString}' into an image cropper value.", sourceString);
             value = new ImageCropperValue { Src = sourceString };
         }
 

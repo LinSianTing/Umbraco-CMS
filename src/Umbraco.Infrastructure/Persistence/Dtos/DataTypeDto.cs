@@ -4,11 +4,12 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace Umbraco.Cms.Infrastructure.Persistence.Dtos;
 
-[TableName(Constants.DatabaseSchema.Tables.DataType)]
+[TableName(TableName)]
 [PrimaryKey("nodeId", AutoIncrement = false)]
 [ExplicitColumns]
 public class DataTypeDto
 {
+    public const string TableName = Constants.DatabaseSchema.Tables.DataType;
     [Column("nodeId")]
     [PrimaryKeyColumn(AutoIncrement = false)]
     [ForeignKey(typeof(NodeDto))]
@@ -16,6 +17,10 @@ public class DataTypeDto
 
     [Column("propertyEditorAlias")]
     public string EditorAlias { get; set; } = null!; // TODO: should this have a length
+
+    [Column("propertyEditorUiAlias")]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public string? EditorUiAlias { get; set; }
 
     [Column("dbType")]
     [Length(50)]

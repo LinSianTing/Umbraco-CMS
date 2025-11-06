@@ -1,23 +1,23 @@
 using System.Data.Common;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Configuration;
 using Umbraco.Cms.Core.Configuration.Models;
-using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Install;
 using Umbraco.Cms.Core.Install.Models;
 using Umbraco.Cms.Core.Migrations;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Services.OperationStatus;
 using Umbraco.Cms.Infrastructure.Migrations.Notifications;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.Dtos;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
+using IScope = Umbraco.Cms.Infrastructure.Scoping.IScope;
 
 namespace Umbraco.Cms.Infrastructure.Migrations.Install
 {
@@ -78,40 +78,6 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
             _aggregator = aggregator;
         }
 
-        [Obsolete("Use constructor that takes IEventAggregator, this will be removed in V13.")]
-        public DatabaseBuilder(
-            ICoreScopeProvider scopeProvider,
-            IScopeAccessor scopeAccessor,
-            IUmbracoDatabaseFactory databaseFactory,
-            IRuntimeState runtimeState,
-            ILoggerFactory loggerFactory,
-            IKeyValueService keyValueService,
-            IDbProviderFactoryCreator dbProviderFactoryCreator,
-            IConfigManipulator configManipulator,
-            IOptionsMonitor<GlobalSettings> globalSettings,
-            IOptionsMonitor<ConnectionStrings> connectionStrings,
-            IMigrationPlanExecutor migrationPlanExecutor,
-            DatabaseSchemaCreatorFactory databaseSchemaCreatorFactory,
-            IEnumerable<IDatabaseProviderMetadata> databaseProviderMetadata)
-            : this(
-                scopeProvider,
-                scopeAccessor,
-                databaseFactory,
-                runtimeState,
-                loggerFactory,
-                keyValueService,
-                dbProviderFactoryCreator,
-                configManipulator,
-                globalSettings,
-                connectionStrings,
-                migrationPlanExecutor,
-                databaseSchemaCreatorFactory,
-                databaseProviderMetadata,
-                StaticServiceProvider.Instance.GetRequiredService<IEventAggregator>()
-            )
-        {
-        }
-
         #region Status
 
         /// <summary>
@@ -139,18 +105,22 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
         {
             using (ICoreScope scope = _scopeProvider.CreateCoreScope())
             {
+                IScope ambientScope = _scopeAccessor.AmbientScope ?? throw new InvalidOperationException("Cannot execute without a valid AmbientScope.");
                 // look for the super user with default password
-                var sql = _scopeAccessor.AmbientScope?.Database.SqlContext.Sql()
+                NPoco.Sql<ISqlContext> sql = ambientScope.Database.SqlContext.Sql()
                     .SelectCount()
                     .From<UserDto>()
                     .Where<UserDto>(x => x.Id == Constants.Security.SuperUserId && x.Password == "default");
-                var result = _scopeAccessor.AmbientScope?.Database.ExecuteScalar<int>(sql);
+                var result = _scopeAccessor.AmbientScope.Database.ExecuteScalar<int>(sql);
                 var has = result != 1;
                 if (has == false)
                 {
                     // found only 1 user == the default user with default password
                     // however this always exists on uCloud, also need to check if there are other users too
-                    result = _scopeAccessor.AmbientScope?.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM umbracoUser");
+                    sql = _scopeAccessor.AmbientScope.Database.SqlContext.Sql()
+                        .SelectCount()
+                        .From<UserDto>();
+                    result = _scopeAccessor.AmbientScope.Database.ExecuteScalar<int>(sql);
                     has = result != 1;
                 }
                 scope.Complete();
@@ -219,16 +189,46 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
                 });
 
                 // Update configuration and wait for change
-                _configManipulator.SaveConnectionString(connectionString, providerName);
+                _configManipulator.SaveConnectionStringAsync(connectionString, providerName).GetAwaiter().GetResult();
                 if (!isChanged.WaitOne(10_000))
                 {
                     throw new InstallException("Didn't retrieve updated connection string within 10 seconds, try manual configuration instead.");
                 }
 
-                Configure(_globalSettings.CurrentValue.InstallMissingDatabase || providerMeta.ForceCreateDatabase);
+                Configure(providerMeta.ForceCreateDatabase);
             }
 
             return true;
+        }
+
+        public Task<Attempt<InstallOperationStatus>> ValidateDatabaseConnectionAsync(DatabaseModel databaseSettings)
+        {
+            IDatabaseProviderMetadata? providerMeta = _databaseProviderMetadata.FirstOrDefault(x => x.Id == databaseSettings.DatabaseProviderMetadataId);
+
+            if (providerMeta is null)
+            {
+                return Task.FromResult(Attempt.Fail(InstallOperationStatus.UnknownDatabaseProvider));
+            }
+
+            var connectionString = providerMeta.GenerateConnectionString(databaseSettings);
+            var providerName = databaseSettings.ProviderName ?? providerMeta.ProviderName;
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                return Task.FromResult(Attempt.Fail(InstallOperationStatus.MissingConnectionString));
+            }
+
+            if (string.IsNullOrEmpty(providerName))
+            {
+                return Task.FromResult(Attempt.Fail(InstallOperationStatus.MissingProviderName));
+            }
+
+            if (providerMeta.RequiresConnectionTest && CanConnect(connectionString, providerName) is false)
+            {
+                return Task.FromResult(Attempt.Fail(InstallOperationStatus.DatabaseConnectionFailed));
+            }
+
+            return Task.FromResult(Attempt.Succeed(InstallOperationStatus.Success));
         }
 
         private void Configure(bool installMissingDatabase)
@@ -256,9 +256,9 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
         /// </remarks>
         public DatabaseSchemaResult? ValidateSchema()
         {
-            using (var scope = _scopeProvider.CreateCoreScope())
+            using (ICoreScope scope = _scopeProvider.CreateCoreScope())
             {
-                var result = ValidateSchema(scope);
+                DatabaseSchemaResult? result = ValidateSchema(scope);
                 scope.Complete();
                 return result;
             }
@@ -267,10 +267,14 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
         private DatabaseSchemaResult? ValidateSchema(ICoreScope scope)
         {
             if (_databaseFactory.Initialized == false)
+            {
                 return new DatabaseSchemaResult();
+            }
 
             if (_databaseSchemaValidationResult != null)
+            {
                 return _databaseSchemaValidationResult;
+            }
 
             _databaseSchemaValidationResult = _scopeAccessor.AmbientScope?.Database.ValidateSchema();
 
@@ -288,9 +292,9 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
         /// </remarks>
         public Result? CreateSchemaAndData()
         {
-            using (var scope = _scopeProvider.CreateCoreScope())
+            using (ICoreScope scope = _scopeProvider.CreateCoreScope())
             {
-                var result = CreateSchemaAndData(scope);
+                Result? result = CreateSchemaAndData(scope);
                 if (result?.Success is true)
                 {
                     scope.Notifications.Publish(new DatabaseSchemaAndDataCreatedNotification(result!.RequiresUpgrade));
@@ -304,7 +308,7 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
         {
             try
             {
-                var readyForInstall = CheckReadyForInstall();
+                Attempt<Result?> readyForInstall = CheckReadyForInstall();
                 if (readyForInstall.Success == false)
                 {
                     return readyForInstall.Result;
@@ -312,23 +316,25 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
 
                 _logger.LogInformation("Database configuration status: Started");
 
-                var database = _scopeAccessor.AmbientScope?.Database;
+                IUmbracoDatabase? database = _scopeAccessor.AmbientScope?.Database;
 
                 var message = string.Empty;
 
-                var schemaResult = ValidateSchema();
+                DatabaseSchemaResult? schemaResult = ValidateSchema();
                 var hasInstalledVersion = schemaResult?.DetermineHasInstalledVersion() ?? false;
 
                 //If the determined version is "empty" its a new install - otherwise upgrade the existing
                 if (!hasInstalledVersion)
                 {
                     if (_runtimeState.Level == RuntimeLevel.Run)
+                    {
                         throw new Exception("Umbraco is already configured!");
+                    }
 
-                    var creator = _databaseSchemaCreatorFactory.Create(database);
+                    DatabaseSchemaCreator creator = _databaseSchemaCreatorFactory.Create(database);
                     creator.InitializeDatabaseSchema();
 
-                    message = message + "<p>Installation completed!</p>";
+                    message += "<p>Installation completed!</p>";
 
                     //now that everything is done, we need to determine the version of SQL server that is executing
                     _logger.LogInformation("Database configuration status: {DbConfigStatus}", message);
@@ -352,6 +358,14 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
             }
         }
 
+        [Obsolete("Use UpgradeSchemaAndDataAsync instead. Scheduled for removal in Umbraco 18.")]
+        public Result? UpgradeSchemaAndData(UmbracoPlan plan) => UpgradeSchemaAndData((MigrationPlan)plan);
+
+        [Obsolete("Use UpgradeSchemaAndDataAsync instead. Scheduled for removal in Umbraco 18.")]
+        public Result? UpgradeSchemaAndData(MigrationPlan plan) => UpgradeSchemaAndDataAsync(plan).GetAwaiter().GetResult();
+
+        public async Task<Result?> UpgradeSchemaAndDataAsync(UmbracoPlan plan) => await UpgradeSchemaAndDataAsync((MigrationPlan)plan).ConfigureAwait(false);
+
         /// <summary>
         /// Upgrades the database schema and data by running migrations.
         /// </summary>
@@ -360,11 +374,11 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
         /// configured and it is possible to connect to the database.</para>
         /// <para>Runs whichever migrations need to run.</para>
         /// </remarks>
-        public Result? UpgradeSchemaAndData(UmbracoPlan plan)
+        public async Task<Result?> UpgradeSchemaAndDataAsync(MigrationPlan plan)
         {
             try
             {
-                var readyForInstall = CheckReadyForInstall();
+                Attempt<Result?> readyForInstall = CheckReadyForInstall();
                 if (readyForInstall.Success == false)
                 {
                     return readyForInstall.Result;
@@ -374,7 +388,7 @@ namespace Umbraco.Cms.Infrastructure.Migrations.Install
 
                 // upgrade
                 var upgrader = new Upgrader(plan);
-                ExecutedMigrationPlan result = upgrader.Execute(_migrationPlanExecutor, _scopeProvider, _keyValueService);
+                ExecutedMigrationPlan result = await upgrader.ExecuteAsync(_migrationPlanExecutor, _scopeProvider, _keyValueService).ConfigureAwait(false);
 
                 _aggregator.Publish(new UmbracoPlanExecutedNotification { ExecutedPlan = result });
 

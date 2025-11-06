@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Editors;
+using Umbraco.Cms.Core.Models.Validation;
 using Umbraco.Cms.Core.PropertyEditors.Validators;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -20,19 +22,17 @@ namespace Umbraco.Cms.Core.PropertyEditors;
 [DataContract]
 public class DataValueEditor : IDataValueEditor
 {
+    private const string ContentCacheKeyFormat = nameof(DataValueEditor) + "_Content_{0}";
+    private const string MediaCacheKeyFormat = nameof(DataValueEditor) + "_Media_{0}";
+
     private readonly IJsonSerializer? _jsonSerializer;
-    private readonly ILocalizedTextService _localizedTextService;
     private readonly IShortStringHelper _shortStringHelper;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DataValueEditor" /> class.
     /// </summary>
-    public DataValueEditor(
-        ILocalizedTextService localizedTextService,
-        IShortStringHelper shortStringHelper,
-        IJsonSerializer? jsonSerializer) // for tests, and manifest
+    public DataValueEditor(IShortStringHelper shortStringHelper, IJsonSerializer? jsonSerializer) // for tests, and manifest
     {
-        _localizedTextService = localizedTextService;
         _shortStringHelper = shortStringHelper;
         _jsonSerializer = jsonSerializer;
         ValueType = ValueTypes.String;
@@ -43,7 +43,6 @@ public class DataValueEditor : IDataValueEditor
     ///     Initializes a new instance of the <see cref="DataValueEditor" /> class.
     /// </summary>
     public DataValueEditor(
-        ILocalizedTextService localizedTextService,
         IShortStringHelper shortStringHelper,
         IJsonSerializer jsonSerializer,
         IIOHelper ioHelper,
@@ -54,55 +53,29 @@ public class DataValueEditor : IDataValueEditor
             throw new ArgumentNullException(nameof(attribute));
         }
 
-        _localizedTextService = localizedTextService;
         _shortStringHelper = shortStringHelper;
         _jsonSerializer = jsonSerializer;
 
-        var view = attribute.View;
-        if (string.IsNullOrWhiteSpace(view))
-        {
-            throw new ArgumentException("The attribute does not specify a view.", nameof(attribute));
-        }
-
-        if (view.StartsWith("~/"))
-        {
-            view = ioHelper.ResolveRelativeOrVirtualUrl(view);
-        }
-
-        View = view;
         ValueType = attribute.ValueType;
-        HideLabel = attribute.HideLabel;
     }
 
     /// <summary>
     ///     Gets or sets the value editor configuration.
     /// </summary>
-    public virtual object? Configuration { get; set; }
+    /// <seealso cref="IDataType.ConfigurationObject"/>
+    public virtual object? ConfigurationObject { get; set; }
 
     public bool SupportsReadOnly { get; set; }
 
     /// <summary>
     ///     Gets the validator used to validate the special property type -level "required".
     /// </summary>
-    public virtual IValueRequiredValidator RequiredValidator => new RequiredValidator(_localizedTextService);
+    public virtual IValueRequiredValidator RequiredValidator => new RequiredValidator();
 
     /// <summary>
     ///     Gets the validator used to validate the special property type -level "format".
     /// </summary>
-    public virtual IValueFormatValidator FormatValidator => new RegexValidator(_localizedTextService);
-
-    /// <summary>
-    ///     Gets or sets the editor view.
-    /// </summary>
-    /// <remarks>
-    ///     <para>
-    ///         The view can be three things: (1) the full virtual path, or (2) the relative path to the current Umbraco
-    ///         folder, or (3) a view name which maps to views/propertyeditors/{view}/{view}.html.
-    ///     </para>
-    /// </remarks>
-    [Required]
-    [DataMember(Name = "view")]
-    public string? View { get; set; }
+    public virtual IValueFormatValidator FormatValidator => new RegexValidator();
 
     /// <summary>
     ///     The value type which reflects how it is validated and stored in the database
@@ -117,10 +90,10 @@ public class DataValueEditor : IDataValueEditor
     public List<IValueValidator> Validators { get; private set; } = new();
 
     /// <inheritdoc />
-    public IEnumerable<ValidationResult> Validate(object? value, bool required, string? format)
+    public IEnumerable<ValidationResult> Validate(object? value, bool required, string? format, PropertyValidationContext validationContext)
     {
         List<ValidationResult>? results = null;
-        var r = Validators.SelectMany(v => v.Validate(value, ValueType, Configuration)).ToList();
+        var r = Validators.SelectMany(v => v.Validate(value, ValueType, ConfigurationObject, validationContext)).ToList();
         if (r.Any())
         {
             results = r;
@@ -164,13 +137,6 @@ public class DataValueEditor : IDataValueEditor
 
         return results ?? Enumerable.Empty<ValidationResult>();
     }
-
-    /// <summary>
-    ///     If this is true than the editor will be displayed full width without a label
-    /// </summary>
-    [DataMember(Name = "hideLabel")]
-    public bool HideLabel { get; set; }
-
     /// <summary>
     ///     Set this to true if the property editor is for display purposes only
     /// </summary>
@@ -230,7 +196,7 @@ public class DataValueEditor : IDataValueEditor
             case ValueStorageType.Ntext:
             case ValueStorageType.Nvarchar:
                 // If it is a string type, we will attempt to see if it is JSON stored data, if it is we'll try to convert
-                // to a real JSON object so we can pass the true JSON object directly to Angular!
+                // to a real JSON object so we can pass the true JSON object directly to the client
                 var stringValue = value as string ?? value.ToString();
                 if (stringValue!.DetectIsJson())
                 {
@@ -375,6 +341,10 @@ public class DataValueEditor : IDataValueEditor
         }
     }
 
+    // Adding a virtual method that wraps the default implementation allows derived classes
+    // to override the default implementation without having to explicitly inherit the interface.
+    public virtual IEnumerable<Guid> ConfiguredElementTypeKeys() => Enumerable.Empty<Guid>();
+
     /// <summary>
     ///     Used to try to convert the string value to the correct CLR type based on the <see cref="ValueType" /> specified for
     ///     this value editor.
@@ -449,5 +419,156 @@ public class DataValueEditor : IDataValueEditor
         }
 
         return value.TryConvertTo(valueType);
+    }
+
+    /// <summary>
+    /// Retrieves a <see cref="IContent"/> instance by its unique identifier, using the provided request cache to avoid redundant
+    /// lookups within the same request.
+    /// </summary>
+    /// <remarks>
+    /// This method caches content lookups for the duration of the current request to improve performance when the same content
+    /// item may be accessed multiple times. This is particularly useful in scenarios involving multiple languages or blocks.
+    /// </remarks>
+    /// <param name="key">The unique identifier of the content item to retrieve.</param>
+    /// <param name="requestCache">The request-scoped cache used to store and retrieve content items for the duration of the current request.</param>
+    /// <param name="contentService">The content service used to fetch the content item if it is not found in the cache.</param>
+    /// <returns>The <see cref="IContent"/> instance corresponding to the specified key, or null if no such content item exists.</returns>
+    [Obsolete("This method is available for support of request caching retrieved entities in derived property value editors. " +
+          "The intention is to supersede this with lazy loaded read locks, which will make this unnecessary. " +
+          "Scheduled for removal in Umbraco 19.")]
+    protected static IContent? GetAndCacheContentById(Guid key, IRequestCache requestCache, IContentService contentService)
+    {
+        if (requestCache.IsAvailable is false)
+        {
+            return contentService.GetById(key);
+        }
+
+        var cacheKey = string.Format(ContentCacheKeyFormat, key);
+        IContent? content = requestCache.GetCacheItem<IContent?>(cacheKey);
+        if (content is null)
+        {
+            content = contentService.GetById(key);
+            if (content is not null)
+            {
+                requestCache.Set(cacheKey, content);
+            }
+        }
+
+        return content;
+    }
+
+    /// <summary>
+    /// Adds the specified <see cref="IContent"/> item to the request cache using its unique key.
+    /// </summary>
+    /// <param name="content">The content item to cache.</param>
+    /// <param name="requestCache">The request cache in which to store the content item.</param>
+    [Obsolete("This method is available for support of request caching retrieved entities in derived property value editors. " +
+          "The intention is to supersede this with lazy loaded read locks, which will make this unnecessary. " +
+          "Scheduled for removal in Umbraco 19.")]
+    protected static void CacheContentById(IContent content, IRequestCache requestCache)
+    {
+        if (requestCache.IsAvailable is false)
+        {
+            return;
+        }
+
+        var cacheKey = string.Format(ContentCacheKeyFormat, content.Key);
+        requestCache.Set(cacheKey, content);
+    }
+
+    /// <summary>
+    /// Retrieves a <see cref="IMedia"/> instance by its unique identifier, using the provided request cache to avoid redundant
+    /// lookups within the same request.
+    /// </summary>
+    /// <remarks>
+    /// This method caches media lookups for the duration of the current request to improve performance when the same media
+    /// item may be accessed multiple times. This is particularly useful in scenarios involving multiple languages or blocks.
+    /// </remarks>
+    /// <param name="key">The unique identifier of the media item to retrieve.</param>
+    /// <param name="requestCache">The request-scoped cache used to store and retrieve media items for the duration of the current request.</param>
+    /// <param name="mediaService">The media service used to fetch the media item if it is not found in the cache.</param>
+    /// <returns>The <see cref="IMedia"/> instance corresponding to the specified key, or null if no such media item exists.</returns>
+    [Obsolete("This method is available for support of request caching retrieved entities in derived property value editors. " +
+          "The intention is to supersede this with lazy loaded read locks, which will make this unnecessary. " +
+          "Scheduled for removal in Umbraco 19.")]
+    protected static IMedia? GetAndCacheMediaById(Guid key, IRequestCache requestCache, IMediaService mediaService)
+    {
+        if (requestCache.IsAvailable is false)
+        {
+            return mediaService.GetById(key);
+        }
+
+        var cacheKey = string.Format(MediaCacheKeyFormat, key);
+        IMedia? media = requestCache.GetCacheItem<IMedia?>(cacheKey);
+
+        if (media is null)
+        {
+            media = mediaService.GetById(key);
+            if (media is not null)
+            {
+                requestCache.Set(cacheKey, media);
+            }
+        }
+
+        return media;
+    }
+
+    /// <summary>
+    /// Adds the specified <see cref="IMedia"/> item to the request cache using its unique key.
+    /// </summary>
+    /// <param name="media">The media item to cache.</param>
+    /// <param name="requestCache">The request cache in which to store the media item.</param>
+    [Obsolete("This method is available for support of request caching retrieved entities in derived property value editors. " +
+          "The intention is to supersede this with lazy loaded read locks, which will make this unnecessary. " +
+          "Scheduled for removal in Umbraco 19.")]
+    protected static void CacheMediaById(IMedia media, IRequestCache requestCache)
+    {
+        if (requestCache.IsAvailable is false)
+        {
+            return;
+        }
+
+        var cacheKey = string.Format(MediaCacheKeyFormat, media.Key);
+        requestCache.Set(cacheKey, media);
+    }
+
+    /// <summary>
+    /// Determines whether the content item identified by the specified key is present in the request cache.
+    /// </summary>
+    /// <param name="key">The unique identifier for the content item to check for in the cache.</param>
+    /// <param name="requestCache">The request cache in which to look for the content item.</param>
+    /// <returns>true if the content item is already cached in the request cache; otherwise, false.</returns>
+    [Obsolete("This method is available for support of request caching retrieved entities in derived property value editors. " +
+          "The intention is to supersede this with lazy loaded read locks, which will make this unnecessary. " +
+          "Scheduled for removal in Umbraco 19.")]
+    protected static bool IsContentAlreadyCached(Guid key, IRequestCache requestCache)
+    {
+        if (requestCache.IsAvailable is false)
+        {
+            return false;
+        }
+
+        var cacheKey = string.Format(ContentCacheKeyFormat, key);
+        return requestCache.GetCacheItem<IContent?>(cacheKey) is not null;
+    }
+
+    /// <summary>
+    /// Determines whether the media item identified by the specified key is present in the request cache.
+    /// </summary>
+    /// <param name="key">The unique identifier for the media item to check for in the cache.</param>
+    /// <param name="requestCache">The request cache in which to look for the media item.</param>
+    /// <returns>true if the media item is already cached in the request cache; otherwise, false.</returns>
+    [Obsolete("This method is available for support of request caching retrieved entities in derived property value editors. " +
+              "The intention is to supersede this with lazy loaded read locks, which will make this unnecessary. " +
+              "Scheduled for removal in Umbraco 19.")]
+    protected static bool IsMediaAlreadyCached(Guid key, IRequestCache requestCache)
+    {
+        if (requestCache.IsAvailable is false)
+        {
+            return false;
+        }
+
+        var cacheKey = string.Format(MediaCacheKeyFormat, key);
+        return requestCache.GetCacheItem<IMedia?>(cacheKey) is not null;
     }
 }

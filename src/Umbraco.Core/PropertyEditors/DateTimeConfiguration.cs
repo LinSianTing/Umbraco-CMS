@@ -1,22 +1,49 @@
+// Copyright (c) Umbraco.
+// See LICENSE for more details.
+
+using System.Text.Json.Serialization;
+
 namespace Umbraco.Cms.Core.PropertyEditors;
 
-/// <summary>
-///     Represents the configuration for the datetime value editor.
-/// </summary>
 public class DateTimeConfiguration
 {
-    public DateTimeConfiguration() =>
+    /// <summary>
+    /// Gets or sets the time zones configuration.
+    /// </summary>
+    [ConfigurationField("timeZones")]
+    public TimeZonesConfiguration? TimeZones { get; set; }
 
-        // different default values
-        Format = "YYYY-MM-DD HH:mm:ss";
+    public class TimeZonesConfiguration
+    {
+        /// <summary>
+        /// The mode for time zones.
+        /// </summary>
+        public TimeZoneMode Mode { get; set; }
 
-    [ConfigurationField("format", "Date format", "textstring", Description = "If left empty then the format is YYYY-MM-DD. (see momentjs.com for supported formats)")]
-    public string Format { get; set; }
+        /// <summary>
+        /// A list of time zones to use when the mode is set to Custom.
+        /// </summary>
+        public List<string> TimeZones { get; set; } = [];
+    }
 
-    [ConfigurationField(
-        "offsetTime",
-        "Offset time",
-        "boolean",
-        Description = "When enabled the time displayed will be offset with the server's timezone, this is useful for scenarios like scheduled publishing when an editor is in a different timezone than the hosted server")]
-    public bool OffsetTime { get; set; }
+    public enum TimeZoneMode
+    {
+        /// <summary>
+        /// Display all time zones.
+        /// </summary>
+        [JsonStringEnumMemberName("all")]
+        All,
+
+        /// <summary>
+        /// Display only the local time zone of the user.
+        /// </summary>
+        [JsonStringEnumMemberName("local")]
+        Local,
+
+        /// <summary>
+        /// Display a custom list of time zones defined in the configuration.
+        /// </summary>
+        [JsonStringEnumMemberName("custom")]
+        Custom,
+    }
 }

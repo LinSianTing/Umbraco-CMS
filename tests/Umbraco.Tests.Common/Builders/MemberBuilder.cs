@@ -1,8 +1,6 @@
 // Copyright (c) Umbraco.
 // See LICENSE for more details.
 
-using System;
-using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Tests.Common.Builders.Extensions;
 using Umbraco.Cms.Tests.Common.Builders.Interfaces;
@@ -24,7 +22,6 @@ public class MemberBuilder
         IWithSortOrderBuilder,
         IAccountBuilder
 {
-    private GenericDictionaryBuilder<MemberBuilder, string, object> _additionalDataBuilder;
     private DateTime? _createDate;
     private int? _creatorId;
     private string _email;
@@ -201,13 +198,6 @@ public class MemberBuilder
         return builder;
     }
 
-    public GenericDictionaryBuilder<MemberBuilder, string, object> AddAdditionalData()
-    {
-        var builder = new GenericDictionaryBuilder<MemberBuilder, string, object>(this);
-        _additionalDataBuilder = builder;
-        return builder;
-    }
-
     public GenericDictionaryBuilder<MemberBuilder, string, object> AddPropertyData()
     {
         var builder = new GenericDictionaryBuilder<MemberBuilder, string, object>(this);
@@ -219,8 +209,8 @@ public class MemberBuilder
     {
         var id = _id ?? 0;
         var key = _key ?? Guid.NewGuid();
-        var createDate = _createDate ?? DateTime.Now;
-        var updateDate = _updateDate ?? DateTime.Now;
+        var createDate = _createDate ?? DateTime.UtcNow;
+        var updateDate = _updateDate ?? DateTime.UtcNow;
         var name = _name ?? Guid.NewGuid().ToString();
         var creatorId = _creatorId ?? 0;
         var level = _level ?? 1;
@@ -233,9 +223,9 @@ public class MemberBuilder
         var failedPasswordAttempts = _failedPasswordAttempts ?? 0;
         var isApproved = _isApproved ?? false;
         var isLockedOut = _isLockedOut ?? false;
-        var lastLockoutDate = _lastLockoutDate ?? DateTime.Now;
-        var lastLoginDate = _lastLoginDate ?? DateTime.Now;
-        var lastPasswordChangeDate = _lastPasswordChangeDate ?? DateTime.Now;
+        var lastLockoutDate = _lastLockoutDate ?? DateTime.UtcNow;
+        var lastLoginDate = _lastLoginDate ?? DateTime.UtcNow;
+        var lastPasswordChangeDate = _lastPasswordChangeDate ?? DateTime.UtcNow;
         var passwordConfig = _passwordConfig ?? "{\"hashAlgorithm\":\"PBKDF2.ASPNETCORE.V3\"}";
 
         if (_memberTypeBuilder is null && _memberType is null)
@@ -279,15 +269,6 @@ public class MemberBuilder
         if (_memberGroupsBuilder != null)
         {
             member.Groups = _memberGroupsBuilder.Build();
-        }
-
-        if (_additionalDataBuilder != null)
-        {
-            var additionalData = _additionalDataBuilder.Build();
-            foreach (var kvp in additionalData)
-            {
-                member.AdditionalData.Add(kvp.Key, kvp.Value);
-            }
         }
 
         if (_propertyDataBuilder != null)

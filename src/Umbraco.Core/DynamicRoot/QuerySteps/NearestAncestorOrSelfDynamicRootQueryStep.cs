@@ -1,6 +1,4 @@
-using Umbraco.Cms.Core.Extensions;
 using Umbraco.Cms.Core.Scoping;
-using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Core.DynamicRoot.QuerySteps;
 
@@ -15,7 +13,7 @@ public class NearestAncestorOrSelfDynamicRootQueryStep : IDynamicRootQueryStep
         _nodeFilterRepository = nodeFilterRepository;
     }
 
-    protected virtual string SupportedDirectionAlias { get; set; } = "NearestAncestorOrSelf";
+    public virtual string SupportedDirectionAlias { get; set; } = "NearestAncestorOrSelf";
 
     public async Task<Attempt<ICollection<Guid>>> ExecuteAsync(ICollection<Guid> origins, DynamicRootQueryStep filter)
     {
@@ -30,7 +28,9 @@ public class NearestAncestorOrSelfDynamicRootQueryStep : IDynamicRootQueryStep
         }
 
         using ICoreScope scope = _scopeProvider.CreateCoreScope(autoComplete: true);
-        var result = (await _nodeFilterRepository.NearestAncestorOrSelfAsync(origins, filter))?.ToSingleItemCollection() ?? Array.Empty<Guid>();
+        var result = (await _nodeFilterRepository.NearestAncestorOrSelfAsync(origins, filter)) is Guid key
+            ? [key]
+            : Array.Empty<Guid>();
 
         return Attempt<ICollection<Guid>>.Succeed(result);
     }

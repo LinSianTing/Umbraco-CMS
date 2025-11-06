@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ public class NotificationService : INotificationService
 {
     // manage notifications
     // ideally, would need to use IBackgroundTasks - but they are not part of Core!
-    private static readonly object Locker = new();
+    private static readonly Lock Locker = new();
 
     private readonly IContentService _contentService;
     private readonly ContentSettings _contentSettings;
@@ -94,16 +95,48 @@ public class NotificationService : INotificationService
         // lazily get versions
         var prevVersionDictionary = new Dictionary<int, IContentBase?>();
 
+<<<<<<< HEAD
         // see notes above
         var id = Constants.Security.SuperUserId;
         const int UserBatchSize = 400; // load batches of 400 users
         do
+=======
+        var notifications = GetUsersNotifications(new List<int>(), action, Enumerable.Empty<int>(), Constants.ObjectTypes.Document)?.ToList();
+        if (notifications is null || notifications.Count == 0)
+>>>>>>> v10/contrib_Merge20251106_Try
         {
-            var notifications = GetUsersNotifications(new List<int>(), action, Enumerable.Empty<int>(), Constants.ObjectTypes.Document)?.ToList();
-            if (notifications is null || notifications.Count == 0)
+            return;
+        }
+
+        IUser[] users = _userService.GetAll(0, int.MaxValue, out _).ToArray();
+        foreach (IUser user in users)
+        {
+            Notification[] userNotifications = notifications.Where(n => n.UserId == user.Id).ToArray();
+            foreach (Notification notification in userNotifications)
             {
+                // notifications are inherited down the tree - find the topmost entity
+                // relevant to this notification (entity list is sorted by path)
+                IContent? entityForNotification = entitiesL
+                    .FirstOrDefault(entity =>
+                        pathsByEntityId.TryGetValue(entity.Id, out var path) &&
+                        path.Contains(notification.EntityId));
+
+                if (entityForNotification == null)
+                {
+                    continue;
+                }
+
+                if (prevVersionDictionary.ContainsKey(entityForNotification.Id) == false)
+                {
+                    prevVersionDictionary[entityForNotification.Id] = GetPreviousVersion(entityForNotification.Id);
+                }
+
+                // queue notification
+                NotificationRequest req = CreateNotificationRequest(operatingUser, user, entityForNotification, prevVersionDictionary[entityForNotification.Id], actionName, siteUri, createSubject, createBody);
+                Enqueue(req);
                 break;
             }
+<<<<<<< HEAD
 
             // users are returned ordered by id, notifications are returned ordered by user id
             var approvedUsers = _userService.GetNextApprovedUsers(id, UserBatchSize).ToList();
@@ -138,8 +171,9 @@ public class NotificationService : INotificationService
 
             // load more users if any
             id = approvedUsers.Count == UserBatchSize ? approvedUsers.Last().Id + 1 : -1;
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
         }
-        while (id > 0);
     }
 
     /// <summary>
@@ -252,20 +286,14 @@ public class NotificationService : INotificationService
         }
     }
 
-    /// <summary>
-    ///     Creates a new notification
-    /// </summary>
-    /// <param name="user"></param>
-    /// <param name="entity"></param>
-    /// <param name="action">The action letter - note: this is a string for future compatibility</param>
-    /// <returns></returns>
-    public Notification CreateNotification(IUser user, IEntity entity, string action)
+    /// <inheritdoc/>
+    public bool TryCreateNotification(IUser user, IEntity entity, string action, [NotNullWhen(true)] out Notification? notification)
     {
         using (ICoreScope scope = _uowProvider.CreateCoreScope())
         {
-            Notification notification = _notificationsRepository.CreateNotification(user, entity, action);
+            var result = _notificationsRepository.TryCreateNotification(user, entity, action, out notification);
             scope.Complete();
-            return notification;
+            return result;
         }
     }
 
@@ -385,7 +413,12 @@ public class NotificationService : INotificationService
         // build summary
         var summary = new StringBuilder();
 
+<<<<<<< HEAD
         if (content.ContentType.VariesByCulture()) {
+=======
+        if (content.ContentType.VariesByCulture())
+        {
+>>>>>>> v10/contrib_Merge20251106_Try
             // it's variant, so detect what cultures have changed
             if (!_contentSettings.Notifications.DisableHtmlEmail)
             {
@@ -466,7 +499,7 @@ public class NotificationService : INotificationService
         var protocol = _globalSettings.UseHttps ? "https" : "http";
 
         var subjectVars = new NotificationEmailSubjectParams(
-            string.Concat(siteUri.Authority, _ioHelper.ResolveUrl(_globalSettings.UmbracoPath)),
+            string.Concat(siteUri.Authority, _ioHelper.ResolveUrl(Constants.System.DefaultUmbracoPath)),
             actionName,
             content.Name);
 
@@ -484,7 +517,7 @@ public class NotificationService : INotificationService
                 string.Concat(content.Id, ".aspx"),
                 protocol),
             performingUser.Name,
-            string.Concat(siteUri.Authority, _ioHelper.ResolveUrl(_globalSettings.UmbracoPath)),
+            string.Concat(siteUri.Authority, _ioHelper.ResolveUrl(Constants.System.DefaultUmbracoPath)),
             summary.ToString());
 
         var fromMail = _contentSettings.Notifications.Email ?? _globalSettings.Smtp?.From;
@@ -567,7 +600,7 @@ public class NotificationService : INotificationService
         {
             ThreadPool.QueueUserWorkItem(state =>
             {
-                if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+                if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug("Begin processing notifications.");
                 }
@@ -579,9 +612,9 @@ public class NotificationService : INotificationService
                     {
                         try
                         {
-                            _emailSender.SendAsync(request.Mail, Constants.Web.EmailTypes.Notification).GetAwaiter()
+                            _emailSender.SendAsync(request.Mail, Constants.Web.EmailTypes.Notification, false, null).GetAwaiter()
                                 .GetResult();
-                            if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+                            if (_logger.IsEnabled(LogLevel.Debug))
                             {
                                 _logger.LogDebug("Notification '{Action}' sent to {Username} ({Email})", request.Action, request.UserName, request.Email);
                             }
@@ -612,7 +645,7 @@ public class NotificationService : INotificationService
         }
     }
 
-    private class NotificationRequest
+    private sealed class NotificationRequest
     {
         public NotificationRequest(EmailMessage mail, string? action, string? userName, string? email)
         {

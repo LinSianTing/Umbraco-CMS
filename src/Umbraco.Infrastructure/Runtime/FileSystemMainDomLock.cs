@@ -7,7 +7,7 @@ using Umbraco.Cms.Core.Runtime;
 
 namespace Umbraco.Cms.Infrastructure.Runtime;
 
-internal class FileSystemMainDomLock : IMainDomLock
+internal sealed class FileSystemMainDomLock : IMainDomLock
 {
     private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly IHostingEnvironment _hostingEnvironment;
@@ -72,7 +72,8 @@ internal class FileSystemMainDomLock : IMainDomLock
                 _lockFileStream?.Close();
                 return Task.FromResult(false);
             }
-        } while (stopwatch.ElapsedMilliseconds < millisecondsTimeout);
+        }
+        while (stopwatch.ElapsedMilliseconds < millisecondsTimeout);
 
         return Task.FromResult(false);
     }
@@ -108,11 +109,11 @@ internal class FileSystemMainDomLock : IMainDomLock
 
     /// <summary>Releases the resources used by this <see cref="FileSystemMainDomLock" />.</summary>
     /// <param name="disposing">true to release both managed resources.</param>
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (disposing && !_disposed)
         {
-            _logger.LogInformation($"{nameof(FileSystemMainDomLock)} Disposing...");
+            _logger.LogDebug($"{nameof(FileSystemMainDomLock)} Disposing...");
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
             ReleaseLock();
@@ -136,6 +137,7 @@ internal class FileSystemMainDomLock : IMainDomLock
                 {
                     _logger.LogDebug("ListenAsync Task canceled, exiting loop");
                 }
+
                 return;
             }
 

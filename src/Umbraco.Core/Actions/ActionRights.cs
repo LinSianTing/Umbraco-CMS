@@ -9,22 +9,16 @@ namespace Umbraco.Cms.Core.Actions;
 public class ActionRights : IAction
 {
     /// <inheritdoc cref="IAction.ActionLetter"/>
-    public const char ActionLetter = 'R';
+    public const string ActionLetter = "Umb.Document.Permissions";
 
     /// <inheritdoc cref="IAction.ActionAlias"/>
     public const string ActionAlias = "rights";
 
     /// <inheritdoc/>
-    public char Letter => ActionLetter;
+    public string Letter => ActionLetter;
 
     /// <inheritdoc/>
     public string Alias => ActionAlias;
-
-    /// <inheritdoc />
-    public string Category => Constants.Conventions.PermissionCategories.ContentCategory;
-
-    /// <inheritdoc />
-    public string Icon => "icon-vcard";
 
     /// <inheritdoc />
     public bool ShowInNotifier => true;

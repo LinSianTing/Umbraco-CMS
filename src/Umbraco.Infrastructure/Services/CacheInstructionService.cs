@@ -1,9 +1,11 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Models;
@@ -15,32 +17,6 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms
 {
-    namespace Core.Services.Implement
-    {
-        [Obsolete("Scheduled for removal in v12")]
-        public class CacheInstructionService : Infrastructure.Services.CacheInstructionService
-        {
-            public CacheInstructionService(
-                ICoreScopeProvider provider,
-                ILoggerFactory loggerFactory,
-                IEventMessagesFactory eventMessagesFactory,
-                ICacheInstructionRepository cacheInstructionRepository,
-                IProfilingLogger profilingLogger,
-                ILogger<Infrastructure.Services.CacheInstructionService> logger,
-                IOptions<GlobalSettings> globalSettings)
-                : base(
-                    provider,
-                    loggerFactory,
-                    eventMessagesFactory,
-                    cacheInstructionRepository,
-                    profilingLogger,
-                    logger,
-                    globalSettings)
-            {
-            }
-        }
-    }
-
     namespace Infrastructure.Services
     {
         /// <summary>
@@ -52,11 +28,12 @@ namespace Umbraco.Cms
             private readonly ICacheInstructionRepository _cacheInstructionRepository;
             private readonly GlobalSettings _globalSettings;
             private readonly ILogger<CacheInstructionService> _logger;
+            private readonly ILastSyncedManager _lastSyncedManager;
+            private readonly IRepositoryCacheVersionService _repositoryCacheVersionService;
             private readonly IProfilingLogger _profilingLogger;
+            private readonly Lock _syncLock = new();
 
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="CacheInstructionService" /> class.
-            /// </summary>
+            [Obsolete("Use the overload that requires ILastSyncedManager and IRepositoryCacheVersionService. Scheduled for removal in V18.")]
             public CacheInstructionService(
                 ICoreScopeProvider provider,
                 ILoggerFactory loggerFactory,
@@ -65,11 +42,36 @@ namespace Umbraco.Cms
                 IProfilingLogger profilingLogger,
                 ILogger<CacheInstructionService> logger,
                 IOptions<GlobalSettings> globalSettings)
+                 : this(
+                     provider,
+                     loggerFactory,
+                     eventMessagesFactory,
+                     cacheInstructionRepository,
+                     profilingLogger,
+                     logger,
+                     globalSettings,
+                     StaticServiceProvider.Instance.GetRequiredService<ILastSyncedManager>(),
+                     StaticServiceProvider.Instance.GetRequiredService<IRepositoryCacheVersionService>())
+            {
+            }
+
+            public CacheInstructionService(
+                ICoreScopeProvider provider,
+                ILoggerFactory loggerFactory,
+                IEventMessagesFactory eventMessagesFactory,
+                ICacheInstructionRepository cacheInstructionRepository,
+                IProfilingLogger profilingLogger,
+                ILogger<CacheInstructionService> logger,
+                IOptions<GlobalSettings> globalSettings,
+                ILastSyncedManager lastSyncedManager,
+                IRepositoryCacheVersionService repositoryCacheVersionService)
                 : base(provider, loggerFactory, eventMessagesFactory)
             {
                 _cacheInstructionRepository = cacheInstructionRepository;
                 _profilingLogger = profilingLogger;
                 _logger = logger;
+                _lastSyncedManager = lastSyncedManager;
+                _repositoryCacheVersionService = repositoryCacheVersionService;
                 _globalSettings = globalSettings.Value;
             }
 
@@ -145,43 +147,72 @@ namespace Umbraco.Cms
                 }
             }
 
-            /// <inheritdoc />
+            [Obsolete("Use non obsolete version instead, scheduled for removal in V18.")]
             public ProcessInstructionsResult ProcessInstructions(
                 CacheRefresherCollection cacheRefreshers,
-                ServerRole serverRole,
                 CancellationToken cancellationToken,
                 string localIdentity,
-                DateTime lastPruned,
                 int lastId)
             {
                 using (!_profilingLogger.IsEnabled(Core.Logging.LogLevel.Debug) ? null : _profilingLogger.DebugDuration<CacheInstructionService>("Syncing from database..."))
                 using (ICoreScope scope = ScopeProvider.CreateCoreScope())
                 {
                     var numberOfInstructionsProcessed = ProcessDatabaseInstructions(cacheRefreshers, cancellationToken, localIdentity, ref lastId);
+                    scope.Complete();
+                    return ProcessInstructionsResult.AsCompleted(numberOfInstructionsProcessed, lastId);
+                }
+            }
 
-                    // Check for pruning throttling.
-                    if (cancellationToken.IsCancellationRequested || DateTime.UtcNow - lastPruned <=
-                        _globalSettings.DatabaseServerMessenger.TimeBetweenPruneOperations)
+            /// <inheritdoc />
+            public ProcessInstructionsResult ProcessAllInstructions(
+                CacheRefresherCollection cacheRefreshers,
+                CancellationToken cancellationToken,
+                string localIdentity)
+            {
+                lock (_syncLock)
+                {
+                    using (!_profilingLogger.IsEnabled(Core.Logging.LogLevel.Debug) ? null : _profilingLogger.DebugDuration<CacheInstructionService>("Syncing from database..."))
+                    using (ICoreScope scope = ScopeProvider.CreateCoreScope())
                     {
+                        _repositoryCacheVersionService.SetCachesSyncedAsync();
+                        var lastId = _lastSyncedManager.GetLastSyncedExternalAsync().GetAwaiter().GetResult() ?? 0;
+                        var numberOfInstructionsProcessed = ProcessDatabaseInstructions(cacheRefreshers, cancellationToken, localIdentity, ref lastId);
+
+                        if (numberOfInstructionsProcessed > 0)
+                        {
+                            _lastSyncedManager.SaveLastSyncedExternalAsync(lastId).GetAwaiter().GetResult();
+                            _lastSyncedManager.SaveLastSyncedInternalAsync(lastId).GetAwaiter().GetResult();
+                        }
+
                         scope.Complete();
                         return ProcessInstructionsResult.AsCompleted(numberOfInstructionsProcessed, lastId);
                     }
+                }
+            }
 
-                    var instructionsWerePruned = false;
-                    switch (serverRole)
+            /// <inheritdoc />
+            public ProcessInstructionsResult ProcessInternalInstructions(
+                CacheRefresherCollection cacheRefreshers,
+                CancellationToken cancellationToken,
+                string localIdentity)
+            {
+                lock (_syncLock)
+                {
+                    using (!_profilingLogger.IsEnabled(Core.Logging.LogLevel.Debug) ? null : _profilingLogger.DebugDuration<CacheInstructionService>("Syncing from database..."))
+                    using (ICoreScope scope = ScopeProvider.CreateCoreScope())
                     {
-                        case ServerRole.Single:
-                        case ServerRole.SchedulingPublisher:
-                            PruneOldInstructions();
-                            instructionsWerePruned = true;
-                            break;
+                        _repositoryCacheVersionService.SetCachesSyncedAsync();
+                        var lastId = _lastSyncedManager.GetLastSyncedInternalAsync().GetAwaiter().GetResult() ?? 0;
+                        var numberOfInstructionsProcessed = ProcessDatabaseInstructions(cacheRefreshers, cancellationToken, localIdentity, ref lastId);
+
+                        if (numberOfInstructionsProcessed > 0)
+                        {
+                            _lastSyncedManager.SaveLastSyncedInternalAsync(lastId).GetAwaiter().GetResult();
+                        }
+
+                        scope.Complete();
+                        return ProcessInstructionsResult.AsCompleted(numberOfInstructionsProcessed, lastId);
                     }
-
-                    scope.Complete();
-
-                    return instructionsWerePruned
-                        ? ProcessInstructionsResult.AsCompletedAndPruned(numberOfInstructionsProcessed, lastId)
-                        : ProcessInstructionsResult.AsCompleted(numberOfInstructionsProcessed, lastId);
                 }
             }
 
@@ -189,11 +220,10 @@ namespace Umbraco.Cms
                 => new(
                     0,
                     DateTime.UtcNow,
-                    JsonConvert.SerializeObject(instructions, new JsonSerializerSettings()
+                    JsonSerializer.Serialize(instructions, new JsonSerializerOptions
                     {
-                        Formatting = Formatting.None,
-                        DefaultValueHandling = DefaultValueHandling.Ignore,
-                        NullValueHandling = NullValueHandling.Ignore,
+                        WriteIndented = false,
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
                     }),
                     localIdentity,
                     instructions.Sum(x => x.JsonIdCount));
@@ -252,13 +282,13 @@ namespace Umbraco.Cms
                     }
 
                     // Deserialize remote instructions & skip if it fails.
-                    if (!TryDeserializeInstructions(instruction, out JArray? jsonInstructions))
+                    if (TryDeserializeInstructions(instruction, out JsonDocument? jsonInstructions) is false && jsonInstructions is null)
                     {
                         lastId = instruction.Id; // skip
                         continue;
                     }
 
-                    List<RefreshInstruction> instructionBatch = GetAllInstructions(jsonInstructions);
+                    List<RefreshInstruction> instructionBatch = GetAllInstructions(jsonInstructions?.RootElement);
 
                     // Process as per-normal.
                     var success = ProcessDatabaseInstructions(cacheRefreshers, instructionBatch, instruction, processed, cancellationToken, ref lastId);
@@ -280,7 +310,7 @@ namespace Umbraco.Cms
             /// <summary>
             ///     Attempts to deserialize the instructions to a JArray.
             /// </summary>
-            private bool TryDeserializeInstructions(CacheInstruction instruction, out JArray? jsonInstructions)
+            private bool TryDeserializeInstructions(CacheInstruction instruction, out JsonDocument? jsonInstructions)
             {
                 if (instruction.Instructions is null)
                 {
@@ -291,10 +321,10 @@ namespace Umbraco.Cms
 
                 try
                 {
-                    jsonInstructions = JsonConvert.DeserializeObject<JArray>(instruction.Instructions);
+                    jsonInstructions = JsonDocument.Parse(instruction.Instructions);
                     return true;
                 }
-                catch (JsonException ex)
+                catch (System.Text.Json.JsonException ex)
                 {
                     _logger.LogError(ex, "Failed to deserialize instructions ({DtoId}: '{DtoInstructions}').", instruction.Id, instruction.Instructions);
                     jsonInstructions = null;
@@ -305,7 +335,7 @@ namespace Umbraco.Cms
             /// <summary>
             ///     Parses out the individual instructions to be processed.
             /// </summary>
-            private static List<RefreshInstruction> GetAllInstructions(IEnumerable<JToken>? jsonInstructions)
+            private static List<RefreshInstruction> GetAllInstructions(JsonElement? jsonInstructions)
             {
                 var result = new List<RefreshInstruction>();
                 if (jsonInstructions is null)
@@ -313,13 +343,13 @@ namespace Umbraco.Cms
                     return result;
                 }
 
-                foreach (JToken jsonItem in jsonInstructions)
+                foreach (JsonElement jsonItem in jsonInstructions.Value.EnumerateArray())
                 {
                     // Could be a JObject in which case we can convert to a RefreshInstruction.
                     // Otherwise it could be another JArray - in which case we'll iterate that.
-                    if (jsonItem is JObject jsonObj)
+                    if (jsonItem.ValueKind is JsonValueKind.Object)
                     {
-                        RefreshInstruction? instruction = jsonObj.ToObject<RefreshInstruction>();
+                        RefreshInstruction? instruction = jsonItem.Deserialize<RefreshInstruction>();
                         if (instruction is not null)
                         {
                             result.Add(instruction);
@@ -327,8 +357,7 @@ namespace Umbraco.Cms
                     }
                     else
                     {
-                        var jsonInnerArray = (JArray)jsonItem;
-                        result.AddRange(GetAllInstructions(jsonInnerArray)); // recurse
+                        result.AddRange(GetAllInstructions(jsonItem)); // recurse
                     }
                 }
 
@@ -465,7 +494,7 @@ namespace Umbraco.Cms
                     return;
                 }
 
-                var ids = JsonConvert.DeserializeObject<int[]>(jsonIds);
+                var ids = JsonSerializer.Deserialize<int[]>(jsonIds);
                 if (ids is not null)
                 {
                     foreach (var id in ids)
@@ -480,6 +509,7 @@ namespace Umbraco.Cms
                 IJsonCacheRefresher refresher = GetJsonRefresher(cacheRefreshers, uniqueIdentifier);
                 if (jsonPayload is not null)
                 {
+                    refresher.RefreshInternal(jsonPayload);
                     refresher.Refresh(jsonPayload);
                 }
             }
@@ -513,21 +543,6 @@ namespace Umbraco.Cms
                 }
 
                 return jsonRefresher;
-            }
-
-            /// <summary>
-            ///     Remove old instructions from the database
-            /// </summary>
-            /// <remarks>
-            ///     Always leave the last (most recent) record in the db table, this is so that not all instructions are removed which
-            ///     would cause
-            ///     the site to cold boot if there's been no instruction activity for more than TimeToRetainInstructions.
-            ///     See: http://issues.umbraco.org/issue/U4-7643#comment=67-25085
-            /// </remarks>
-            private void PruneOldInstructions()
-            {
-                DateTime pruneDate = DateTime.UtcNow - _globalSettings.DatabaseServerMessenger.TimeToRetainInstructions;
-                _cacheInstructionRepository.DeleteInstructionsOlderThan(pruneDate);
             }
         }
     }

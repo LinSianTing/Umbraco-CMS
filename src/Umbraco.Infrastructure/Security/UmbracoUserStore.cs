@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Umbraco.Cms.Core.Extensions;
 using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Core.Security;
@@ -31,30 +32,31 @@ public abstract class UmbracoUserStore<TUser, TRole>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
-    protected static int UserIdToInt(string? userId)
-    {
-        if (TryUserIdToInt(userId, out int result))
-        {
-            return result;
-        }
+    protected abstract Task<int> ResolveEntityIdFromIdentityId(string? identityId);
 
-        throw new InvalidOperationException($"Unable to convert user ID ({userId})to int using InvariantCulture");
-    }
-
-    protected static bool TryUserIdToInt(string? userId, out int result)
+    protected static bool TryConvertIdentityIdToInt(string? userId, out int intId)
     {
-        if (int.TryParse(userId, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+        // The userId can in this case be one of three things
+        // 1. An int - this means that the user logged in normally, this is fine, we parse it and return it.
+        // 2. A fake Guid - this means that the user logged in using an external login provider, but we haven't migrated the users to have a key yet, so we need to convert it to an int.
+        // 3. A Guid - this means that the user logged in using an external login provider, so we have to resolve the user by key.
+
+        if (int.TryParse(userId, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
         {
+            intId = result;
             return true;
         }
 
         if (Guid.TryParse(userId, out Guid key))
         {
-            // Reverse the IntExtensions.ToGuid
-            result = BitConverter.ToInt32(key.ToByteArray(), 0);
-            return true;
+            if (key.IsFakeGuid())
+            {
+                intId = key.ToInt();
+                return true;
+            }
         }
 
+        intId = default;
         return false;
     }
 
@@ -243,7 +245,7 @@ public abstract class UmbracoUserStore<TUser, TRole>
     public override async Task SetPasswordHashAsync(TUser user, string? passwordHash, CancellationToken cancellationToken = default)
     {
         await base.SetPasswordHashAsync(user, passwordHash, cancellationToken);
-        user.LastPasswordChangeDateUtc = DateTime.UtcNow;
+        user.LastPasswordChangeDate = DateTime.UtcNow;
     }
 
     /// <summary>

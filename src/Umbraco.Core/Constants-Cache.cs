@@ -1,9 +1,22 @@
 namespace Umbraco.Cms.Core;
+<<<<<<< HEAD
 
+=======
+>>>>>>> v10/contrib_Merge20251106_Try
 public static partial class Constants
 {
     public static class Cache
     {
+<<<<<<< HEAD
+=======
+        public static class Tags
+        {
+            public const string Content = "content";
+
+            public const string Media = "media";
+        }
+
+>>>>>>> v10/contrib_Merge20251106_Try
         /// <summary>
         /// Defines the string used to represent a null value in the cache.
         /// </summary>

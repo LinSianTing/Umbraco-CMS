@@ -25,8 +25,8 @@ public class MemberTypeBuilderTests
         const string testPropertyGroupName = "Content";
         const int testParentId = 98;
         const int testCreatorId = 22;
-        var testCreateDate = DateTime.Now.AddHours(-1);
-        var testUpdateDate = DateTime.Now;
+        var testCreateDate = DateTime.UtcNow.AddHours(-1);
+        var testUpdateDate = DateTime.UtcNow;
         const int testLevel = 3;
         const string testPath = "-1, 4, 10";
         const int testSortOrder = 5;
@@ -100,7 +100,7 @@ public class MemberTypeBuilderTests
         Assert.AreEqual(testIcon, memberType.Icon);
         Assert.AreEqual(testThumbnail, memberType.Thumbnail);
         Assert.AreEqual(testTrashed, memberType.Trashed);
-        Assert.IsFalse(memberType.IsContainer);
+        Assert.IsNull(memberType.ListView);
         Assert.AreEqual(3, memberType.PropertyTypes.Count()); // 1 from membership properties group, 2 custom
 
         var propertyTypeIds = memberType.PropertyTypes.Select(x => x.Id).OrderBy(x => x).ToArray();

@@ -1,6 +1,12 @@
 {
   "sdk": {
+<<<<<<< HEAD
     "version": "8.0.415",
     "rollForward": "latestFeature"
+=======
+    "version": "10.0.100-rc.2.25502.107",
+    "rollForward": "latestFeature",
+    "allowPrerelease": true
+>>>>>>> v10/contrib_Merge20251106_Try
   }
 }

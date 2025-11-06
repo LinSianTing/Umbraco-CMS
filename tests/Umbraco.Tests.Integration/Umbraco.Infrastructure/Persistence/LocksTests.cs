@@ -18,7 +18,7 @@ namespace Umbraco.Cms.Tests.Integration.Umbraco.Infrastructure.Persistence;
 [TestFixture]
 [Timeout(60000)]
 [UmbracoTest(Database = UmbracoTestOptions.Database.NewSchemaPerTest, Logger = UmbracoTestOptions.Logger.Console)]
-public class LocksTests : UmbracoIntegrationTest
+internal sealed class LocksTests : UmbracoIntegrationTest
 {
     [SetUp]
     protected void SetUp()
@@ -36,7 +36,7 @@ public class LocksTests : UmbracoIntegrationTest
 
     protected override void ConfigureTestServices(IServiceCollection services) =>
         // SQLite + retry policy makes tests fail, we retry before throwing distributed locking timeout.
-        services.RemoveAll(x => x.ImplementationType == typeof(SqliteAddRetryPolicyInterceptor));
+        services.RemoveAll(x => !x.IsKeyedService && x.ImplementationType == typeof(SqliteAddRetryPolicyInterceptor));
 
     [Test]
     public void SingleReadLockTest()
@@ -152,6 +152,7 @@ public class LocksTests : UmbracoIntegrationTest
         Assert.AreEqual(0, sqlCount);
     }
 
+    [NUnit.Framework.Ignore("We currently do not have a way to force lazy locks")]
     [Test]
     public void GivenNonEagerLocking_WhenDbIsAccessed_ThenSqlIsExecuted()
     {
@@ -190,7 +191,7 @@ public class LocksTests : UmbracoIntegrationTest
         const int threadCount = 8;
         var threads = new Thread[threadCount];
         var exceptions = new Exception[threadCount];
-        var locker = new object();
+        Lock locker = new();
         var acquired = 0;
         var entered = 0;
         var ms = new AutoResetEvent[threadCount];
@@ -526,6 +527,7 @@ public class LocksTests : UmbracoIntegrationTest
         }
     }
 
+    [NUnit.Framework.Ignore("This test is very flaky, and is stopping our nightlys")]
     [Test]
     public void Read_Lock_Waits_For_Write_Lock()
     {

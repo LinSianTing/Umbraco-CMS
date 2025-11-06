@@ -2,11 +2,11 @@
 // See LICENSE for more details.
 
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
 using NUnit.Framework;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Cms.Tests.Common.Builders;
 using Umbraco.Cms.Tests.Common.Builders.Extensions;
 
@@ -16,9 +16,27 @@ namespace Umbraco.Cms.Tests.UnitTests.Umbraco.Core.Models;
 public class PropertyTypeTests
 {
     [SetUp]
-    public void SetUp() => _builder = new PropertyTypeBuilder();
+    public void SetUp()
+    {
+        _propertyTypeBuilder = new PropertyTypeBuilder();
+        _dataTypeBuilder = new DataTypeBuilder();
+    }
 
-    private PropertyTypeBuilder _builder;
+    private PropertyTypeBuilder _propertyTypeBuilder;
+    private DataTypeBuilder _dataTypeBuilder;
+
+    [Test]
+    public void Can_Create_From_DataType()
+    {
+        var shortStringHelper = new DefaultShortStringHelper(new DefaultShortStringHelperConfig());
+        var dt = BuildDataType();
+        var pt = new PropertyType(shortStringHelper, dt);
+
+        Assert.AreEqual(dt.Id, pt.DataTypeId);
+        Assert.AreEqual(dt.Key, pt.DataTypeKey);
+        Assert.AreEqual(dt.EditorAlias, pt.PropertyEditorAlias);
+        Assert.AreEqual(dt.DatabaseType, pt.ValueStorageType);
+    }
 
     [Test]
     public void Can_Deep_Clone()
@@ -33,7 +51,7 @@ public class PropertyTypeTests
         Assert.AreEqual(clone.Alias, pt.Alias);
         Assert.AreEqual(clone.CreateDate, pt.CreateDate);
         Assert.AreEqual(clone.DataTypeId, pt.DataTypeId);
-        Assert.AreEqual(clone.DataTypeId, pt.DataTypeId);
+        Assert.AreEqual(clone.DataTypeKey, pt.DataTypeKey);
         Assert.AreEqual(clone.Description, pt.Description);
         Assert.AreEqual(clone.Key, pt.Key);
         Assert.AreEqual(clone.Mandatory, pt.Mandatory);
@@ -65,12 +83,12 @@ public class PropertyTypeTests
     {
         var pt = BuildPropertyType();
 
-        var json = JsonConvert.SerializeObject(pt);
+        var json = JsonSerializer.Serialize(pt);
         Debug.Print(json);
     }
 
     private PropertyType BuildPropertyType() =>
-        _builder
+        _propertyTypeBuilder
             .WithId(3)
             .WithPropertyEditorAlias("TestPropertyEditor")
             .WithAlias("test")
@@ -81,5 +99,9 @@ public class PropertyTypeTests
             .WithPropertyGroupId(11)
             .WithMandatory(true)
             .WithValidationRegExp("xxxx")
+            .Build();
+
+    private DataType BuildDataType() =>
+        _dataTypeBuilder
             .Build();
 }
