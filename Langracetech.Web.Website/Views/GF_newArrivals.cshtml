@@ -1,0 +1,177 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+<!-- Ryan - Start -->
+@using Umbraco.Cms.Core.Models;
+@*@using Umbraco.Cms.Core.Services;*@
+@*@inject IContentService Services;*@
+@*@using Newtonsoft.Json;*@
+<!-- Ryan - End -->
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@*@inject ITagQuery _tagQuery;*@
+
+@{
+    Layout = "GF_layout.cshtml";
+}
+
+<!-- page-title -->
+<div class="ttm-page-title-row">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-box">
+                    <div class="page-title-heading">
+                        <h1 class="title">最新研發商品</h1>
+                    </div><!-- /.page-title-captions -->
+                    <div class="breadcrumb-wrapper">
+                        <span>
+                            <a title="Homepage" href="/">首頁</a>
+                        </span>
+                        <span class="ttm-bread-sep"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                        <span><span>最新研發商品</span></span>
+                    </div>
+                </div>
+            </div><!-- /.col-md-12 -->
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+</div>
+<!-- page-title END-->
+<!--site-main start-->
+<div class="site-main">
+
+    <!-- menu-tab-section -->
+    <section class="ttm-row only-one-section clearfix">
+        <div class="container">
+            <div class="row">
+                <!-- row -->
+                <!-- Query all new-arrivals items -->
+                @{
+                    var New_Arrivals = Umbraco.Content(Guid.Parse("81c6cd9d-3381-4c5f-a11d-4e0ad6429de0"))
+                    .Children()
+                    .Where(x => x.IsVisible())
+                    .OrderBy(x => x.CreateDate);
+                }
+                <!-- Tags - Start -->
+                @{
+                    List<string> All_Tages = new List<string>();
+
+                    foreach (var item in New_Arrivals)
+                    {
+                        var Tag_Ryan04 = ((string[])item.Value("Tag_Ryan"));
+
+                        foreach (string Tag_Ryan04_Item in Tag_Ryan04)
+                        {   // if 避免重複值
+                            if (All_Tages.Contains(Tag_Ryan04_Item))
+                            {
+                            }
+                            else
+                            {   // Iterate and append every single tags
+                                All_Tages.Append(Tag_Ryan04_Item);
+                                All_Tages.Any();
+                            }
+                        }
+                    }
+                }
+
+                @{
+                    List<string> All_Tages_dist = All_Tages.Distinct().ToList();
+                }
+                 <!-- Tags - End -->
+
+                @foreach (var item in New_Arrivals)
+                {
+                    // Get Image Media Picker
+                    var NewArrivals_Items_ProductImage = item.Value<IPublishedContent>("NewArrivals_Items_ProductImage");
+
+                    // Get all tags from single item
+                    //var Tag_Ryan04 = ((string[])item.Value("Tag_Ryan"));
+                    string[] Tag_Ryan04 = item.Value("Tag_Ryan") as string[];
+
+                    <h6>All Tags:</h6>
+                    foreach (string Tag_Ryan04_Item in Tag_Ryan04)
+                    {
+                        <h6>@Tag_Ryan04_Item, </h6>
+                    }
+
+                    // 轉換成 陣列操作
+                    string[] ArrayOfTag = (string[])item.Value("Tag_Ryan");     //弱轉型，前置寫法
+                    // var ArrayOfTag = item.Value("Tag_Ryan") as string[];  //弱轉型，後置寫法
+
+                    if (ArrayOfTag != null)
+                    {
+                        foreach (string tagName in ArrayOfTag)
+                        {
+                            @*<h6>@@tagName: @tagName</h6>*@
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                    }
+                    // 轉換成 陣列操作
+                    //List<string> listOfTag = (List<string>)item.Value("Tag_Ryan"); //弱轉型成 List集合
+                    //List<string> listOfTag = item.Value("Tag_Ryan").ToList();  // 強轉型 List集合
+
+                    <div class="col-md-4 col-sm-6">
+                        <h6>@@item.Value("Tag_Ryan").ToString(): @Tag_Ryan04</h6>
+
+                        <!-- featured-imagebox-event -->
+                        <div class="featured-imagebox featured-imagebox-gallery style1 mb-30">
+                            <div class="featured-thumbnail">
+                                <!-- featured-thumbnail-->
+                                <img class="img-fluid" src="@NewArrivals_Items_ProductImage.Url()" alt="NewArrivals_Items_ProductImage">
+                            </div>
+                            <div class="ttm-box-view-overlay">
+                                <!-- ttm-box-view-overlay -->
+                                <div class="ttm-media-link">
+                                    <!-- ttm-media-link-->
+                                    <a class="ttm_prettyphoto ttm_image" data-gal="prettyPhoto[gallery1]" title="@item.Value("NewArrivals_Items_ProductName")" href="@NewArrivals_Items_ProductImage.Url()" data-rel="NewArrivals_Items_ProductImage">
+                                        <i class="ti ti-search"></i>
+                                    </a>
+                                </div>
+                                <div class="featured-content">
+                                    <!-- featured-content-->
+                                    <div class="featured-title">
+                                        <!-- featured-title-->
+                                        <h5>@item.Value("NewArrivals_Items_ProductName")</h5>
+                                    </div>
+                                </div>
+                            </div><!-- ttm-box-view-overlay end-->
+                        </div><!-- featured-imagebox-event END -->
+                    </div>
+                }
+
+                <!-- Ryan - End -->
+                @*<div class="col-md-4 col-sm-6">
+                <!-- featured-imagebox-event -->
+                <div class="featured-imagebox featured-imagebox-gallery style1 mb-30">
+                <div class="featured-thumbnail">
+                <!-- featured-thumbnail-->
+                <img class="img-fluid" src="/tpl/zst_GF\images\newArrival\NewArrival-01.jpg" alt="image">
+                </div>
+
+                <div class="ttm-box-view-overlay">
+                <!-- ttm-box-view-overlay -->
+                <div class="ttm-media-link">
+                <!-- ttm-media-link-->
+                <a class="ttm_prettyphoto ttm_image" data-gal="prettyPhoto[gallery1]" title="More" href="/tpl/zst_GF\images\newArrival\NewArrival-01.jpg" data-rel="prettyPhoto">
+                <i class="ti ti-search"></i>
+                </a>
+                </div>
+
+                <div class="featured-content">
+                <!-- featured-content-->
+                <div class="featured-title">
+                <!-- featured-title-->
+                <h5>最新研發商品-01</h5>
+                </div>
+                </div>
+                </div><!-- ttm-box-view-overlay end-->
+                </div><!-- featured-imagebox-event END -->
+                </div>*@
+            </div><!-- row end-->
+        </div>
+    </section>
+    <!-- menu-tab-section -->
+
+</div>
+<!--site-main end-->

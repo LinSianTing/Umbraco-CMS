@@ -17,6 +17,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="buildTransitive\**\*.*">
+      <Pack>true</Pack>
+      <PackagePath>buildTransitive</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\tpl\zst_GF\images\Logo\logo-motion\**" />
+    <Content Remove="wwwroot\tpl\zst_GF\images\Logo\logo-motion\**" />
+    <EmbeddedResource Remove="wwwroot\tpl\zst_GF\images\Logo\logo-motion\**" />
+    <None Remove="wwwroot\tpl\zst_GF\images\Logo\logo-motion\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <SupportedPlatform Include="browser" />
   </ItemGroup>
