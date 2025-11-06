@@ -107,8 +107,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.Persistence.Sql
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.Persistence.SqlServer", "src\Umbraco.Cms.Persistence.SqlServer\Umbraco.Cms.Persistence.SqlServer.csproj", "{93C5910D-2E36-475D-88EB-A11BA5B50F65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.StaticAssets", "src\Umbraco.Cms.StaticAssets\Umbraco.Cms.StaticAssets.csproj", "{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{6D72A60B-0542-4AA9-A493-DD4179E838A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Templates", "templates\Umbraco.Templates.csproj", "{05C1D0C8-C592-468F-AF8F-A299B9B3A903}"
@@ -137,19 +135,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{20CE9C97-9314-4A19-BCF1-D12CF49B7205}"
 	ProjectSection(SolutionItems) = preProject
 		build\azure-pipelines.yml = build\azure-pipelines.yml
-		build\nightly-build-trigger.yml = build\nightly-build-trigger.yml
 		build\templates\backoffice-install.yml = build\templates\backoffice-install.yml
+		build\nightly-build-trigger.yml = build\nightly-build-trigger.yml
 		build\nightly-E2E-test-pipelines.yml = build\nightly-E2E-test-pipelines.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp-docs", "csharp-docs", "{F2BF84D9-0A14-40AF-A0F3-B9BBBBC16A44}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.ManagementApi", "src\Umbraco.Cms.ManagementApi\Umbraco.Cms.ManagementApi.csproj", "{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.New.Cms.Core", "src\Umbraco.New.Cms.Core\Umbraco.New.Cms.Core.csproj", "{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.New.Cms.Infrastructure", "src\Umbraco.New.Cms.Infrastructure\Umbraco.New.Cms.Infrastructure.csproj", "{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.New.Cms.Web.Common", "src\Umbraco.New.Cms.Web.Common\Umbraco.New.Cms.Web.Common.csproj", "{5ED13EC6-399E-49D5-9D26-86501729B08D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D4C3395A-BA9D-4032-9ED3-09F1FC032CBC}"
 	ProjectSection(SolutionItems) = preProject
@@ -199,6 +190,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.PublishedCache.HybridCache", "src\Umbraco.PublishedCache.HybridCache\Umbraco.PublishedCache.HybridCache.csproj", "{CB0B9817-EDBC-4D6D-B4D2-969019C4606D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Cms.DevelopmentMode.Backoffice", "src\Umbraco.Cms.DevelopmentMode.Backoffice\Umbraco.Cms.DevelopmentMode.Backoffice.csproj", "{411D1547-C84C-4F0F-A207-A189B59F9486}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nightly-e2e-templates", "nightly-e2e-templates", "{E90531F6-E32D-40DA-BCB2-55FA94D5AB19}"
 	ProjectSection(SolutionItems) = preProject
 		build\nightly-E2E-build-template.yml = build\nightly-E2E-build-template.yml
@@ -343,12 +335,6 @@ Global
 		{93C5910D-2E36-475D-88EB-A11BA5B50F65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93C5910D-2E36-475D-88EB-A11BA5B50F65}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{93C5910D-2E36-475D-88EB-A11BA5B50F65}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2FD54E8-3470-4A98-8B0C-A9ACB59BED48}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
 		{05C1D0C8-C592-468F-AF8F-A299B9B3A903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05C1D0C8-C592-468F-AF8F-A299B9B3A903}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05C1D0C8-C592-468F-AF8F-A299B9B3A903}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -431,30 +417,6 @@ Global
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.Release|Any CPU.Build.0 = Release|Any CPU
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
-		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ED13EC6-399E-49D5-9D26-86501729B08D}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ED13EC6-399E-49D5-9D26-86501729B08D}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
 		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
