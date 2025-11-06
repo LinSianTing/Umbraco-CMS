@@ -143,6 +143,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{20CE9C97
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "csharp-docs", "csharp-docs", "{F2BF84D9-0A14-40AF-A0F3-B9BBBBC16A44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.ManagementApi", "src\Umbraco.Cms.ManagementApi\Umbraco.Cms.ManagementApi.csproj", "{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.New.Cms.Core", "src\Umbraco.New.Cms.Core\Umbraco.New.Cms.Core.csproj", "{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.New.Cms.Infrastructure", "src\Umbraco.New.Cms.Infrastructure\Umbraco.New.Cms.Infrastructure.csproj", "{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.New.Cms.Web.Common", "src\Umbraco.New.Cms.Web.Common\Umbraco.New.Cms.Web.Common.csproj", "{5ED13EC6-399E-49D5-9D26-86501729B08D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D4C3395A-BA9D-4032-9ED3-09F1FC032CBC}"
 	ProjectSection(SolutionItems) = preProject
 		build\csharp-docs\docfx.filter.yml = build\csharp-docs\docfx.filter.yml
 		build\csharp-docs\docfx.json = build\csharp-docs\docfx.json
@@ -197,6 +206,50 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nightly-e2e-templates", "ni
 		build\nightly-E2E-run-tests-template.yml = build\nightly-E2E-run-tests-template.yml
 		build\nightly-E2E-setup-template.yml = build\nightly-E2E-setup-template.yml
 	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.UI.Client", "src\Langracetech.Web.UI.Client\", "{60516875-EEDA-4941-8DCF-9222D622C7EB}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51510"
+		Debug.AspNetCompiler.PhysicalPath = "src\Langracetech.Web.UI.Client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51510\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51510"
+		Release.AspNetCompiler.PhysicalPath = "src\Langracetech.Web.UI.Client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51510\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51510"
+		SlnRelativePath = "src\Langracetech.Web.UI.Client\"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Langracetech.Web.Template.Client", "src\Langracetech.Web.Template.Client\", "{CA31169B-2E55-433E-9369-68C697658E7A}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_64885"
+		Debug.AspNetCompiler.PhysicalPath = "src\Langracetech.Web.Template.Client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64885\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_64885"
+		Release.AspNetCompiler.PhysicalPath = "src\Langracetech.Web.Template.Client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64885\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "64885"
+		SlnRelativePath = "src\Langracetech.Web.Template.Client\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Langracetech.Web.Website", "Langracetech.Web.Website\Langracetech.Web.Website.csproj", "{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -378,6 +431,48 @@ Global
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.Release|Any CPU.Build.0 = Release|Any CPU
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
 		{411D1547-C84C-4F0F-A207-A189B59F9486}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{0946531B-F06D-415B-A4E3-6CBFF5DB1C12}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBCE0A1E-BF29-49A6-9581-EAB3587D823A}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D978DAF-8F48-4D59-8FEA-7EF0F40DBC2C}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ED13EC6-399E-49D5-9D26-86501729B08D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ED13EC6-399E-49D5-9D26-86501729B08D}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED13EC6-399E-49D5-9D26-86501729B08D}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{60516875-EEDA-4941-8DCF-9222D622C7EB}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{60516875-EEDA-4941-8DCF-9222D622C7EB}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{60516875-EEDA-4941-8DCF-9222D622C7EB}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{CA31169B-2E55-433E-9369-68C697658E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA31169B-2E55-433E-9369-68C697658E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA31169B-2E55-433E-9369-68C697658E7A}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA31169B-2E55-433E-9369-68C697658E7A}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{CA31169B-2E55-433E-9369-68C697658E7A}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA31169B-2E55-433E-9369-68C697658E7A}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
+		{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}.SkipTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A9CE5E-40AE-4372-85D3-5F33819ACBA9}.SkipTests|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
