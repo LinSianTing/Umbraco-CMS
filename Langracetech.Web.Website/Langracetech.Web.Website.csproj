@@ -4,6 +4,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="Views\.cshtml" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Opt-in to app-local ICU to ensure consistent globalization APIs across different platforms -->
@@ -18,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="umbraco\" />
+    <Folder Include="umbraco\Data\" />
   </ItemGroup>
 
   <PropertyGroup>
