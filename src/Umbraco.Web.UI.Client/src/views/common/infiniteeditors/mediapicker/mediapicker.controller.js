@@ -261,7 +261,9 @@ angular.module("umbraco")
                           $scope.path = _.filter(anc, function (f) {
                               return f.path.indexOf($scope.startNodeId) !== -1;
                           });
-                          folder.path = $scope.path[0].path;
+                          if ($scope.path.length > 0) {
+                              folder.path = $scope.path[0].path;
+                          }
                       })
                   : Promise.resolve().then(function () {
                         $scope.path = [];
@@ -368,7 +370,20 @@ angular.module("umbraco")
             }
 
             function onUploadComplete(files) {
+
+                // Refresh the current folder to get updated pagination info.
                 gotoFolder($scope.currentFolder).then(function () {
+
+                    // If there are multiple pages, navigate to the last page where new uploads appear.
+                    if (vm.searchOptions.totalPages > 1) {
+                        vm.searchOptions.pageNumber = vm.searchOptions.totalPages;
+                        return getChildren($scope.currentFolder.id);
+                    } else {
+                        return Promise.resolve();
+                    }
+                }).then(function () {
+
+                    // Select the newly uploaded items.
                     $timeout(function () {
                         if ($scope.multiPicker) {
                             var images = _.rest(_.sortBy($scope.images, 'id'), $scope.images.length - files.length);
@@ -378,6 +393,7 @@ angular.module("umbraco")
                             clickHandler(image);
                         }
                     });
+
                 });
             }
 
@@ -595,8 +611,13 @@ angular.module("umbraco")
 
             function syncPagination(opts, data) {
                 var d = data || {};
+                if (d.pageNumber > 0) {
+                    opts.pageNumber = d.pageNumber;
+                }
                 opts.pageNumber = d.pageNumber;
-                opts.pageSize   = d.pageSize;
+                if (d.pageSize > 0) {
+                    opts.pageSize = d.pageSize;
+                }
                 opts.totalItems = d.totalItems;
                 opts.totalPages = d.totalPages;
             }
